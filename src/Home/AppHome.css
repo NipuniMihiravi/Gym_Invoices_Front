@@ -1216,6 +1216,16 @@ th {
   }
 }
 
+.attendance-calendar {
+  margin-top: 20px;
+}
+
+.attended-day {
+  background-color: yellow !important;
+  border-radius: 50%;
+}
+
+
 
 
 

@@ -4,6 +4,8 @@ import "./AppHome.css";
 import '../Admin/Admin.css';
 import { useNavigate } from 'react-router-dom';
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 
 
@@ -31,6 +33,7 @@ function MemberPaymentManager() {
   const [dialogMessage, setDialogMessage] = useState(""); // message to show
   const [showDialog, setShowDialog] = useState(false); // show/hide dialog
   const [cameraActive, setCameraActive] = useState(false);
+  const [attendanceDates, setAttendanceDates] = useState([]);
 
 
   useEffect(() => {
@@ -52,9 +55,19 @@ useEffect(() => {
   }
 }, [memberId]);
 
-function QRScanner({ handleScan, handleError }) {
-  const [cameraActive, setCameraActive] = useState(false);
+const fetchAttendance = async (id) => {
+  try {
+    const res = await axios.get(
+      `https://gym-invoice-back.onrender.com/api/attendance//member/{memberId}}`
+    );
+    // Convert date strings to Date objects
+    const dates = (res.data || []).map(a => new Date(a.date));
+    setAttendanceDates(dates);
+  } catch (err) {
+    console.error("Error fetching attendance:", err);
+    setAttendanceDates([]);
   }
+};
 
 const handleSearch = async () => {
   try {
@@ -105,6 +118,8 @@ const handleScan = (result) => {
   const handleError = (err) => {
     console.error(err);
   };
+
+
 
 
 
@@ -282,36 +297,35 @@ const getPaidDate = (month) => {
               <button onClick={handleSearch}>Search</button>
             </div>
 
-           <div className="qr-reader-container">
-                 <h4>Scan QR Code to Search</h4>
+            <div className="qr-reader-container">
+                            <h4>Scan QR Code to Search</h4>
 
-                 {/* Toggle Camera Button */}
-                 <button
-                   className="scan-toggle-button"
-                   onClick={() => setCameraActive((prev) => !prev)}
-                 >
-                   {cameraActive ? "Stop Camera" : "Start Camera"}
-                 </button>
+                            {/* Toggle Camera Button */}
+                            <button
+                              className="scan-toggle-button"
+                              onClick={() => setCameraActive((prev) => !prev)}
+                            >
+                              {cameraActive ? "Stop Camera" : "Start Camera"}
+                            </button>
 
-                 {/* Camera Preview */}
-                 {cameraActive && (
-                   <div style={{ width: "300px", marginTop: "10px" }}>
-                     <BarcodeScannerComponent
-                       width={300}
-                       height={300}
-                       onUpdate={(err, result) => {
-                         if (result) {
-                           handleScan(result); // pass the full result object
-                         }
-                         if (err) {
-                           handleError(err);
-                         }
-                       }}
-                     />
-                   </div>
-                 )}
-               </div>
-
+                            {/* Camera Preview */}
+                            {cameraActive && (
+                              <div style={{ width: "300px", marginTop: "10px" }}>
+                                <BarcodeScannerComponent
+                                  width={300}
+                                  height={300}
+                                  onUpdate={(err, result) => {
+                                    if (result) {
+                                      handleScan(result); // pass the full result object
+                                    }
+                                    if (err) {
+                                      handleError(err);
+                                    }
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </div>
 
             {memberData && (
               <>
@@ -351,6 +365,23 @@ const getPaidDate = (month) => {
                     </tr>
                   </tbody>
                 </table>
+
+                <div className="attendance-calendar">
+                    <h3>Attendance Calendar</h3>
+                    <Calendar
+                      tileClassName={({ date, view }) => {
+                        if (view === "month") {
+                          const found = attendanceDates.find(
+                            (d) =>
+                              d.getFullYear() === date.getFullYear() &&
+                              d.getMonth() === date.getMonth() &&
+                              d.getDate() === date.getDate()
+                          );
+                          if (found) return "attended-day"; // CSS class for attended days
+                        }
+                      }}
+                    />
+                  </div>
 
                 <div className="payment-table">
                   <h3>{currentYear} Monthly Payments</h3>
