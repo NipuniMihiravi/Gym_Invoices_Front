@@ -1,0 +1,305 @@
+/* === Base Styles === */
+.dashboard {
+  font-family: 'Poppins', sans-serif;
+  padding: 30px;
+  color: #333;
+  height: auto;
+  border: 10px solid #008080;       /* Teal border */
+  border-radius: 10px;              /* Smooth rounded corners */
+  background-color: black;          /* Dark background */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  height: 100px;
+  border-bottom: 5px solid #008080;
+  flex-wrap: wrap;
+}
+
+.project-stats span {
+  margin-right: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+/* === Base Styles (unchanged from your code) === */
+/* ... your current styles here ... */
+
+
+/* === Responsive Styles === */
+
+/* Large tablets & small laptops (≤ 1200px) */
+@media (max-width: 1200px) {
+  .price-box {
+    width: 22%; /* fit more nicely on medium screens */
+  }
+  .services h3 {
+    font-size: 24px;
+  }
+  .logo-text {
+    font-size: 26px;
+  }
+}
+
+/* Tablets (≤ 992px) */
+@media (max-width: 992px) {
+  .dashboard {
+    padding: 20px;
+  }
+
+  .header {
+    flex-direction: column;
+    height: auto;
+    padding-bottom: 15px;
+    text-align: center;
+  }
+
+  .header-left h2 {
+    font-size: 24px;
+  }
+
+  .price-box {
+    width: 45%; /* 2 per row */
+    margin: 10px auto;
+  }
+
+  .service-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  .logo-text {
+    font-size: 24px;
+  }
+  .logo-arrow {
+    font-size: 28px;
+  }
+}
+
+/* Mobile landscape & small tablets (≤ 768px) */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 15px;
+  }
+
+  .header-right {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .price-box {
+    width: 100%; /* 1 per row */
+  }
+
+  .services h3 {
+    font-size: 22px;
+  }
+
+  .service-card {
+    margin-top: 20px;
+    padding: 15px;
+  }
+
+  .logo-text {
+    font-size: 20px;
+  }
+}
+
+/* Mobile portrait (≤ 480px) */
+@media (max-width: 480px) {
+  .dashboard {
+    padding: 10px;
+    border-width: 6px;
+  }
+
+  .header-left h2 {
+    font-size: 20px;
+  }
+
+  .project-stats span {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .price-box {
+    padding: 15px;
+    font-size: 14px;
+  }
+
+  .service-grid {
+    grid-template-columns: 1fr; /* stack services */
+  }
+
+  .service-card {
+    padding: 12px;
+    margin-top: 15px;
+  }
+
+  .logo-wrapper {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .logo-circle {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+
+  .logo-text {
+    font-size: 18px;
+  }
+
+  .logo-sub-text-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .logout-button {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
+
+.price-box {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 18%;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.price-box.highlighted {
+  background-color: #ff8c00;
+  color: white;
+  font-weight: bold;
+  transform: scale(1.05);
+}
+
+.services h3 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #008080;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  height: auto;
+}
+
+.service-card {
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  text-decoration: none;
+  margin-top: 40px;
+}
+
+.service-card-link {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.service-card h4 {
+  text-decoration: none;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+}
+
+.service-card .icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-left h2 {
+  color: #008080;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.logout-button {
+  padding: 8px 16px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #cc0000;
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  flex-wrap: wrap;
+}
+
+.logo-circle {
+  background: linear-gradient(135deg, #004d4d, #00cccc);
+  color: white;
+  font-weight: 700;
+  font-size: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-text {
+  color: #008080;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: 0.5px;
+}
+
+.logo-sub-text-button {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 3px solid #008080;
+  border-radius: 5px;
+  background-color: white;
+  color: #008080;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.logo-sub-text-button:hover {
+  background-color: #008080;
+  color: white;
+}
+
+.logo-arrow {
+  color: #008080;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+
