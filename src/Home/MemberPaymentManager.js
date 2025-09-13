@@ -3,7 +3,7 @@ import axios from "axios";
 import "./AppHome.css";
 import '../Admin/Admin.css';
 import { useNavigate } from 'react-router-dom';
-import { QrReader } from "@blackbox-vision/react-qr-reader";
+import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
 
 
@@ -52,6 +52,10 @@ useEffect(() => {
   }
 }, [memberId]);
 
+function QRScanner({ handleScan, handleError }) {
+  const [cameraActive, setCameraActive] = useState(false);
+  }
+
 const handleSearch = async () => {
   try {
     const res = await axios.get(
@@ -82,16 +86,20 @@ const handleSearch = async () => {
 };
 
  // QR scan callback
- const handleScan = (data) => {
-   if (data) {
-     // Extract MemberID from QR code text
-     const memberIdFromQR = data.split("MemberID:")[1]?.split("\n")[0].trim();
-     if (memberIdFromQR) {
-       setMemberId(memberIdFromQR);  // update input field
-       handleSearch(memberIdFromQR); // fetch member details
-     }
-   }
- };
+const handleScan = (result) => {
+  if (result) {
+    const qrText = result.text; // get scanned QR text
+
+    // Extract MemberID from QR code text
+    const memberIdFromQR = qrText.split("MemberID:")[1]?.split("\n")[0]?.trim();
+
+    if (memberIdFromQR) {
+      setMemberId(memberIdFromQR);   // update input field
+      handleSearch(memberIdFromQR);  // fetch member details
+    }
+  }
+};
+
 
 
   const handleError = (err) => {
@@ -275,28 +283,34 @@ const getPaidDate = (month) => {
             </div>
 
            <div className="qr-reader-container">
-             <h4>Scan QR Code to Search</h4>
+                 <h4>Scan QR Code to Search</h4>
 
-             {/* Toggle Camera Button */}
-             <button
-               className="scan-toggle-button"
-               onClick={() => setCameraActive((prev) => !prev)}
-             >
-               {cameraActive ? "Stop Camera" : "Start Camera"}
-             </button>
+                 {/* Toggle Camera Button */}
+                 <button
+                   className="scan-toggle-button"
+                   onClick={() => setCameraActive((prev) => !prev)}
+                 >
+                   {cameraActive ? "Stop Camera" : "Start Camera"}
+                 </button>
 
-             {/* Camera Preview */}
-             {cameraActive && (
-               <QrReader
-                 onResult={(result, error) => {
-                   if (!!result) handleScan(result?.text);
-                   if (!!error) handleError(error);
-                 }}
-                 constraints={{ facingMode: "environment" }} // back camera
-                 style={{ width: "300px", marginTop: "10px" }}
-               />
-             )}
-           </div>
+                 {/* Camera Preview */}
+                 {cameraActive && (
+                   <div style={{ width: "300px", marginTop: "10px" }}>
+                     <BarcodeScannerComponent
+                       width={300}
+                       height={300}
+                       onUpdate={(err, result) => {
+                         if (result) {
+                           handleScan(result); // pass the full result object
+                         }
+                         if (err) {
+                           handleError(err);
+                         }
+                       }}
+                     />
+                   </div>
+                 )}
+               </div>
 
 
             {memberData && (
