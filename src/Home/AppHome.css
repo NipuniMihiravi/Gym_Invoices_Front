@@ -1216,13 +1216,39 @@ th {
   }
 }
 
+/* Calendar container */
 .attendance-calendar {
   margin-top: 20px;
+  max-width: 100%;
+  width: 400px; /* default width for desktop */
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Highlight attended days */
 .attended-day {
   background-color: yellow !important;
   border-radius: 50%;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 480px) {
+  .attendance-calendar {
+    width: 95%; /* almost full width on mobile */
+  }
+
+  .react-calendar {
+    font-size: 12px; /* reduce font size for smaller screens */
+  }
+
+  .react-calendar__tile {
+    height: 40px; /* smaller day tiles */
+    line-height: 40px;
+  }
+
+  .react-calendar__navigation button {
+    font-size: 12px; /* smaller navigation buttons */
+  }
 }
 
 
