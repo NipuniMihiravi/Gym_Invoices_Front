@@ -1,17 +1,11 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./AppHome.css";
+import "../Home/AppHome.css";
 import "../Admin/Admin.css";
 import { useNavigate } from "react-router-dom";
 
 function RegisterForm() {
   const navigate = useNavigate();
-   useEffect(() => {
-        const role = sessionStorage.getItem("userRole");
-        if (!role) {
-          navigate("/"); // redirect to login if no session
-        }
-      }, [navigate]);
 
   const [form, setForm] = useState({
     name: "",
@@ -23,6 +17,13 @@ function RegisterForm() {
   });
 
   const [dialog, setDialog] = useState({ show: false, message: "", memberId: "" });
+
+    useEffect(() => {
+            const role = sessionStorage.getItem("userRole");
+            if (!role) {
+              navigate("/"); // redirect to login if no session
+            }
+          }, [navigate]);
 
   const bgStyle = {
     backgroundImage: `url(${process.env.PUBLIC_URL + "/Images/gym.jpg"})`,
@@ -125,7 +126,7 @@ function RegisterForm() {
           <span className="logo-arrow">»</span>
           <span
             className="logo-sub-text-button"
-            onClick={() => navigate("/dashboard-admin")}
+            onClick={() => navigate("/dashboard")}
           >
             Admin Panel
           </span>

@@ -20,6 +20,13 @@ function MembershipManager() {
     onConfirm: null, // optional callback for confirm dialogs
   });
 
+   useEffect(() => {
+        const role = sessionStorage.getItem("userRole");
+        if (!role) {
+          navigate("/"); // redirect to login if no session
+        }
+      }, [navigate]);
+
 
   useEffect(() => {
     axios.get(API_URL)
@@ -156,7 +163,7 @@ const handleDelete = (id) => {
           <span className="logo-arrow">»</span>
           <span
             className="logo-sub-text-button"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/dashboard-admin')}
           >
             Admin Panel
           </span>

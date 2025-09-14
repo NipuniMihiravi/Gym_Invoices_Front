@@ -12,9 +12,10 @@ const Dashboard = () => {
 
   const services = [
     { title: "Registration", icon: "📝", color: "#915F6D" },
-    { title: "Payment", icon: "💳", color: "#C3B1E1" },
-    { title: "Members List", icon: "👥", color: "#915F6D" },
-    { title: "System", icon: "⚙️", color: "#C3B1E1" },
+    { title: "Members List", icon: "👥", color: "#C3B1E1" },
+    { title: "Payment", icon: "💳", color: "#915F6D" },
+    { title: "Attendance", icon: "⚙️", color: "#C3B1E1" },
+
   ];
 
   // Fetch from backend
@@ -56,7 +57,7 @@ const Dashboard = () => {
           {services.map((service, index) => (
             <Link
               key={index}
-              to={`/service/${encodeURIComponent(service.title.toLowerCase().replace(/ /g, "-"))}`}
+              to={`/assis/${encodeURIComponent(service.title.toLowerCase().replace(/ /g, "-"))}`}
               className="service-card-link"
             >
               <div

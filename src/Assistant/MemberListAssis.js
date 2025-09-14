@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./AppHome.css";
+import "../Home/AppHome.css";
 import '../Admin/Admin.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
@@ -24,12 +24,12 @@ function MemberTable() {
    onConfirm: null, // optional callback for confirm dialogs
  });
 
-  useEffect(() => {
-       const role = sessionStorage.getItem("userRole");
-       if (!role) {
-         navigate("/"); // redirect to login if no session
-       }
-     }, [navigate]);
+   useEffect(() => {
+           const role = sessionStorage.getItem("userRole");
+           if (!role) {
+             navigate("/"); // redirect to login if no session
+           }
+         }, [navigate]);
 
 
   useEffect(() => {
@@ -136,7 +136,7 @@ const handleUpdate = async () => {
           <span className="logo-arrow">»</span>
           <span
             className="logo-sub-text-button"
-            onClick={() => navigate('/dashboard-admin')}
+            onClick={() => navigate('/dashboard')}
           >
             Admin Panel
           </span>

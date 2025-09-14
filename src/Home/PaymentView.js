@@ -27,6 +27,13 @@ function PaymentAnalytics() {
   });
   const navigate = useNavigate();
 
+   useEffect(() => {
+        const role = sessionStorage.getItem("userRole");
+        if (!role) {
+          navigate("/"); // redirect to login if no session
+        }
+      }, [navigate]);
+
   useEffect(() => {
     fetchPayments();
   }, []);
@@ -95,7 +102,7 @@ function PaymentAnalytics() {
           <div className="logo-circle">PT</div>
           <span className="logo-text">Pulse Fitness</span>
           <span className="logo-arrow">»</span>
-          <span className="logo-sub-text-button" onClick={() => navigate("/dashboard")}>
+          <span className="logo-sub-text-button" onClick={() => navigate("/dashboard-admin")}>
             Admin Panel
           </span>
         </div>

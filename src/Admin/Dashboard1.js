@@ -1,28 +1,30 @@
-import React, { useState,useEffect } from "react";
-import '../Admin/Admin.css';
+import React, { useEffect, useState } from 'react';
+import './Admin.css';
 import { Link, useNavigate } from 'react-router-dom';
 
-const SystemManagement = () => {
+const Dashboard = () => {
   const navigate = useNavigate();
-
-   useEffect(() => {
-        const role = sessionStorage.getItem("userRole");
-        if (!role) {
-          navigate("/"); // redirect to login if no session
-        }
-      }, [navigate]);
+  const [activeMembers, setActiveMembers] = useState(0);
 
   const handleLogout = () => {
     navigate('/');
   };
 
   const services = [
-    { title: "Membership Type Management", icon: "📋", color: "#915F6D" },
-    { title: "Income-Management", icon: "📈", color: "#C3B1E1" },
-    { title: "Attendance-Management", icon: "🔳", color: "#915F6D" },
-    { title: "QR-Code", icon: "🔳", color: "#C3B1E1" },
-
+    { title: "Registration", icon: "📝", color: "#915F6D" },
+    { title: "Members List", icon: "👥", color: "#C3B1E1" },
+    { title: "Payment", icon: "💳", color: "#915F6D" },
+    { title: "Attendance", icon: "⚙️", color: "#C3B1E1" },
+    { title: "System", icon: "⚙️", color: "#915F6D" },
   ];
+
+  // Fetch from backend
+  useEffect(() => {
+    fetch("https://gym-invoice.onrender.com/api/members/active/count")
+      .then((res) => res.json())
+      .then((data) => setActiveMembers(data))
+      .catch((err) => console.error("Error fetching active members:", err));
+  }, []);
 
   return (
     <div className="dashboard">
@@ -32,15 +34,15 @@ const SystemManagement = () => {
           <span className="logo-text">Pulse Fitness</span>
           <span className="logo-arrow">»</span>
           <span
-                        className="logo-sub-text-button"
-                        onClick={() => navigate('/dashboard-admin')}
-                      >
-                        Admin Panel
-                      </span>
+            className="logo-sub-text-button"
+            onClick={() => navigate('/dashboard-admin')}
+          >
+            Admin Panel
+          </span>
         </div>
 
         <div className="header-right">
- <div className="project-stats">
+          <div className="project-stats">
 
           </div>
           <button className="logout-button" onClick={handleLogout}>
@@ -50,7 +52,7 @@ const SystemManagement = () => {
       </header>
 
       <section className="services">
-        <h3>System Management</h3>
+        <h3>Select Services</h3>
         <div className="service-grid">
           {services.map((service, index) => (
             <Link
@@ -73,4 +75,4 @@ const SystemManagement = () => {
   );
 };
 
-export default SystemManagement;
+export default Dashboard;

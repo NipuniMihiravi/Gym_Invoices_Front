@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./AppHome.css";
+import "../Home/AppHome.css";
+import { useNavigate } from 'react-router-dom';
 
 function AttendanceScanner() {
   const [scannedId, setScannedId] = useState("");
   const [status, setStatus] = useState(""); // "success", "error", "already"
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+   useEffect(() => {
+          const role = sessionStorage.getItem("userRole");
+          if (!role) {
+            navigate("/"); // redirect to login if no session
+          }
+        }, [navigate]);
 
   const handleScan = async (e) => {
     const value = e.target.value.trim();
@@ -39,6 +48,26 @@ function AttendanceScanner() {
   };
 
   return (
+
+  <div className="dashboard">
+          <header className="header">
+            <div className="logo-wrapper">
+              <div className="logo-circle">PT</div>
+              <span className="logo-text">Pulse Fitness</span>
+              <span className="logo-arrow">»</span>
+              <span
+                className="logo-sub-text-button"
+                onClick={() => navigate('/dashboard')}
+              >
+                Admin Panel
+              </span>
+            </div>
+
+
+          </header>
+
+      <div className="payment-wrapper">
+                <div className="payment-container">
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h2>Scan Your QR Code to Mark Attendance</h2>
 
@@ -85,6 +114,9 @@ function AttendanceScanner() {
         )}
       </div>
     </div>
+    </div>
+         </div>
+     </div>
   );
 }
 

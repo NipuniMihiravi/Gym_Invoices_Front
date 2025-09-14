@@ -1,6 +1,6 @@
 import React, { useState, useEffect  } from "react";
 import axios from "axios";
-import "./AppHome.css";
+import "../Home/AppHome.css";
 import '../Admin/Admin.css';
 import { useNavigate } from 'react-router-dom';
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
@@ -35,12 +35,12 @@ function MemberPaymentManager() {
   const [cameraActive, setCameraActive] = useState(false);
   const [attendanceDates, setAttendanceDates] = useState([]);
 
-   useEffect(() => {
-        const role = sessionStorage.getItem("userRole");
-        if (!role) {
-          navigate("/"); // redirect to login if no session
-        }
-      }, [navigate]);
+    useEffect(() => {
+            const role = sessionStorage.getItem("userRole");
+            if (!role) {
+              navigate("/"); // redirect to login if no session
+            }
+          }, [navigate]);
 
 
   useEffect(() => {
@@ -276,7 +276,7 @@ const getPaidDate = (month) => {
             <span className="logo-arrow">»</span>
             <span
               className="logo-sub-text-button"
-              onClick={() => navigate('/dashboard-admin')}
+              onClick={() => navigate('/dashboard')}
             >
               Admin Panel
             </span>
