@@ -1381,6 +1381,60 @@ button:hover {
   color: black;
 }
 
+.table-action-buttons {
+  display: flex;
+  gap: 8px; /* space between buttons */
+  justify-content: center; /* center buttons in the table cell */
+  align-items: center;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* space between icon and text */
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  color: #fff;
+}
+
+.view-btn {
+  background-color: #4caf50; /* green */
+}
+
+.view-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.edit-btn {
+  background-color: #2196f3; /* blue */
+}
+
+.edit-btn:hover {
+  background-color: #1e88e5;
+  transform: scale(1.05);
+}
+
+.delete-btn {
+  background-color: #f44336; /* red */
+}
+
+.delete-btn:hover {
+  background-color: #e53935;
+  transform: scale(1.05);
+}
+
+/* Optional: make icons aligned nicely */
+.action-btn svg {
+  vertical-align: middle;
+}
+
+
 
 
 
