@@ -14,6 +14,8 @@ function MemberTable() {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [viewForm, setViewForm] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState({ type: "", text: "" });
   const navigate = useNavigate();
   const [membershipTypes, setMembershipTypes] = useState([]);
  const [dialog, setDialog] = useState({
@@ -46,14 +48,25 @@ function MemberTable() {
     }
   };
 
-  const fetchMembers = async () => {
-    try {
-      const res = await axios.get("https://gym-invoice-back.onrender.com/api/members");
-      setMembers(res.data);
-    } catch (error) {
-      console.error("Error fetching members:", error);
-    }
-  };
+
+const fetchMembers = async () => {
+  try {
+    const res = await axios.get("https://gym-invoice-back.onrender.com/api/members");
+
+    const sorted = res.data.sort((a, b) => {
+      const idA = parseInt(a.memberId.replace(/\D/g, "")); // remove non-digits
+      const idB = parseInt(b.memberId.replace(/\D/g, ""));
+      return idB - idA; // highest first
+    });
+
+    setMembers(sorted);
+  } catch (error) {
+    console.error("Error fetching members:", error);
+  }
+};
+
+
+
 
   // Filter logic: match search term in ANY field
   const filteredMembers = members.filter((m) => {
@@ -101,26 +114,57 @@ const handleDelete = (id) => {
 };
 
 
-  const handleEditClick = (member) => {
-    setEditingId(member.id);
-    setEditForm({ ...member });
-  };
+const handleEditClick = (member) => {
+  setEditingId(member.id); // using your custom memberId
+  setEditForm({ ...member });
+    setShowModal(true); // explicitly show modal
+};
+
+
+
+
+
+
+
 const handleUpdate = async () => {
   if (!editForm.membershipStatus || !editForm.membershipType || !editForm.joinedDate) {
-    setDialog({ show: true, type: "warning", message: "⚠️ Please fill Membership Status, Membership Type, and Joined Date before saving." });
+    setModalMessage({ type: "warning", text: "⚠️ Membership Status, Membership Type, and Joined Date are required." });
     return;
   }
 
   try {
-    await axios.put(`https://gym-invoice-back.onrender.com/api/members/${editingId}`, editForm);
-    setEditingId(null);
+    await axios.put(
+      `https://gym-invoice-back.onrender.com/api/members/${editingId}`,
+      editForm
+    );
+
     fetchMembers();
-    setDialog({ show: true, type: "success", message: "✅ Member updated successfully!" });
+
+    // Show success message
+    setModalMessage({ type: "success", text: "✅ Member updated successfully!" });
+
+    // Close modal after 1.5s
+    setTimeout(() => {
+      setEditingId(null);
+      setEditForm({});
+      setModalMessage({ type: "", text: "" });
+      setShowModal(false); // close modal
+    }, 1500);
+
   } catch (error) {
     console.error("Update failed:", error);
-    setDialog({ show: true, type: "error", message: "❌ Failed to update member. Please try again." });
+    setModalMessage({ type: "error", text: "❌ Failed to update member. Please try again." });
   }
 };
+
+
+
+
+
+
+
+
+
 
   const handleLogout = () => navigate('/');
 
@@ -175,7 +219,7 @@ const handleUpdate = async () => {
               <th>Phone</th>
               <th>Membership Type</th>
               <th>Membership Status</th>
-              <th>Action</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -207,6 +251,13 @@ const handleUpdate = async () => {
       {editingId && (
         <div className="modal1">
           <div className="modal1-content">
+           {modalMessage.text && (
+                  <div className={`modal-message ${modalMessage.type}`}>
+                    {modalMessage.text}
+                  </div>
+                )}
+
+
             <h4>Edit Member Details</h4>
             <div className="modal1-grid">
               <div className="form-row">
@@ -291,7 +342,7 @@ const handleUpdate = async () => {
             </div>
             <div className="form-actions">
               <button onClick={handleUpdate}>Save</button>
-              <button onClick={() => setEditingId(null)}>Cancel</button>
+              <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}>Cancel</button>
             </div>
           </div>
         </div>
@@ -348,9 +399,18 @@ const handleUpdate = async () => {
             </button>
           </>
         ) : (
-          <button onClick={() => setDialog({ ...dialog, show: false })}>
+          <button
+            onClick={() => {
+              if (dialog.onConfirm) {
+                dialog.onConfirm();
+              } else {
+                setDialog({ ...dialog, show: false });
+              }
+            }}
+          >
             OK
           </button>
+
         )}
       </div>
     </div>
