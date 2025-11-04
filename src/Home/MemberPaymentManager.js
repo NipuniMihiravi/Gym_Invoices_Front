@@ -495,7 +495,7 @@ const getPaidDate = (month) => {
                             value={form.date}
                             onChange={handlePaymentChange}
                             required
-                            min={new Date().toISOString().substring(0, 10)}
+
                           />
                           <div className="modal-buttons">
                             <button type="submit">Submit Payment</button>

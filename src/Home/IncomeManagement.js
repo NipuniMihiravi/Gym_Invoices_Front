@@ -17,11 +17,10 @@ const SystemManagement = () => {
   };
 
   const services = [
-    { title: "Membership Type Management", icon: "📋", color: "#915F6D" },
-    { title: "Income-System", icon: "📈", color: "#C3B1E1" },
-    { title: "Member-Management", icon: "📈", color: "#C3B1E1" },
-    { title: "Attendance-Management", icon: "🔳", color: "#915F6D" },
-    { title: "QR-Code", icon: "🔳", color: "#C3B1E1" },
+    { title: "Income-Management", icon: "📋", color: "#915F6D" },
+    { title: "Pending-Payment", icon: "📈", color: "#C3B1E1" },
+    { title: "Expenses-Management", icon: "📈", color: "#C3B1E1" },
+
 
   ];
 

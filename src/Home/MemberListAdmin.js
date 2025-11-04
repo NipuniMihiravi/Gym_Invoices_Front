@@ -240,7 +240,9 @@ const handleUpdate = async () => {
                        <button onClick={() => handleEditClick(m)} className="action-btn edit-btn">
                          <MdEdit size={20} /> Edit
                        </button>
-
+                       <button onClick={() => handleDelete(m.id)} className="action-btn delete-btn">
+                         <MdDelete size={20} /> Delete
+                       </button>
                      </div>
                    </td>
               </tr>

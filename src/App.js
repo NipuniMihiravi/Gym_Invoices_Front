@@ -5,8 +5,10 @@ import QRPage from "./Home/QRPage";
 import RegistrationForm from "./Home/RegistrationForm";
 import RegistrationForm2 from "./Home/RegistrationForm2";
 import MemberList from "./Home/MemberList";
+import MemberListAdmin from "./Home/MemberListAdmin";
 import MemberShipType from "./Home/MemberShipType";
 import SystemManagement from "./Home/SystemManagement";
+import PendingPayment from "./Home/PendingPayment";
 
 import AdminPanel from "./Admin/AdminPanel";
 import DashBoard from "./Admin/DashBoard";
@@ -17,6 +19,7 @@ import PaymentView from "./Home/PaymentView";
 import Attendance from "./Home/Attendance";
 import Login from "./Home/Login";
 import AttendanceManagement from "./Home/AttendanceManagement";
+import IncomeManagement from "./Home/IncomeManagement";
 
 import AttendanceAssis from "./Assistant/AttendanceAssis";
 import MemberPaymentManagerAssis from "./Assistant/MemberPaymentManagerAssis";
@@ -40,6 +43,9 @@ function App() {
           <Route path="/service/QR-code" element={<QRPage />} />
           <Route path="/service/members-list" element={<MemberList />} />
           <Route path="/service/attendance-management" element={<AttendanceManagement />} />
+          <Route path="/service/member-management" element={<MemberListAdmin />} />
+          <Route path="/service/income-system" element={<IncomeManagement />} />
+          <Route path="/service/pending-payment" element={<PendingPayment />} />
 
           <Route path="/assis/members-list" element={<MemberListAssis />} />
           <Route path="/assis/payment" element={<MemberPaymentManagerAssis />} />

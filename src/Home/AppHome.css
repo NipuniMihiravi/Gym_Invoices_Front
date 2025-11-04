@@ -264,7 +264,7 @@ select:focus {
 
 .payment-container {
   padding: 20px;
-  max-width: 1200px;
+  max-width: 1600px;
   width: 100%;
   font-family: Arial, sans-serif;
   background: white;
@@ -542,7 +542,7 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+   z-index: 5000 !important;
   padding: 10px; /* Add padding for small devices */
   box-sizing: border-box;
 }
@@ -1042,7 +1042,7 @@ th {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Ensure it is on top of modal */
+    z-index: 999999; /* ✅ way higher than modal */
 }
 
 .dialog-box {
@@ -1483,6 +1483,14 @@ button:hover {
   background-color: #fff3cd;
   color: #856404;
   border: 1px solid #ffeeba;
+}
+.dialog-overlay {
+  position: fixed;
+  z-index: 9999 !important; /* very high */
+}
+
+.modal1 {
+  z-index: 5000 !important;
 }
 
 
