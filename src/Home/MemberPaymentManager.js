@@ -1,18 +1,11 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AppHome.css";
-import '../Admin/Admin.css';
-import { useNavigate } from 'react-router-dom';
+import "../Admin/Admin.css";
+import { useNavigate } from "react-router-dom";
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-
-
-
-const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
 
 const currentYear = new Date().getFullYear();
 
@@ -21,68 +14,52 @@ function MemberPaymentManager() {
   const [memberId, setMemberId] = useState("");
   const [memberData, setMemberData] = useState(null);
   const [payments, setPayments] = useState([]);
-  const [showPaymentForm, setShowPaymentForm] = useState(null);
+  const [viewMode, setViewMode] = useState("payment");
   const [membershipTypes, setMembershipTypes] = useState([]);
   const [form, setForm] = useState({
-    year: currentYear,
-    month: "",
     amount: "",
     date: new Date().toISOString().substring(0, 10),
-    status: "Done",
+    paymentMethod: "",
   });
-  const [dialogMessage, setDialogMessage] = useState(""); // message to show
-  const [showDialog, setShowDialog] = useState(false); // show/hide dialog
+  const [feeAmount, setFeeAmount] = useState(0);
+  const [dueDate, setDueDate] = useState(null);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [attendanceDates, setAttendanceDates] = useState([]);
 
-   useEffect(() => {
-        const role = sessionStorage.getItem("userRole");
-        if (!role) {
-          navigate("/"); // redirect to login if no session
-        }
-      }, [navigate]);
-
-
   useEffect(() => {
+    const role = sessionStorage.getItem("userRole");
+    if (!role) navigate("/");
 
-  const fetchMembershipTypes = async () => {
-        try {
-          const res = await axios.get("https://gym-invoice-back.onrender.com/api/memberships");
-          setMembershipTypes(res.data);
-        } catch (error) {
-          console.error("Error fetching membership types:", error);
-        }
-      };
-      fetchMembershipTypes();
-    }, []);
+    const fetchMembershipTypes = async () => {
+      try {
+        const res = await axios.get(
+          "https://gym-invoice-back.onrender.com/api/memberships"
+        );
+        setMembershipTypes(res.data);
+      } catch (error) {
+        console.error("Error fetching membership types:", error);
+      }
+    };
+    fetchMembershipTypes();
+  }, [navigate]);
 
-useEffect(() => {
-  if (memberId) {
-    document.getElementById("memberIdInput")?.focus();
-  }
-}, [memberId]);
 
-const fetchAttendance = async (id) => {
-  try {
-    const res = await axios.get(
-      `https://gym-invoice-back.onrender.com/api/attendance//member/{memberId}}`
-    );
-    // Convert date strings to Date objects
-    const dates = (res.data || []).map(a => new Date(a.date));
-    setAttendanceDates(dates);
-  } catch (err) {
-    console.error("Error fetching attendance:", err);
-    setAttendanceDates([]);
-  }
-};
 
+      // Fetch payment history
 const handleSearch = async () => {
+  if (!memberId) return;
+
   try {
+    // Fetch member info
     const res = await axios.get(
       `https://gym-invoice-back.onrender.com/api/members/by-member-id/${memberId}`
     );
 
-    if (!res.data || res.data.membershipStatus !== "ACTIVE") {
+    const member = res.data;
+
+    if (!member || member.membershipStatus !== "ACTIVE") {
       setDialogMessage("⚠️ Member is not in ACTIVE status.");
       setShowDialog(true);
       setMemberData(null);
@@ -90,14 +67,60 @@ const handleSearch = async () => {
       return;
     }
 
-    setMemberData(res.data);
+    setMemberData(member);
 
-    const paymentRes = await axios.get(
+    // Fetch payment history
+    const pay = await axios.get(
       `https://gym-invoice-back.onrender.com/api/payments/member/${memberId}`
     );
-    const data = paymentRes.data;
-    setPayments(Array.isArray(data) ? data : []);
+    const paymentHistory = Array.isArray(pay.data) ? pay.data : [];
+    setPayments(paymentHistory);
+
+    // Determine last payment or joined date
+    const lastPaidDate = paymentHistory.length
+      ? new Date(
+          paymentHistory.sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          )[0].date
+        )
+      : new Date(member.joinedDate);
+
+    // Calculate next due date
+    const getNextDueDate = (type, last) => {
+      const next = new Date(last);
+      const plan = {
+        "one-one": 1,
+        "one-two": 1,
+        "three-one": 3,
+        "three-two": 3,
+        "six-one": 6,
+        "six-two": 6,
+        "twelve-one": 12,
+        "twelve-two": 12,
+      };
+      next.setMonth(next.getMonth() + (plan[type] || 1));
+      return next;
+    };
+
+    const calculatedNextDue = getNextDueDate(member.membershipType, lastPaidDate);
+    setDueDate(calculatedNextDue);
+
+    // Get membership fee
+    const selectedType = membershipTypes.find((t) => t.type === member.membershipType);
+    const fee = selectedType ? selectedType.fee : 0;
+    setFeeAmount(fee);
+
+    // Set default form values
+    setForm({
+      amount: fee,
+      date: paymentHistory.length
+        ? calculatedNextDue.toISOString().substring(0, 10)
+        : new Date().toISOString().substring(0, 10),
+      paymentMethod: "",
+    });
+
   } catch (err) {
+    console.error(err);
     setDialogMessage("❌ Error fetching member or payment data.");
     setShowDialog(true);
     setMemberData(null);
@@ -105,436 +128,227 @@ const handleSearch = async () => {
   }
 };
 
- // QR scan callback
-const handleScan = (result) => {
-  if (result) {
-    const qrText = result.text; // get scanned QR text
-
-    // Extract MemberID from QR code text
-    const memberIdFromQR = qrText.split("MemberID:")[1]?.split("\n")[0]?.trim();
-
-    if (memberIdFromQR) {
-      setMemberId(memberIdFromQR);   // update input field
-      handleSearch(memberIdFromQR);  // fetch member details
-    }
-  }
-};
 
 
-
-  const handleError = (err) => {
-    console.error(err);
-  };
-
-
-
-
-
-const joinedDate = memberData ? new Date(memberData.joinedDate) : null;
-
-const isBeforeJoin = (monthIndex) => {
-  if (!joinedDate) return false;
-  const joinYear = new Date(joinedDate).getFullYear();
-  const joinMonth = new Date(joinedDate).getMonth(); // 0 = Jan
-
-  // If current year is joined year → lock months before joined month
-  if (currentYear === joinYear && monthIndex < joinMonth) {
-    return true;
-  }
-  return false;
-};
-
-
-const hasPaid = (month) => {
-  return payments.some(
-    (p) =>
-      p.year === currentYear &&
-      p.month === month &&
-      (p.status === "Done" || p.status === "Regi & Fee") // ✅ include Regi & Fee
-  );
-};
-
-const isAbsent = (month) => {
-  return payments.some(
-    (p) => p.year === currentYear && p.month === month && p.status === "Absent"
-  );
-};
-
-const getPaidDate = (month) => {
-  const payment = payments.find(
-    (p) =>
-      p.year === currentYear &&
-      p.month === month &&
-      (p.status === "Done" || p.status === "Regi & Fee") // ✅ include Regi & Fee
-  );
-  return payment ? payment.date : "-";
-};
-
-
-  const handlePaymentChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handlePaymentSubmit = async (e) => {
-    e.preventDefault();
-
-    const confirmPayment = window.confirm(
-      "⚠️ Are you sure you want to mark this member as Payment Done?"
-    );
-    if (!confirmPayment) return; // ❌ Stop if user clicks Cancel
-
+  const fetchAttendance = async (id) => {
     try {
-      await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
-        ...form,
-        memberId,
-        year: currentYear,
-        status: "Done"
-      });
+      const res = await axios.get(
+        `https://gym-invoice-back.onrender.com/api/attendance/member/${id}`
+      );
+      const dates = (res.data || []).map((a) => new Date(a.date));
+      setAttendanceDates(dates);
+    } catch (err) {
+      console.error("Error fetching attendance:", err);
+      setAttendanceDates([]);
+    }
+  };
+
+  const handleScan = (result) => {
+    if (result) {
+      const memberIdFromQR = result.text.split("MemberID:")[1]?.split("\n")[0]?.trim();
+      if (memberIdFromQR) {
+        setMemberId(memberIdFromQR);
+        handleSearch();
+      }
+    }
+  };
+
+const handlePaymentSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
+      memberId,
+      amount: form.amount || feeAmount,
+      date: new Date(dueDate).toISOString().substring(0, 10),  // Next due date
+      payDate: form.date,                                       // Actual payment date (YYYY-MM-DD)
+      status: "Done",
+      paymentMethod: form.paymentMethod,
+    });
 
       setDialogMessage("✅ Payment saved successfully!");
       setShowDialog(true);
-      setShowPaymentForm(null);
-      handleSearch(); // Refresh payments
+      handleSearch(); // refresh member info
     } catch (err) {
-      console.error("Payment save failed:", err);
-      setDialogMessage("❌ Payment failed. Please try again.");
+      console.error(err);
+      setDialogMessage("❌ Payment failed!");
       setShowDialog(true);
     }
   };
-
-
-
- const handleAbsentStatus = async () => {
-   const confirmAbsent = window.confirm(
-     "⚠️ Are you sure you want to mark this member as Absent?"
-   );
-   if (!confirmAbsent) return; // Stop if user clicks Cancel
-
-   try {
-     await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
-       memberId,
-       year: currentYear,
-       month: showPaymentForm,
-       amount: 0,
-       date: new Date().toISOString().substring(0, 10),
-       status: "Absent"
-     });
-
-     setDialogMessage("✅ Marked as Absent.");
-     setShowDialog(true);
-     setShowPaymentForm(null);
-     handleSearch(); // Refresh payments
-   } catch (err) {
-     console.error("Failed to mark as Absent:", err);
-     setDialogMessage("❌ Failed to mark as Absent.");
-     setShowDialog(true);
-   }
- };
-
-
-  const handleRegiAndFee = async () => {
-    const confirmRegiFee = window.confirm(
-      "⚠️ Are you sure you want to mark this member as Paid Registration & Fee?"
-    );
-    if (!confirmRegiFee) return; // Stop if user clicks Cancel
-
-    try {
-      await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
-        ...form,
-        memberId,
-        year: currentYear,
-        month: showPaymentForm,
-        amount: form.amount || 0,
-        date: form.date || new Date().toISOString().substring(0, 10),
-        status: "Regi & Fee"
-      });
-
-      setDialogMessage("✅ Marked as Registration & Monthly Fee Done.");
-      setShowDialog(true);
-      setShowPaymentForm(null);
-      handleSearch(); // Refresh payments
-    } catch (err) {
-      console.error("Failed to mark as Regi & Fee:", err);
-      setDialogMessage("❌ Failed to mark as Registration & Fee.");
-      setShowDialog(true);
-    }
-  };
-
-
-  const handleLogout = () => {
-    navigate('/');
-  };
-
-
 
   return (
-      <div className="dashboard">
-        <header className="header">
-          <div className="logo-wrapper">
-            <div className="logo-circle">PT</div>
-            <span className="logo-text">Pulse Fitness</span>
-            <span className="logo-arrow">»</span>
-            <span
-              className="logo-sub-text-button"
-              onClick={() => navigate('/dashboard-admin')}
-            >
-              Admin Panel
-            </span>
+    <div className="dashboard">
+      <header className="header">
+        <div className="logo-wrapper">
+          <div className="logo-circle">PT</div>
+          <span className="logo-text">Pulse Fitness</span>
+          <span className="logo-arrow">»</span>
+          <span className="logo-sub-text-button" onClick={() => navigate("/dashboard-admin")}>
+            Admin Panel
+          </span>
+        </div>
+      </header>
+
+      <div className="payment-wrapper">
+        <div className="payment-container">
+          <h2>Manage Member Payments</h2>
+
+          <div className="search-box">
+            <input
+              type="text"
+              id="memberIdInput"
+              placeholder="Enter Member ID"
+              value={memberId}
+              onChange={(e) => setMemberId(e.target.value)}
+            />
+            <button onClick={handleSearch}>Search</button>
           </div>
 
-          <div className="header-right">
-            <div className="project-stats">
-
-            </div>
-
-          </div>
-        </header>
-
-        <div className="payment-wrapper">
-          <div className="payment-container">
-            <h2>Manage Member Payments</h2>
-
-            <div className="search-box">
-              <input
-                type="text"
-                placeholder="Enter Member ID"
-                value={memberId}
-                onChange={(e) => setMemberId(e.target.value)}
-              />
-              <button onClick={handleSearch}>Search</button>
-            </div>
-
-            <div className="qr-reader-container">
-                            <h4>Scan QR Code to Search</h4>
-
-                            {/* Toggle Camera Button */}
-                            <button
-                              className="scan-toggle-button"
-                              onClick={() => setCameraActive((prev) => !prev)}
-                            >
-                              {cameraActive ? "Stop Camera" : "Start Camera"}
-                            </button>
-
-                            {/* Camera Preview */}
-                            {cameraActive && (
-                              <div style={{ width: "300px", marginTop: "10px" }}>
-                                <BarcodeScannerComponent
-                                  width={300}
-                                  height={300}
-                                  onUpdate={(err, result) => {
-                                    if (result) {
-                                      handleScan(result); // pass the full result object
-                                    }
-                                    if (err) {
-                                      handleError(err);
-                                    }
-                                  }}
-                                />
-                              </div>
-                            )}
-                          </div>
-
-            {memberData && (
-              <>
-                <table className="member-info-table">
-                  <tbody>
-                    <tr>
-                      <td colSpan="2" className="member-name-row">
-                        <span className="member-name">{memberData.name}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="member-details-row2">
-                        <strong>Email:</strong> {memberData.username}
-                      </td>
-                      <td className="member-details-row2">
-                        <strong>Phone No:</strong> {memberData.phone}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="member-details-row2">
-                        <strong>Membership Type:</strong> {memberData.membershipType}
-                      </td>
-                      <td className="member-details-row2">
-                        <strong>Joined Date:</strong> {memberData.joinedDate}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="member-details-row2">
-                        <strong>Fees (Rs.):</strong>
-                        {(() => {
-                          const selectedType = membershipTypes.find(
-                            (type) => type.type === memberData.membershipType
-                          );
-                          return selectedType ? selectedType.fee : "N/A";
-                        })()}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <div className="attendance-calendar">
-                    <h3>Attendance Calendar</h3>
-                    <Calendar
-                      tileClassName={({ date, view }) => {
-                        if (view === "month") {
-                          const found = attendanceDates.find(
-                            (d) =>
-                              d.getFullYear() === date.getFullYear() &&
-                              d.getMonth() === date.getMonth() &&
-                              d.getDate() === date.getDate()
-                          );
-                          if (found) return "attended-day"; // CSS class for attended days
-                        }
-                      }}
-                    />
-                  </div>
-
-                <div className="payment-table">
-                  <h3>{currentYear} Monthly Payments</h3>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Month</th>
-                        <th>Status</th>
-                        <th>Paid Date</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {months.map((month, index) => {
-                        const paid = hasPaid(month);
-                        const absent = isAbsent(month);
-                        const beforeJoin = isBeforeJoin(index);
-
-                        return (
-                          <tr key={index}>
-                            <td>{month}</td>
-                            <td>
-                              {beforeJoin ? (
-                                <span className="locked-status">Locked</span>
-                              ) : absent ? (
-                                <span className="absent-status">Absent</span>
-                              ) : paid ? (
-                                <span className="paid-status">
-                                  {payments.find(
-                                    (p) =>
-                                      p.year === currentYear &&
-                                      p.month === month &&
-                                      p.status === "Regi & Fee"
-                                  )
-                                    ? "Regi & Fee"
-                                    : "Done"}
-                                </span>
-                              ) : (
-                                <span className="not-paid-status">Pending</span>
-                              )}
-                            </td>
-
-                            <td>{beforeJoin ? "-" : getPaidDate(month)}</td>
-                            <td>
-                              {beforeJoin ? (
-                                <button className="done-button" disabled>
-                                  Locked
-                                </button>
-                              ) : paid || absent ? (
-                                <button className="done-button" disabled>
-                                  {absent
-                                    ? "Absent"
-                                    : payments.find(
-                                        (p) =>
-                                          p.year === currentYear &&
-                                          p.month === month &&
-                                          p.status === "Regi & Fee"
-                                      )
-                                    ? "Regi & Fee"
-                                    : "Done"}
-                                </button>
-                              ) : (
-                                <button
-                                  className="pay-button"
-                                  onClick={() => {
-                                    setShowPaymentForm(month);
-                                    setForm({
-                                      year: currentYear,
-                                      month: month,
-                                      amount: "",
-                                      date: new Date().toISOString().substring(0, 10),
-                                      status: "Done",
-                                    });
-                                  }}
-                                >
-                                  Make Payment
-                                </button>
-                              )}
-
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-
-                  {showPaymentForm && (
-                    <div className="modal-overlay">
-                      <div className="modal-content">
-                        <form className="payment-form" onSubmit={handlePaymentSubmit}>
-                          <h4>Make Payment - {showPaymentForm}</h4>
-                          <input
-                            type="number"
-                            name="amount"
-                            placeholder="Amount"
-                            value={form.amount}
-                            onChange={handlePaymentChange}
-                            required
-                            min={0}
-                          />
-                          <input
-                            type="date"
-                            name="date"
-                            value={form.date}
-                            onChange={handlePaymentChange}
-                            required
-
-                          />
-                          <div className="modal-buttons">
-                            <button type="submit">Submit Payment</button>
-                            <button type="button" onClick={handleAbsentStatus}>
-                              Mark as Absent
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleRegiAndFee}
-                            >
-                              Regi and Fee
-                            </button>
-
-                            <button type="button" onClick={() => setShowPaymentForm(null)}>
-                              Cancel
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </>
+          <div className="qr-reader-container">
+            <h4>Scan QR Code to Search</h4>
+            <button className="scan-toggle-button" onClick={() => setCameraActive(!cameraActive)}>
+              {cameraActive ? "Stop Camera" : "Start Camera"}
+            </button>
+            {cameraActive && (
+              <div style={{ width: "300px", marginTop: "10px" }}>
+                <BarcodeScannerComponent
+                  width={300}
+                  height={300}
+                  onUpdate={(err, result) => {
+                    if (result) handleScan(result);
+                    if (err) console.error(err);
+                  }}
+                />
+              </div>
             )}
           </div>
+
+          {memberData && (
+            <>
+              <table className="member-info-table">
+                <tbody>
+                  <tr>
+                    <td colSpan="2" className="member-name-row">
+                      <span className="member-name">{memberData.name}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Email:</strong> {memberData.username}
+                    </td>
+                    <td>
+                      <strong>Phone No:</strong> {memberData.phone}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Membership Type:</strong> {memberData.membershipType}
+                    </td>
+                    <td>
+                      <strong>Joined Date:</strong> {new Date(memberData.joinedDate).toLocaleDateString()}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Fee (Rs.):</strong> {feeAmount}
+                    </td>
+                   <td>
+                     <strong>Next Due:</strong>{" "}
+                     {dueDate ? new Date(dueDate).toLocaleDateString() : "-"}
+                   </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              {/* Toggle Buttons */}
+              <div className="toggle-buttons" style={{ margin: "15px 0" }}>
+                <button
+                  className={`toggle-button ${viewMode === "payment" ? "active" : ""}`}
+                  onClick={() => setViewMode("payment")}
+                >
+                  Once Payment
+                </button>
+                <button
+                  className={`toggle-button ${viewMode === "attendance" ? "active" : ""}`}
+                  onClick={() => setViewMode("attendance")}
+                >
+                  Attendance View
+                </button>
+              </div>
+
+              {/* Conditionally render sections based on viewMode */}
+              {viewMode === "payment" && (
+                <div className="payment-card">
+                  <form onSubmit={handlePaymentSubmit}>
+                    <label>Amount (Rs.)</label>
+                    <input
+                      type="number"
+                      value={form.amount}
+                      onChange={(e) => setForm({ ...form, amount: e.target.value })}
+                      required
+                    />
+
+                    <label>Payment Date</label>
+                    <input
+                      type="date"
+                      value={form.date}
+                      onChange={(e) => setForm({ ...form, date: e.target.value })}
+                      required
+                    />
+
+                    <label>Payment Method</label>
+                    <select
+                      value={form.paymentMethod}
+                      onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
+                      required
+                    >
+                      <option value="">Select Method</option>
+                      <option value="Cash">Cash</option>
+                      <option value="Card">Card</option>
+                      <option value="Bank">Bank</option>
+                      <option value="Online">Online</option>
+                    </select>
+
+                    <button className="pay-button" type="submit">
+                      ✅ Submit Payment
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {viewMode === "attendance" && (
+                <div className="attendance-calendar">
+                  <h3>Attendance Calendar</h3>
+                  <Calendar
+                    tileClassName={({ date, view }) => {
+                      if (view === "month") {
+                        const found = attendanceDates.find(
+                          (d) =>
+                            d.getFullYear() === date.getFullYear() &&
+                            d.getMonth() === date.getMonth() &&
+                            d.getDate() === date.getDate()
+                        );
+                        if (found) return "attended-day"; // CSS class for attended days
+                      }
+                    }}
+                  />
+                </div>
+              )}
+
+            </>
+          )}
         </div>
-        {showDialog && (
-          <div className="dialog-overlay">
-            <div className="dialog-box">
-              <p>{dialogMessage}</p>
-              <button onClick={() => setShowDialog(false)}>OK</button>
-            </div>
-          </div>
-        )}
-
       </div>
-    );
-  }
 
-  export default MemberPaymentManager;
+      {showDialog && (
+        <div className="dialog-overlay">
+          <div className="dialog-box">
+            <p>{dialogMessage}</p>
+            <button onClick={() => setShowDialog(false)}>OK</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
-
+export default MemberPaymentManager;

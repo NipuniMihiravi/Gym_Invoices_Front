@@ -37,90 +37,144 @@ body {
 }
 
 .register-form {
-  width:100%;
-  max-width: 450px;
-  margin: 20px auto;
-  padding: 20px 40px;
-  background: #ffffff;
-  border: 4px solid #008080; /* Teal border */
+  width: 100%;
+  max-width: 950px;
+  margin: 25px auto;
+  padding: 30px 45px;
+  background: #fff;
+  border: 3px solid #008080;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: auto;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
 }
 
+.register-form2 {
+  width: 100%;
+  max-width: 600px;
+  margin: 25px auto;
+  padding: 30px 45px;
+  background: #fff;
+  border: 3px solid #008080;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
 
 .register-form h2 {
   text-align: center;
-  margin-bottom: 45px;
-  color: #008080;
-  width: 100%;
-  font-size:25px;
+  margin-bottom: 30px;
+  color: #006d6d;
+  font-size: 26px;
+  font-weight: 700;
 }
 
-.register-form label {
-  display: block;
-  width: 100%;
-  margin-bottom: 6px;
-  font-weight: bold;
-  color: #555;
-  text-align: left;
-  font-size: 15px;
+.section-title {
+  background: #e9f3f3;
+  border-left: 5px solid #008080;
+  padding: 8px 12px;
+  font-weight: 700;
+  margin: 25px 0 12px;
   text-transform: uppercase;
+  font-size: 14px;
 }
 
-.register-form input {
-  width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 20px;
-  border: 3px solid #49796B;
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 15px;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+label input,
+label select {
+  margin-top: 5px;
+  padding: 8px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 15px;
-  transition: 0.2s ease-in-out;
-  box-sizing: border-box;
 }
 
-.register-form input:focus {
-  border-color: #00AD83;
-  outline: none;
-  box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
-}
-select {
+
+input, select {
   width: 100%;
-  padding: 12px 14px;
-  margin-bottom: 20px;
-  border: 2px solid #49796B; /* your border color */
+  padding: 10px;
+  border: 1px solid #aaa;
   border-radius: 6px;
-  font-size: 16px;
-  transition: 0.2s ease-in-out;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
 }
 
-
-select:focus {
-  outline: none;
-  border-color: #00AD83;
-  box-shadow: 0 0 5px rgba(51, 153, 255, 0.5);
+.checkbox-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 10px 0;
 }
-.register-form button {
+
+.checkbox-row label {
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.parq-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0;
+}
+
+.parq-question {
+  flex: 1;
+  font-size: 14px;
+}
+
+.parq-options {
+  display: flex;
+  gap: 20px;
+}
+
+.liability-terms p {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.agree-block {
+  margin: 15px 0;
+  font-weight: 600;
+}
+
+.signature-block {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.submit-btn {
   width: 100%;
-  padding: 12px;
-  background: #008B8B;
-  color: white;
-  font-weight: bold;
+  padding: 13px;
+  background: #007a7a;
+  color: #fff;
   font-size: 16px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
+  margin-top: 25px;
 }
 
-.register-form button:hover {
-  background: #20B2AA;
+.submit-btn:hover {
+  background:#00a3a3;
 }
+
+
 
 /* Responsive adjustments */
 
@@ -1492,6 +1546,91 @@ button:hover {
 .modal1 {
   z-index: 5000 !important;
 }
+
+/*Toggle Button*/
+/* Container for toggle buttons */
+.toggle-buttons {
+  display: flex;
+  gap: 10px; /* space between buttons */
+  margin-top: 15px;
+}
+
+/* Toggle button style */
+.toggle-button {
+  flex: 1; /* make buttons same width */
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #007bff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.toggle-button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+/* Active button style */
+.toggle-button.active {
+  background-color: #007bff;
+  color: #fff;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+/*New Welcome Registration */
+.welcome-container {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.welcome-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.welcome-subtext {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.big-btn {
+  padding: 15px 30px;
+  width: 280px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: #44b76f;
+  color: white;
+}
+
+.big-btn:hover {
+  background-color: #34a35d;
+}
+
+.big-btn.blue {
+  background-color: #007bff;
+}
+
+.big-btn.blue:hover {
+  background-color: #005fcc;
+}
+
+
+
 
 
 

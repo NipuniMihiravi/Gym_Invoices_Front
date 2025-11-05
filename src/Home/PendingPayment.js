@@ -135,6 +135,7 @@ function DueMembers() {
                 <th>Name</th>
                 <th>Phone</th>
                 <th>Joined</th>
+                <th>Membership Type</th>
                 <th>Last Payment</th>
                 <th>Due Date</th>
                 {viewMode === "attendance" && <th>Late Attendance Days</th>}
@@ -147,6 +148,7 @@ function DueMembers() {
                   <td>{m.name}</td>
                   <td>{m.phone}</td>
                   <td>{formatDate(m.joinedDate)}</td>
+                  <td>{m.membershipType}</td>
                   <td>{formatDate(m.lastPaymentDate)}</td>
                   <td style={{ color: "red", fontWeight: "bold" }}>{formatDate(m.nextDueDate)}</td>
 

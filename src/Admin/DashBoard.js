@@ -11,9 +11,9 @@ const Dashboard = () => {
   };
 
   const services = [
-    { title: "Registration", icon: "📝", color: "#915F6D" },
-    { title: "Members List", icon: "👥", color: "#C3B1E1" },
+    { title: "New Admission", icon: "📝", color: "#915F6D" },
     { title: "Payment", icon: "💳", color: "#915F6D" },
+    { title: "Registered Member Details", icon: "👥", color: "#C3B1E1" },
     { title: "Attendance", icon: "⚙️", color: "#C3B1E1" },
 
   ];

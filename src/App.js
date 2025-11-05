@@ -9,6 +9,8 @@ import MemberListAdmin from "./Home/MemberListAdmin";
 import MemberShipType from "./Home/MemberShipType";
 import SystemManagement from "./Home/SystemManagement";
 import PendingPayment from "./Home/PendingPayment";
+import NewMemberHome from "./Home/NewMemberHome";
+import MemberTable from "./Home/MemberTable";
 
 import AdminPanel from "./Admin/AdminPanel";
 import DashBoard from "./Admin/DashBoard";
@@ -33,7 +35,10 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/service/registration" element={<RegistrationForm />} />
+          <Route path="/service/new-admission" element={<NewMemberHome />} />
+          <Route path="/service/registered-member-details" element={<MemberTable />} />
+          <Route path="/registration" element={<RegistrationForm />} />
+
           <Route path="/service/registration-member" element={<RegistrationForm2 />} />
           <Route path="/service/attendance" element={<Attendance />} />
             <Route path="/service/system" element={<SystemManagement/>} />
@@ -41,7 +46,7 @@ function App() {
           <Route path="/service/membership-type-management" element={<MemberShipType />} />
           <Route path="/service/income-management" element={<PaymentView />} />
           <Route path="/service/QR-code" element={<QRPage />} />
-          <Route path="/service/members-list" element={<MemberList />} />
+          <Route path="/members-list" element={<MemberList />} />
           <Route path="/service/attendance-management" element={<AttendanceManagement />} />
           <Route path="/service/member-management" element={<MemberListAdmin />} />
           <Route path="/service/income-system" element={<IncomeManagement />} />

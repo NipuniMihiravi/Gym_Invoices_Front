@@ -69,11 +69,18 @@ const fetchMembers = async () => {
 
 
   // Filter logic: match search term in ANY field
-  const filteredMembers = members.filter((m) => {
-    return Object.values(m).some((val) =>
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+const filteredMembers = members.filter((m) => {
+
+  // ✅ Show ONLY new members (membershipStatus not set yet)
+  if (m.membershipStatus && m.membershipStatus.trim() !== "") {
+    return false;
+  }
+
+  // ✅ Search filter
+  return Object.values(m).some((val) =>
+    String(val).toLowerCase().includes(searchTerm.toLowerCase())
+  );
+});
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -127,23 +134,50 @@ const handleEditClick = (member) => {
 
 
 const handleUpdate = async () => {
+  // ✅ Required member validations
   if (!editForm.membershipStatus || !editForm.membershipType || !editForm.joinedDate) {
     setModalMessage({ type: "warning", text: "⚠️ Membership Status, Membership Type, and Joined Date are required." });
     return;
   }
 
   try {
+    // 1️⃣ Update Member collection
+    const memberPayload = {
+      ...editForm, // keep all member fields
+      regFee: editForm.regFee || 0,
+      regStatus: editForm.regStatus || "Pending"
+    };
+
     await axios.put(
       `https://gym-invoice-back.onrender.com/api/members/${editingId}`,
-      editForm
+      memberPayload
     );
 
+    // 2️⃣ Update or create Payment document
+    if (editForm.amount || editForm.payDate || editForm.date) {
+      const paymentPayload = {
+        memberId: editForm.memberId,
+        amount: parseFloat(editForm.amount) || 0,
+        payDate: editForm.payDate || editForm.date || null,
+        date: editForm.date || editForm.payDate || null,
+        status: editForm.amount && editForm.payDate ? "Done" : "Pending",
+        paymentMethod: editForm.paymentMethod || "Cash"
+      };
+
+      // Use your backend endpoint to save or update the payment
+      await axios.post(
+        `https://gym-invoice-back.onrender.com/api/payments`,
+        paymentPayload
+      );
+    }
+
+    // Refresh members table
     fetchMembers();
 
-    // Show success message
-    setModalMessage({ type: "success", text: "✅ Member updated successfully!" });
+    // ✅ Show success message
+    setModalMessage({ type: "success", text: "✅ Member & Payment updated successfully!" });
 
-    // Close modal after 1.5s
+    // Close modal after 1.5 seconds
     setTimeout(() => {
       setEditingId(null);
       setEditForm({});
@@ -153,7 +187,7 @@ const handleUpdate = async () => {
 
   } catch (error) {
     console.error("Update failed:", error);
-    setModalMessage({ type: "error", text: "❌ Failed to update member. Please try again." });
+    setModalMessage({ type: "error", text: "❌ Failed to update member or payment. Please try again." });
   }
 };
 
@@ -186,16 +220,15 @@ const handleUpdate = async () => {
           </span>
         </div>
         <div className="header-right">
-         <div className="project-stats">
-
-                  </div>
-
-
-        </div>
+            {/* Back Button */}
+            <button className="back-btn" onClick={() => navigate(-1)}>
+              ⬅ Back
+            </button>
+          </div>
       </header>
 
       <div className="payment-container">
-        <h2>All Registered Members</h2>
+        <h2>New Member Registrations</h2>
 
         {/* 🔍 Search input */}
         <input
@@ -212,6 +245,19 @@ const handleUpdate = async () => {
         />
 
         <table className="payment-table">
+        {filteredMembers.length === 0 ? (
+          <tr>
+            <td colSpan="10" style={{ textAlign: "center", padding: "15px", fontWeight: "bold", color: "#555" }}>
+              ✅ No newly registered members pending to update.
+            </td>
+          </tr>
+        ) : (
+          filteredMembers.map((member) => (
+            <tr key={member.id}>
+              {/* your table columns */}
+            </tr>
+          ))
+        )}
           <thead>
             <tr>
               <th>Member ID</th>
@@ -228,7 +274,7 @@ const handleUpdate = async () => {
               <tr key={m.id}>
                 <td>{m.memberId}</td>
                 <td>{m.name}</td>
-                <td>{m.phone}</td>
+                <td>{m.mobile}</td>
                 <td>{m.joinedDate}</td>
                 <td>{m.membershipType}</td>
                 <td>{m.membershipStatus}</td>
@@ -321,11 +367,11 @@ const handleUpdate = async () => {
 
               <div className="form-row">
                 <label>Address</label>
-                <input name="address" value={editForm.address || ""} onChange={handleEditChange} />
+                <input name="city" value={editForm.city || ""} onChange={handleEditChange} />
               </div>
               <div className="form-row">
                 <label>Occupation</label>
-                <input name="occupation" value={editForm.occupation || ""} onChange={handleEditChange} />
+                <input name="profession" value={editForm.profession || ""} onChange={handleEditChange} />
               </div>
              <div className="form-row">
                <label>Special Description</label>
@@ -337,6 +383,60 @@ const handleUpdate = async () => {
                  cols="50" // Optional: adjust width
                />
              </div>
+
+             {/* 🔹 New Member fields */}
+                     <div className="form-row">
+                       <label>Registration Fee</label>
+                       <input
+                         type="number"
+                         name="regFee"
+                         value={editForm.regFee || ""}
+                         onChange={handleEditChange}
+                       />
+                     </div>
+                     <div className="form-row">
+                       <label>Registration Status</label>
+                       <select
+                         name="regStatus"
+                         value={editForm.regStatus || ""}
+                         onChange={handleEditChange}
+                       >
+                         <option value="">-- Select Status --</option>
+                         <option value="Pending">Pending</option>
+                         <option value="Paid">Paid</option>
+                       </select>
+                     </div>
+
+                     {/* 🔹 Payment fields */}
+                     <div className="form-row">
+                       <label>Payment Amount</label>
+                       <input
+                         type="number"
+                         name="amount"
+                         value={editForm.amount || ""}
+                         onChange={handleEditChange}
+                       />
+                     </div>
+                     <div className="form-row">
+                       <label>Payment Date</label>
+                       <input
+                         type="date"
+                         name="payDate"
+                         value={editForm.payDate || ""}
+                         onChange={handleEditChange}
+                       />
+                     </div>
+                     <div className="form-row">
+                       <label>Due Date</label>
+                       <input
+                         type="date"
+                         name="date"
+                         value={editForm.date || ""}
+                         onChange={handleEditChange}
+                       />
+                     </div>
+
+
 
 
             </div>
@@ -356,15 +456,15 @@ const handleUpdate = async () => {
                 <div className="modal1-grid">
                   <div className="form-row"><label>Member ID</label><input value={viewForm.memberId} disabled /></div>
                   <div className="form-row"><label>Full Name</label><input value={viewForm.name} disabled /></div>
-                  <div className="form-row"><label>Phone</label><input value={viewForm.phone} disabled /></div>
+                  <div className="form-row"><label>Phone</label><input value={viewForm.mobile} disabled /></div>
                   <div className="form-row"><label>Membership Type</label><input value={viewForm.membershipType} disabled /></div>
                   <div className="form-row"><label>Membership Status</label><input value={viewForm.membershipStatus} disabled /></div>
                   <div className="form-row"><label>Joined Date</label><input value={viewForm.joinedDate} disabled /></div>
                   <div className="form-row"><label>Gender</label><input value={viewForm.gender} disabled /></div>
-                  <div className="form-row"><label>Username</label><input value={viewForm.username} disabled /></div>
-                  <div className="form-row"><label>Password</label><input value={viewForm.password} disabled /></div>
-                  <div className="form-row"><label>Address</label><input value={viewForm.address} disabled /></div>
-                  <div className="form-row"><label>Occupation</label><input value={viewForm.occupation} disabled /></div>
+                  <div className="form-row"><label>Username</label><input value={viewForm.email} disabled /></div>
+
+                  <div className="form-row"><label>Address</label><input value={viewForm.residence} disabled /></div>
+                  <div className="form-row"><label>Occupation</label><input value={viewForm.profession} disabled /></div>
                   <div className="form-row"><label>Special Description</label><input value={viewForm.specialDescription} disabled /></div>
 
 
