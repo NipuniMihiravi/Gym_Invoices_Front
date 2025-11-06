@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AppHome.css";
-import "../Admin/Admin.css";
+import '../Admin/Admin.css';
+import Header from "../Home/Header";
 import { useNavigate } from "react-router-dom";
 import {
   LineChart,
@@ -140,20 +141,8 @@ function PaymentAnalytics() {
 
   return (
     <div className="dashboard">
-     <header className="header">
-             <div className="logo-wrapper">
-               <div className="logo-circle">LTF</div>
-                             <span className="logo-text">LIFE TIME FITNESS</span>
-               <span className="logo-arrow">»</span>
 
-             </div>
-             <div className="header-right">
-                 {/* Back Button */}
-                 <button className="back-btn" onClick={() => navigate(-1)}>
-                   ⬅ Back
-                 </button>
-               </div>
-           </header>
+           <Header />
 
       <div className="payment-container">
         <h2>Payment Analytics Dashboard</h2>

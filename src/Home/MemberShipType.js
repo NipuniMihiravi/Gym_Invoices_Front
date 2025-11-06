@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AppHome.css';
 import '../Admin/Admin.css';
+import Header from "../Home/Header";
 import { useNavigate } from 'react-router-dom';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 import axios from 'axios';
@@ -156,29 +157,8 @@ const handleDelete = (id) => {
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span
-            className="logo-sub-text-button"
-            onClick={() => navigate('/dashboard-admin')}
-          >
-            Admin Panel
-          </span>
-        </div>
 
-        <div className="header-right">
-         <div className="project-stats">
-
-                  </div>
-
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </header>
+      <Header />
 
 
         <div className="payment-container">

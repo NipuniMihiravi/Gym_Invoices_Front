@@ -56,6 +56,9 @@
     padding-bottom: 15px;
     text-align: center;
   }
+  .services h3 {
+      font-size: 20px;
+    }
 
   .header-left h2 {
     font-size: 24px;
@@ -73,6 +76,10 @@
     justify-content: center;
     gap: 10px;
   }
+  .services h3 {
+        font-size: 20px;
+      }
+
 
   .price-box {
     width: 100%; /* 1 per row */
@@ -91,6 +98,10 @@
   .header-left h2 {
     font-size: 30px;
   }
+  .services h3 {
+        font-size: 20px;
+      }
+
 
   .project-stats span {
     display: block;
@@ -258,7 +269,7 @@
   padding: 6px 12px;
   border: 3px solid black;
   border-radius: 5px;
-  background-color: white;
+  background: rgba(255, 255, 255, 0.50); /* semi-transparent */
   color: black;
   font-weight: bold;
   cursor: pointer;
@@ -266,7 +277,7 @@
 }
 
 .logo-sub-text-button:hover {
-  background-color: black;
+  background-color: #9e1b32;
   color: white;
 }
 
@@ -274,6 +285,108 @@
   color: black;
   font-size: 35px;
   font-weight: bold;
+}
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.50); /* semi-transparent */
+     backdrop-filter: blur(10px);           /* frosted glass effect */
+     -webkit-backdrop-filter: blur(10px);   /* Safari support */
+     border: 3px solid #8B0000;
+    color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect: glow and move up */
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  background-color: #960018;
+     color:white;
+  box-shadow: 0 0 15px rgba(255, 123, 123, 0.6);
+  transform: translateY(-3px);
+}
+
+/* ✅ Responsive Design */
+
+/* Tablets & smaller screens */
+@media (max-width: 1024px) {
+  .logo-text {
+    font-size: 26px;
+  }
+  .logo-circle {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .logo-wrapper {
+    justify-content: center;
+  }
+
+  /* Center the admin button */
+  .header-right {
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Move back button to right corner */
+  .back-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  .logout-button,
+  .logo-sub-text-button {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+
+  .logo-text {
+    font-size: 22px;
+  }
+}
+
+/* Very Small Devices */
+@media (max-width: 480px) {
+  .logo-text {
+  margin-top:25px;
+    font-size: 20px;
+  }
+  .logo-circle {
+  margin-top:25px;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+  .logo-arrow {
+  display: none;
+  }
+
+  .back-btn {
+    top: 5px;
+    right: 10px;
+    padding: 6px 12px;
+  }
 }
 
 /* 🟡 Medium Screens (Tablets) */

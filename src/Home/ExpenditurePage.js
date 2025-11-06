@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import "./AppHome.css";
+import '../Admin/Admin.css';
+import Header from "../Home/Header";
+import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 
 function ExpenditurePage() {
 const navigate = useNavigate()
+const [editId, setEditId] = useState(null); // track which record is being edited
   const [formData, setFormData] = useState({
     name: "",
     cost: "",
@@ -38,15 +42,6 @@ const navigate = useNavigate()
     setExpenditures(res.data);
   };
 
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await axios.post("https://gym-invoice-back.onrender.com/api/expenditures", formData);
-    setFormData({ name: "", cost: "", date: "", description: "" });
-    fetchExpenditures();
-  };
 
   const handleFilter = async () => {
     const { fromDate, toDate, name } = filters;
@@ -62,22 +57,54 @@ const navigate = useNavigate()
     fetchExpenditures();
   };
 
+// handle form input changes
+const handleChange = (e) =>
+  setFormData({ ...formData, [e.target.name]: e.target.value });
+
+// when clicking Edit button
+const handleEditClick = (exp) => {
+  setFormData({
+    name: exp.name,
+    cost: exp.cost,
+    date: exp.date,
+    description: exp.description,
+  });
+  setEditId(exp.id); // mark editing
+  window.scrollTo({ top: 0, behavior: "smooth" }); // scroll to form
+};
+
+// handle form submit (both add & update)
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (editId) {
+    // ✅ Update existing expenditure
+    await axios.put(
+      `https://gym-invoice-back.onrender.com/api/expenditures/${editId}`,
+      formData
+    );
+  } else {
+    // ✅ Create new expenditure
+    await axios.post("https://gym-invoice-back.onrender.com/api/expenditures", formData);
+  }
+
+  setFormData({ name: "", cost: "", date: "", description: "" });
+  setEditId(null);
+  fetchExpenditures();
+};
+
+// delete record
+const handleDelete = async (id) => {
+  if (window.confirm("Are you sure you want to delete this expenditure?")) {
+    await axios.delete(`https://gym-invoice-back.onrender.com/api/expenditures/${id}`);
+    fetchExpenditures();
+  }
+};
+
   return (
    <div className="dashboard">
-        <header className="header">
-          <div className="logo-wrapper">
-            <div className="logo-circle">LTF</div>
-                          <span className="logo-text">LIFE TIME FITNESS</span>
-            <span className="logo-arrow">»</span>
 
-          </div>
-          <div className="header-right">
-              {/* Back Button */}
-              <button className="back-btn" onClick={() => navigate(-1)}>
-                ⬅ Back
-              </button>
-            </div>
-        </header>
+        <Header />
     <div className="payment-container">
       <h2>💰 Expenditure Management</h2>
 
@@ -115,8 +142,30 @@ const navigate = useNavigate()
           onChange={handleChange}
         />
 
-        <button type="submit" className="btn-add">➕ Add</button>
-      </form>
+       {/* ✅ Button changes automatically */}
+                <button type="submit" className="btn-add">
+                  {editId ? "💾 Update" : "➕ Add"}
+                </button>
+
+                {/* ✅ Show cancel button only in edit mode */}
+                {editId && (
+                  <button
+                    type="button"
+                    className="btn-clear"
+                    onClick={() => {
+                      setEditId(null);
+                      setFormData({
+                        name: "",
+                        cost: "",
+                        date: "",
+                        description: "",
+                      });
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </form>
 
       {/* ---------- Filters ---------- */}
       <div className="filter-section">
@@ -148,11 +197,12 @@ const navigate = useNavigate()
       <table className="payment-table">
         <thead>
           <tr>
-            <th>#</th>
+            <th>No</th>
             <th>Expenditure Name</th>
             <th>Cost (Rs)</th>
             <th>Date</th>
             <th>Description</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -164,6 +214,16 @@ const navigate = useNavigate()
                 <td>{e.cost}</td>
                 <td>{e.date}</td>
                 <td>{e.description}</td>
+                <td>
+                          <div className="table-action-buttons">
+                            <button onClick={() => handleEditClick(e)} className="action-btn edit-btn">
+                              <MdEdit size={20} /> Edit
+                            </button>
+                            <button onClick={() => handleDelete(e.id)} className="action-btn delete-btn">
+                              <MdDelete size={20} /> Delete
+                            </button>
+                          </div>
+                        </td>
               </tr>
             ))
           ) : (

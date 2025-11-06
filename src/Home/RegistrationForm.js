@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AppHome.css";
-import "../Admin/Admin.css";
+import '../Admin/Admin.css';
+import Header from "../Home/Header";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
@@ -85,22 +86,8 @@ export default function RegisterForm() {
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span className="logo-sub-text-button" onClick={() => navigate("/dashboard-admin")}>
-            Admin Panel
-          </span>
-        </div>
-        <div className="header-right">
-                    {/* Back Button */}
-                    <button className="back-btn" onClick={() => navigate(-1)}>
-                      ⬅ Back
-                    </button>
-                  </div>
-      </header>
+
+      <Header />
 
       <div>
         <form className="register-form" onSubmit={handleSubmit}>

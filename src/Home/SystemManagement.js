@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
 import '../Admin/Admin.css';
+import Header from "../Home/Header";
 import { Link, useNavigate } from 'react-router-dom';
 
 const SystemManagement = () => {
@@ -20,7 +21,6 @@ const SystemManagement = () => {
 
     { title: "Finance Report", icon: "📈"},
     { title: "Member Management", icon: "📈"},
-    { title: "Attendance-Management", icon: "🔳" },
     { title: "Membership Management", icon: "📋"},
     { title: "Expenditure Management", icon: "📋"},
     { title: "QR-Code", icon: "🔳" },
@@ -29,23 +29,8 @@ const SystemManagement = () => {
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span
-                        className="logo-sub-text-button"
-                        onClick={() => navigate('/dashboard-admin')}
-                      >
-                        Admin Panel
-                      </span>
-        </div>
 
-        <div className="header-right">
-
-        </div>
-      </header>
+      <Header />
 
       <section className="services">
         <h3>SYSTEM MANAGEMENT</h3>

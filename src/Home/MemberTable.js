@@ -5,6 +5,8 @@ import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
+import '../Admin/Admin.css';
+import Header from "../Home/Header";
 
 export default function Member() {
   const [members, setMembers] = useState([]);
@@ -133,27 +135,8 @@ const printRef = useRef();
   return (
     <div className="container">
 
-      {/* ✅ HEADER */}
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">›</span>
-          <span
-            className="logo-sub-text-button"
-            onClick={() => navigate("/dashboard-admin")}
-          >
-            Admin Panel
-          </span>
-        </div>
 
-        <div className="header-right">
-                    {/* Back Button */}
-                    <button className="back-btn" onClick={() => navigate(-1)}>
-                      ⬅ Back
-                    </button>
-                  </div>
-      </header>
+      <Header />
 
 <div className="payment-container">
         <h2>Registered Member Details</h2>

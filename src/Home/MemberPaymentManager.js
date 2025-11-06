@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AppHome.css";
-import "../Admin/Admin.css";
+import '../Admin/Admin.css';
+import Header from "../Home/Header";
 import { useNavigate } from "react-router-dom";
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
 import Calendar from "react-calendar";
@@ -177,16 +178,8 @@ const handlePaymentSubmit = async (e) => {
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span className="logo-sub-text-button" onClick={() => navigate("/dashboard-admin")}>
-            Admin Panel
-          </span>
-        </div>
-      </header>
+
+      <Header />
 
       <div className="payment-wrapper">
         <div className="payment-container">

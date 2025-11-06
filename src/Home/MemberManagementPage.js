@@ -10,20 +10,22 @@ export default function NewMemberHome() {
   return (
     <div className="dashboard">
 
-      <Header />
+          <Header />
 
       <div className="welcome-container">
-        <h1 className="welcome-title">Welcome to Pulse Fitness</h1>
-        <p className="welcome-subtext">New Member Registration Portal</p>
+        <h1 className="welcome-title">MEMBER DETAILS & ATTENDENCE MANAGEMENT</h1>
+
 
         <div className="button-container">
-          <button className="big-btn" onClick={() => navigate("/registration")}>
-            📝 Register New Member
+          <button className="big-btn" onClick={() => navigate("/member-management")}>
+            📝 Registered Member
           </button>
 
-          <button className="big-btn blue" onClick={() => navigate("/members-list")}>
-            👥 View Pending Registrations
+          <button className="big-btn blue" onClick={() => navigate("/attendance-management")}>
+            📝 Member Attendence
           </button>
+
+
         </div>
       </div>
     </div>

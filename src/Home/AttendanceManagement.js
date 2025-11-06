@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AppHome.css";
-import "../Admin/Admin.css";
+import '../Admin/Admin.css';
+import Header from "../Home/Header";
 
 function AttendanceReport() {
   const navigate = useNavigate();
@@ -42,19 +43,8 @@ function AttendanceReport() {
   return (
     <div className="dashboard">
       {/* Header */}
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span
-            className="logo-sub-text-button"
-            onClick={() => navigate("/dashboard-admin")}
-          >
-            Admin Panel
-          </span>
-        </div>
-      </header>
+
+      <Header />
 
       {/* Container */}
       <div className="payment-wrapper">

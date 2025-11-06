@@ -12,6 +12,8 @@ import PendingPayment from "./Home/PendingPayment";
 import NewMemberHome from "./Home/NewMemberHome";
 import MemberTable from "./Home/MemberTable";
 import ExpenditurePage from "./Home/ExpenditurePage";
+import Header from "./Home/Header";
+import MemberManagementPage from "./Home/MemberManagementPage";
 
 import AdminPanel from "./Admin/AdminPanel";
 import DashBoard from "./Admin/DashBoard";
@@ -48,11 +50,12 @@ function App() {
           <Route path="/income-management" element={<PaymentView />} />
           <Route path="/service/QR-code" element={<QRPage />} />
           <Route path="/members-list" element={<MemberList />} />
-          <Route path="/service/attendance-management" element={<AttendanceManagement />} />
-          <Route path="/service/member-management" element={<MemberListAdmin />} />
+          <Route path="/attendance-management" element={<AttendanceManagement />} />
+          <Route path="/member-management" element={<MemberListAdmin />} />
           <Route path="/service/finance-report" element={<IncomeManagement />} />
           <Route path="/pending-payment" element={<PendingPayment />} />
           <Route path="/service/expenditure-management" element={<ExpenditurePage />} />
+          <Route path="/service/member-management" element={<MemberManagementPage />} />
 
           <Route path="/assis/members-list" element={<MemberListAssis />} />
           <Route path="/assis/payment" element={<MemberPaymentManagerAssis />} />

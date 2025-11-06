@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./AppHome.css";
 import '../Admin/Admin.css';
+import Header from "../Home/Header";
 import { Link, useNavigate } from 'react-router-dom';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 
@@ -173,26 +174,8 @@ const handleUpdate = async () => {
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span
-            className="logo-sub-text-button"
-            onClick={() => navigate('/dashboard-admin')}
-          >
-            Admin Panel
-          </span>
-        </div>
-        <div className="header-right">
-         <div className="project-stats">
 
-                  </div>
-
-
-        </div>
-      </header>
+      <Header />
 
       <div className="payment-container">
         <h2>All Registered Members</h2>

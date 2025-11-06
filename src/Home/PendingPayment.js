@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import '../Admin/Admin.css';
+import Header from "../Home/Header";
 
 function DueMembers() {
   const [members, setMembers] = useState([]);
@@ -71,20 +73,8 @@ function DueMembers() {
   return (
     <div className="dashboard">
       {/* Header */}
-      <header className="header">
-              <div className="logo-wrapper">
-                <div className="logo-circle">LTF</div>
-                              <span className="logo-text">LIFE TIME FITNESS</span>
-                <span className="logo-arrow">»</span>
 
-              </div>
-              <div className="header-right">
-                  {/* Back Button */}
-                  <button className="back-btn" onClick={() => navigate(-1)}>
-                    ⬅ Back
-                  </button>
-                </div>
-            </header>
+            <Header />
 
       <div className="payment-container">
         <h2>Members Attending After Due Date</h2>
