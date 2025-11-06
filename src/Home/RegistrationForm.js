@@ -102,10 +102,15 @@ export default function RegisterForm() {
                   </div>
       </header>
 
-      <div className="form-container">
+      <div>
         <form className="register-form" onSubmit={handleSubmit}>
+        <img
+                          src={`${process.env.PUBLIC_URL}/Images/logo.jpeg`}
+                          alt="Logo"
+                          className="application-logo"
+                        />
 
-          <h2>Membership Application Form</h2>
+          <h2>MEMBERSHIP APPLICATION</h2>
 
           {/* Personal Details */}
          <div className="section-title">Personal Details</div>
@@ -339,7 +344,7 @@ export default function RegisterForm() {
             </label>
           </div>
 
-          <button type="submit" className="submit-btn">Submit</button>
+          <button type="submit" className="submit-btn">SUBMIT THE APPLICATION</button>
         </form>
       </div>
     </div>

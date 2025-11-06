@@ -17,11 +17,13 @@ const SystemManagement = () => {
   };
 
   const services = [
-    { title: "Membership Type Management", icon: "📋", color: "#915F6D" },
-    { title: "Income-System", icon: "📈", color: "#C3B1E1" },
-    { title: "Member-Management", icon: "📈", color: "#C3B1E1" },
-    { title: "Attendance-Management", icon: "🔳", color: "#915F6D" },
-    { title: "QR-Code", icon: "🔳", color: "#C3B1E1" },
+
+    { title: "Finance Report", icon: "📈"},
+    { title: "Member Management", icon: "📈"},
+    { title: "Attendance-Management", icon: "🔳" },
+    { title: "Membership Management", icon: "📋"},
+    { title: "Expenditure Management", icon: "📋"},
+    { title: "QR-Code", icon: "🔳" },
 
   ];
 
@@ -41,17 +43,12 @@ const SystemManagement = () => {
         </div>
 
         <div className="header-right">
- <div className="project-stats">
 
-          </div>
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
-          </button>
         </div>
       </header>
 
       <section className="services">
-        <h3>System Management</h3>
+        <h3>SYSTEM MANAGEMENT</h3>
         <div className="service-grid">
           {services.map((service, index) => (
             <Link

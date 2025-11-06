@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function DueMembers() {
-  const [dueMembers, setDueMembers] = useState([]);
+  const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("due"); // due | attendance
-
   const [filters, setFilters] = useState({
     dueDate: "",
     memberId: "",
@@ -18,18 +16,16 @@ function DueMembers() {
 
   useEffect(() => {
     fetchMembers();
-  }, [viewMode]);
+  }, []);
 
   const fetchMembers = async () => {
     try {
       setLoading(true);
-      const apiURL =
-        viewMode === "due"
-          ? "https://gym-invoice-back.onrender.com/api/members/due-members"
-          : "https://gym-invoice-back.onrender.com/api/members/due-attendance";
-
-      const res = await axios.get(apiURL);
-      setDueMembers(res.data);
+      // Always fetch attendance-after-due members
+      const res = await axios.get(
+        "https://gym-invoice-back.onrender.com/api/members/due-attendance"
+      );
+      setMembers(res.data);
       setFilteredMembers(res.data);
     } catch (error) {
       console.error("Error loading data:", error);
@@ -44,17 +40,24 @@ function DueMembers() {
   };
 
   const handleFilter = () => {
-    let results = [...dueMembers];
+    let results = [...members];
     const { dueDate, memberId, phone } = filters;
 
     if (dueDate) {
-      results = results.filter(m => formatDate(m.nextDueDate) === formatDate(dueDate));
+      const selectedDate = new Date(dueDate);
+      results = results.filter(
+        (m) => new Date(m.nextDueDate) <= selectedDate
+      );
     }
     if (memberId) {
-      results = results.filter(m => m.memberId.toLowerCase().includes(memberId.toLowerCase()));
+      results = results.filter((m) =>
+        m.memberId.toLowerCase().includes(memberId.toLowerCase())
+      );
     }
     if (phone) {
-      results = results.filter(m => (m.phone || "").includes(phone));
+      results = results.filter((m) =>
+        (m.phone || "").includes(phone)
+      );
     }
 
     setFilteredMembers(results);
@@ -62,64 +65,65 @@ function DueMembers() {
 
   const clearFilters = () => {
     setFilters({ dueDate: "", memberId: "", phone: "" });
-    setFilteredMembers(dueMembers);
+    setFilteredMembers(members);
   };
 
   return (
     <div className="dashboard">
       {/* Header */}
       <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span className="logo-sub-text-button"
-            onClick={() => navigate('/dashboard-admin')}>
-            Admin Panel
-          </span>
-        </div>
-      </header>
+              <div className="logo-wrapper">
+                <div className="logo-circle">LTF</div>
+                              <span className="logo-text">LIFE TIME FITNESS</span>
+                <span className="logo-arrow">»</span>
+
+              </div>
+              <div className="header-right">
+                  {/* Back Button */}
+                  <button className="back-btn" onClick={() => navigate(-1)}>
+                    ⬅ Back
+                  </button>
+                </div>
+            </header>
 
       <div className="payment-container">
-        <h2>
-          {viewMode === "due" ? "Members With Pending Payment" : "Members Attending After Due Date"}
-        </h2>
-
-        {/* Toggle buttons */}
-        <div style={{ marginBottom: "10px" }}>
-          <button onClick={() => setViewMode("due")}
-            style={{ background: viewMode === "due" ? "#007bff" : "#aaa", color: "#fff", marginRight: 8 }}>
-            Pending Payments
-          </button>
-
-          <button onClick={() => setViewMode("attendance")}
-            style={{ background: viewMode === "attendance" ? "#007bff" : "#aaa", color: "#fff" }}>
-            Attendance After Due Date
-          </button>
-        </div>
+        <h2>Members Attending After Due Date</h2>
 
         {/* Filters */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
           <input
             type="date"
             value={filters.dueDate}
-            onChange={e => setFilters({ ...filters, dueDate: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, dueDate: e.target.value })
+            }
           />
           <input
             type="text"
             placeholder="Member ID"
             value={filters.memberId}
-            onChange={e => setFilters({ ...filters, memberId: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, memberId: e.target.value })
+            }
           />
           <input
             type="text"
             placeholder="Phone"
             value={filters.phone}
-            onChange={e => setFilters({ ...filters, phone: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, phone: e.target.value })
+            }
           />
 
-          <button onClick={handleFilter}>Filter</button>
-          <button onClick={clearFilters} style={{ background: "gray", color: "white" }}>Clear</button>
+          <div className="filter-buttons">
+            <button className="btn btn-primary" onClick={handleFilter}>
+              Filter
+            </button>
+            <button className="btn btn-secondary" onClick={clearFilters}>
+              Clear
+            </button>
+          </div>
+
         </div>
 
         {/* Table */}
@@ -136,9 +140,9 @@ function DueMembers() {
                 <th>Phone</th>
                 <th>Joined</th>
                 <th>Membership Type</th>
-                <th>Last Payment</th>
+                <th>Last Payment Date</th>
                 <th>Due Date</th>
-                {viewMode === "attendance" && <th>Late Attendance Days</th>}
+                <th>Late Attendance Days</th>
               </tr>
             </thead>
             <tbody>
@@ -146,21 +150,21 @@ function DueMembers() {
                 <tr key={i}>
                   <td>{m.memberId}</td>
                   <td>{m.name}</td>
-                  <td>{m.phone}</td>
-                  <td>{formatDate(m.joinedDate)}</td>
+                  <td>{m.mobile}</td>
+                  <td>{m.joinedDate}</td>
                   <td>{m.membershipType}</td>
                   <td>{formatDate(m.lastPaymentDate)}</td>
-                  <td style={{ color: "red", fontWeight: "bold" }}>{formatDate(m.nextDueDate)}</td>
-
-                  {viewMode === "attendance" && (
-                    <td style={{ color: "orange", fontWeight: "bold" }}>{m.lateDays || 0}</td>
-                  )}
+                  <td style={{ color: "red", fontWeight: "bold" }}>
+                    {formatDate(m.nextDueDate)}
+                  </td>
+                  <td style={{ color: "blue", fontWeight: "bold" }}>
+                    {m.daysOverdue ? Math.floor(m.daysOverdue) : 0}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-
       </div>
     </div>
   );

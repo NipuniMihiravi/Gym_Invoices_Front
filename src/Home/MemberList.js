@@ -209,15 +209,10 @@ const handleUpdate = async () => {
     <div className="dashboard">
       <header className="header">
         <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
+          <div className="logo-circle">LTF</div>
+                        <span className="logo-text">LIFE TIME FITNESS</span>
           <span className="logo-arrow">»</span>
-          <span
-            className="logo-sub-text-button"
-            onClick={() => navigate('/dashboard-admin')}
-          >
-            Admin Panel
-          </span>
+
         </div>
         <div className="header-right">
             {/* Back Button */}

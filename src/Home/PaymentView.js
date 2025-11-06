@@ -14,44 +14,59 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend
+  Legend,
 } from "recharts";
 
 function PaymentAnalytics() {
   const [payments, setPayments] = useState([]);
+  const [members, setMembers] = useState([]);
   const [filters, setFilters] = useState({
     fromDate: "",
     toDate: "",
     memberId: "",
-    status: ""
+    status: "",
   });
   const navigate = useNavigate();
 
-   useEffect(() => {
-        const role = sessionStorage.getItem("userRole");
-        if (!role) {
-          navigate("/"); // redirect to login if no session
-        }
-      }, [navigate]);
+  // ✅ Redirect to login if session missing
+  useEffect(() => {
+    const role = sessionStorage.getItem("userRole");
+    if (!role) navigate("/");
+  }, [navigate]);
 
   useEffect(() => {
     fetchPayments();
+    fetchMembers();
   }, []);
 
   const fetchPayments = async () => {
     try {
-      const res = await axios.get("https://gym-invoice-back.onrender.com/api/payments");
+      const res = await axios.get(
+        "https://gym-invoice-back.onrender.com/api/payments"
+      );
       setPayments(res.data);
     } catch (err) {
       console.error("Failed to fetch payments", err);
     }
   };
 
+  const fetchMembers = async () => {
+    try {
+      const res = await axios.get(
+        "https://gym-invoice-back.onrender.com/api/members"
+      );
+      setMembers(res.data);
+    } catch (err) {
+      console.error("Failed to fetch members", err);
+    }
+  };
+
+  // ✅ Handle filter input change
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  // Filtered payments based on memberId, status and date range
+  // ✅ Apply filters to payments
   const filteredPayments = payments.filter((p) => {
     const paymentDate = new Date(p.date);
     const fromDate = filters.fromDate ? new Date(filters.fromDate) : null;
@@ -59,89 +74,164 @@ function PaymentAnalytics() {
 
     if (fromDate && paymentDate < fromDate) return false;
     if (toDate && paymentDate > toDate) return false;
-    if (filters.memberId && !p.memberId.toLowerCase().includes(filters.memberId.toLowerCase())) return false;
-    if (filters.status && !p.status.toLowerCase().includes(filters.status.toLowerCase())) return false;
+    if (
+      filters.memberId &&
+      !p.memberId.toLowerCase().includes(filters.memberId.toLowerCase())
+    )
+      return false;
+    if (
+      filters.status &&
+      !p.status.toLowerCase().includes(filters.status.toLowerCase())
+    )
+      return false;
 
     return true;
   });
 
-  // Analytics calculations
-  const totalRevenue = filteredPayments.reduce((acc, p) => acc + p.amount, 0);
+  // ✅ Calculate revenues
+  const totalPaymentRevenue = filteredPayments.reduce(
+    (acc, p) => acc + (p.amount || 0),
+    0
+  );
 
-  const paymentsCount = filteredPayments.length;
+  // ✅ Registered member count & reg fee total
+  const registeredMembers = members.filter(
+    (m) => m.regFee && m.regFee > 0
+  );
+  const totalRegFee = registeredMembers.reduce(
+    (acc, m) => acc + (m.regFee || 0),
+    0
+  );
 
-  // Monthly Revenue
-  const monthlyIncome = filteredPayments.reduce((acc, p) => {
-    const monthKey = `${p.year}-${p.month}`;
-    if (!acc[monthKey]) acc[monthKey] = 0;
-    acc[monthKey] += p.amount;
+  // ✅ Add regFee to total revenue
+  const totalRevenue = totalPaymentRevenue + totalRegFee;
+
+  // ✅ Membership-wise revenue
+  const membershipWiseRevenue = filteredPayments.reduce((acc, p) => {
+    if (!acc[p.membershipType]) acc[p.membershipType] = 0;
+    acc[p.membershipType] += p.amount;
     return acc;
   }, {});
 
+  // ✅ Monthly income chart
+  const monthlyIncome = filteredPayments.reduce((acc, p) => {
+    const monthKey = p.date ? p.date.slice(0, 7) : "Unknown";
+    if (!acc[monthKey]) acc[monthKey] = 0;
+    acc[monthKey] += p.amount || 0;
+    return acc;
+  }, {});
   const chartData = Object.entries(monthlyIncome).map(([month, amount]) => ({
     month,
-    amount
+    amount,
   }));
 
-  // Status Pie Data
+  // ✅ Payment status chart
   const statusCounts = filteredPayments.reduce((acc, p) => {
     if (!acc[p.status]) acc[p.status] = 0;
     acc[p.status]++;
     return acc;
   }, {});
-  const pieData = Object.entries(statusCounts).map(([status, value]) => ({ name: status, value }));
+  const pieData = Object.entries(statusCounts).map(([status, value]) => ({
+    name: status,
+    value,
+  }));
 
-  const COLORS = ["#0088FE", "#FF8042", "#00C49F"];
-
-  const handleLogout = () => navigate("/");
+  const COLORS = ["#0088FE", "#FF8042", "#00C49F", "#AA66CC", "#33B5E5"];
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span className="logo-sub-text-button" onClick={() => navigate("/dashboard-admin")}>
-            Admin Panel
-          </span>
-        </div>
-        <div className="header-right">
-          <button className="logout-button" onClick={handleLogout}>Logout</button>
-        </div>
-      </header>
+     <header className="header">
+             <div className="logo-wrapper">
+               <div className="logo-circle">LTF</div>
+                             <span className="logo-text">LIFE TIME FITNESS</span>
+               <span className="logo-arrow">»</span>
+
+             </div>
+             <div className="header-right">
+                 {/* Back Button */}
+                 <button className="back-btn" onClick={() => navigate(-1)}>
+                   ⬅ Back
+                 </button>
+               </div>
+           </header>
 
       <div className="payment-container">
         <h2>Payment Analytics Dashboard</h2>
 
         {/* Filters */}
         <div className="filters">
-          <input type="date" name="fromDate" value={filters.fromDate} onChange={handleFilterChange} />
-          <input type="date" name="toDate" value={filters.toDate} onChange={handleFilterChange} />
-          <input name="memberId" placeholder="Member ID" value={filters.memberId} onChange={handleFilterChange} />
-          <input name="status" placeholder="Status" value={filters.status} onChange={handleFilterChange} />
+          <input
+            type="date"
+            name="fromDate"
+            value={filters.fromDate}
+            onChange={handleFilterChange}
+          />
+          <input
+            type="date"
+            name="toDate"
+            value={filters.toDate}
+            onChange={handleFilterChange}
+          />
+          <input
+            name="memberId"
+            placeholder="Member ID"
+            value={filters.memberId}
+            onChange={handleFilterChange}
+          />
+          <input
+            name="status"
+            placeholder="Status"
+            value={filters.status}
+            onChange={handleFilterChange}
+          />
         </div>
 
         {/* Summary Cards */}
         <div className="analytics-cards">
           <div className="card">
-            <h4>Total Revenue</h4>
+            <h4>Total Revenue (Including Reg Fees)</h4>
             <p>Rs {totalRevenue.toLocaleString()}</p>
           </div>
           <div className="card">
-            <h4>Total Payments</h4>
-            <p>{paymentsCount}</p>
+            <h4>Total Membership Payments</h4>
+            <p>Rs {totalPaymentRevenue.toLocaleString()}</p>
           </div>
           <div className="card">
-            <h4>Average Monthly Income</h4>
-            <p>Rs { (totalRevenue / Object.keys(monthlyIncome).length || 0).toFixed(2) }</p>
+            <h4>Registered Members</h4>
+            <p>{registeredMembers.length}</p>
+          </div>
+          <div className="card">
+            <h4>Total Registration Fees</h4>
+            <p>Rs {totalRegFee.toLocaleString()}</p>
           </div>
         </div>
 
-        {/* Line Chart */}
-        <h3>Monthly Revenue</h3>
+        {/* Membership Wise Revenue */}
+        <h3>Membership Wise Revenue</h3>
+        <table className="payment-table">
+          <thead>
+            <tr>
+              <th>Membership Type</th>
+              <th>Total Revenue (Rs)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(membershipWiseRevenue).map(([type, amount]) => (
+              <tr key={type}>
+                <td>{type}</td>
+                <td>{amount.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Monthly Revenue Line Chart */}
+        <h3>Monthly Revenue Trend</h3>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <LineChart
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" />
             <YAxis />
@@ -150,55 +240,6 @@ function PaymentAnalytics() {
           </LineChart>
         </ResponsiveContainer>
 
-        {/* Pie Chart */}
-        <h3>Payment Status Distribution</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={pieData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              fill="#008080"
-              label
-            >
-              {pieData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Legend />
-            <Tooltip formatter={(value) => `${value} payments`} />
-          </PieChart>
-        </ResponsiveContainer>
-
-        {/* Payments Table */}
-        <h3>Filtered Payments</h3>
-        <table className="payment-table">
-          <thead>
-            <tr>
-              <th>Member ID</th>
-              <th>Year</th>
-              <th>Month</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPayments.map((p) => (
-              <tr key={p.id}>
-                <td>{p.memberId}</td>
-                <td>{p.year}</td>
-                <td>{p.month}</td>
-                <td>{p.amount}</td>
-                <td>{p.date}</td>
-                <td>{p.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
 
       </div>
     </div>

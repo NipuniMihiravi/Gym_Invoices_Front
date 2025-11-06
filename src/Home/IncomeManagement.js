@@ -1,76 +1,46 @@
-import React, { useState,useEffect } from "react";
-import '../Admin/Admin.css';
-import { Link, useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import "./AppHome.css";
+import "../Admin/Admin.css";
 
-const SystemManagement = () => {
+export default function NewMemberHome() {
   const navigate = useNavigate();
-
-   useEffect(() => {
-        const role = sessionStorage.getItem("userRole");
-        if (!role) {
-          navigate("/"); // redirect to login if no session
-        }
-      }, [navigate]);
-
-  const handleLogout = () => {
-    navigate('/');
-  };
-
-  const services = [
-    { title: "Income-Management", icon: "📋", color: "#915F6D" },
-    { title: "Pending-Payment", icon: "📈", color: "#C3B1E1" },
-    { title: "Expenses-Management", icon: "📈", color: "#C3B1E1" },
-
-
-  ];
 
   return (
     <div className="dashboard">
-      <header className="header">
-        <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span
-                        className="logo-sub-text-button"
-                        onClick={() => navigate('/dashboard-admin')}
-                      >
-                        Admin Panel
-                      </span>
-        </div>
+          <header className="header">
+            <div className="logo-wrapper">
+              <div className="logo-circle">LTF</div>
+              <span className="logo-text">LIFE TIME FITNESS</span>
+              <span className="logo-arrow">»</span>
 
-        <div className="header-right">
- <div className="project-stats">
-
-          </div>
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </header>
-
-      <section className="services">
-        <h3>System Management</h3>
-        <div className="service-grid">
-          {services.map((service, index) => (
-            <Link
-              key={index}
-              to={`/service/${encodeURIComponent(service.title.toLowerCase().replace(/ /g, "-"))}`}
-              className="service-card-link"
-            >
-              <div
-                className="service-card"
-                style={{ backgroundColor: service.color }}
-              >
-                <div className="icon">{service.icon}</div>
-                <h4>{service.title}</h4>
+            </div>
+            <div className="header-right">
+                {/* Back Button */}
+                <button className="back-btn" onClick={() => navigate(-1)}>
+                  ⬅ Back
+                </button>
               </div>
-            </Link>
-          ))}
+          </header>
+
+      <div className="welcome-container">
+        <h1 className="welcome-title">FINANCE REPORT ANALYZE</h1>
+
+
+        <div className="button-container">
+          <button className="big-btn" onClick={() => navigate("/income-management")}>
+            📝 Revenue Report
+          </button>
+
+          <button className="big-btn blue" onClick={() => navigate("/members-list")}>
+            📝 Expenditure Report
+          </button>
+
+         <button className="big-btn blue" onClick={() => navigate("/pending-payment")}>
+            📝 Pending Payment Report
+         </button>
         </div>
-      </section>
+      </div>
     </div>
   );
-};
-
-export default SystemManagement;
+}

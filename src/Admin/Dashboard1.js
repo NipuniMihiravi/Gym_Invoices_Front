@@ -11,11 +11,11 @@ const Dashboard = () => {
   };
 
   const services = [
-    { title: "New Admission", icon: "📝", color: "#915F6D" },
-    { title: "Payment", icon: "💳", color: "#915F6D" },
-    { title: "Registered Member Details", icon: "👥", color: "#C3B1E1" },
-    { title: "Attendance", icon: "⚙️", color: "#C3B1E1" },
-    { title: "System", icon: "⚙️", color: "#915F6D" },
+    { title: "New Admission", icon: "📝" },
+    { title: "Payment", icon: "💳"},
+    { title: "Registered Member", icon: "👥" },
+    { title: "Attendance", icon: "⚙️" },
+    { title: "System", icon: "⚙️"},
   ];
 
   // Fetch from backend
@@ -30,21 +30,14 @@ const Dashboard = () => {
     <div className="dashboard">
       <header className="header">
         <div className="logo-wrapper">
-          <div className="logo-circle">PT</div>
-          <span className="logo-text">Pulse Fitness</span>
-          <span className="logo-arrow">»</span>
-          <span
-            className="logo-sub-text-button"
-            onClick={() => navigate('/dashboard-admin')}
-          >
-            Admin Panel
-          </span>
+          <div className="logo-circle">LFP</div>
+          <span className="logo-text">LIFE FITNESS PARTNER</span>
+
+
         </div>
 
         <div className="header-right">
-          <div className="project-stats">
 
-          </div>
           <button className="logout-button" onClick={handleLogout}>
             Logout
           </button>
@@ -52,7 +45,7 @@ const Dashboard = () => {
       </header>
 
       <section className="services">
-        <h3>Select Services</h3>
+        <h3>DASHBOARD - ADMIN PANEL</h3>
         <div className="service-grid">
           {services.map((service, index) => (
             <Link

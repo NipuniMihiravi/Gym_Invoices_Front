@@ -11,6 +11,7 @@ import SystemManagement from "./Home/SystemManagement";
 import PendingPayment from "./Home/PendingPayment";
 import NewMemberHome from "./Home/NewMemberHome";
 import MemberTable from "./Home/MemberTable";
+import ExpenditurePage from "./Home/ExpenditurePage";
 
 import AdminPanel from "./Admin/AdminPanel";
 import DashBoard from "./Admin/DashBoard";
@@ -36,21 +37,22 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/service/new-admission" element={<NewMemberHome />} />
-          <Route path="/service/registered-member-details" element={<MemberTable />} />
+          <Route path="/service/registered-member" element={<MemberTable />} />
           <Route path="/registration" element={<RegistrationForm />} />
 
           <Route path="/service/registration-member" element={<RegistrationForm2 />} />
           <Route path="/service/attendance" element={<Attendance />} />
             <Route path="/service/system" element={<SystemManagement/>} />
           <Route path="/service/payment" element={<MemberPaymentManager />} />
-          <Route path="/service/membership-type-management" element={<MemberShipType />} />
-          <Route path="/service/income-management" element={<PaymentView />} />
+          <Route path="/service/membership-management" element={<MemberShipType />} />
+          <Route path="/income-management" element={<PaymentView />} />
           <Route path="/service/QR-code" element={<QRPage />} />
           <Route path="/members-list" element={<MemberList />} />
           <Route path="/service/attendance-management" element={<AttendanceManagement />} />
           <Route path="/service/member-management" element={<MemberListAdmin />} />
-          <Route path="/service/income-system" element={<IncomeManagement />} />
-          <Route path="/service/pending-payment" element={<PendingPayment />} />
+          <Route path="/service/finance-report" element={<IncomeManagement />} />
+          <Route path="/pending-payment" element={<PendingPayment />} />
+          <Route path="/service/expenditure-management" element={<ExpenditurePage />} />
 
           <Route path="/assis/members-list" element={<MemberListAssis />} />
           <Route path="/assis/payment" element={<MemberPaymentManagerAssis />} />

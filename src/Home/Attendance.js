@@ -64,31 +64,23 @@ function AttendanceScanner() {
 
       <div className="payment-wrapper">
         <div className="payment-container">
-          <div style={{ textAlign: "center", marginTop: "50px" }}>
-            <h2>Scan Your QR Code to Mark Attendance</h2>
 
+            <h2>Mark Member Attendance</h2>
+
+          <div className="search-box">
             <input
               type="text"
               value={scannedId}
               autoFocus
               onChange={(e) => setScannedId(e.target.value)}
               placeholder="Scan or type Member ID here"
-              style={{ padding: "10px", fontSize: "18px", width: "300px" }}
-            />
 
-            <div style={{ marginTop: "10px" }}>
-              <button
-                onClick={markAttendance}
-                style={{
-                  padding: "10px 20px",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                  marginTop: "10px"
-                }}
-              >
-                Enter
-              </button>
-            </div>
+            />
+            <button onClick={markAttendance}>MARK ATTENDANCE</button>
+
+           </div>
+
+
 
             <div style={{ marginTop: "20px" }}>
               {status === "success" && (
@@ -124,7 +116,7 @@ function AttendanceScanner() {
                 </div>
               )}
             </div>
-          </div>
+
         </div>
       </div>
     </div>

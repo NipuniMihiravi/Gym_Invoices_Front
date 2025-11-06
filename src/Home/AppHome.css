@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color:black;
+ background-image: linear-gradient( 135deg, #F05F57 10%, #360940 100%);
 }
 
 
@@ -11,7 +11,7 @@ body {
   max-width: 1600px;
   margin: auto;
   padding: 10px 15px;
-   border: 10px solid #008080;       /* Teal border */
+   border: 10px solid #CD5C5C;       /* Teal border */
       border-radius: 10px;             /* Optional: smooth rounded corners */
       background-color: #f9f9f9;       /* Optional: light background */
 
@@ -36,13 +36,16 @@ body {
   border-radius: 10px;
 }
 
+/*Registration form*/
+
+
 .register-form {
   width: 100%;
   max-width: 950px;
   margin: 25px auto;
   padding: 30px 45px;
   background: #fff;
-  border: 3px solid #008080;
+  border: 3px solid #CD5C5C;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.12);
 }
@@ -53,7 +56,7 @@ body {
   margin: 25px auto;
   padding: 30px 45px;
   background: #fff;
-  border: 3px solid #008080;
+  border: 3px solid black;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.12);
 }
@@ -61,14 +64,22 @@ body {
 .register-form h2 {
   text-align: center;
   margin-bottom: 30px;
-  color: #006d6d;
-  font-size: 26px;
+  color: black;
+  font-size: 25px;
   font-weight: 700;
 }
+.application-logo {
+  display: block;
+  margin: 0 auto 20px auto; /* center the logo and add spacing below */
+  width: 90px;              /* adjust size */
+  height: auto;
+  border-radius: 10px;       /* optional: rounded logo */
+}
+
 
 .section-title {
-  background: #e9f3f3;
-  border-left: 5px solid #008080;
+  background: #F08080;
+  border-left: 50px solid #CD5C5C;
   padding: 8px 12px;
   font-weight: 700;
   margin: 25px 0 12px;
@@ -98,8 +109,9 @@ label {
 label input,
 label select {
   margin-top: 5px;
+
   padding: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #CD5C5C;
   border-radius: 6px;
 }
 
@@ -110,6 +122,22 @@ input, select {
   border: 1px solid #aaa;
   border-radius: 6px;
   font-size: 14px;
+
+}
+
+/* When user clicks or types in input/select */
+input:focus,
+select:focus {
+  border-color: #F08080;                 /* highlight border */
+  box-shadow: 0 0 10px rgba(255, 123, 123, 0.5); /* soft glow */
+  background: rgba(255, 255, 255, 0.3);  /* slightly brighter */
+}
+
+/* Optional — active state when typing */
+input:active,
+select:active {
+  border-color: #F08080;
+  transform: scale(1.01);
 }
 
 .checkbox-row {
@@ -161,17 +189,20 @@ input, select {
 .submit-btn {
   width: 100%;
   padding: 13px;
-  background: #007a7a;
-  color: #fff;
+  background-color:#CD5C5C;
+       border: 3px solid #8B0000;
+      color: black;;
   font-size: 16px;
-  border: none;
+  font-weight:bold;
   border-radius: 6px;
+  letter-spacing:1px;
   cursor: pointer;
   margin-top: 25px;
 }
 
 .submit-btn:hover {
-  background:#00a3a3;
+ background-color: #960018;
+     color:white;
 }
 
 
@@ -199,7 +230,7 @@ input, select {
     margin: 10px;
   }
   .register-form {
-    max-width: 95%;
+    max-width: 90%;
     padding: 10px 20px;
   }
 
@@ -256,7 +287,7 @@ input, select {
   padding: 5px 10px;
   cursor: pointer;
   border: none;
-  background-color: #008080;
+  background-color: black;
   color: white;
   border-radius: 4px;
   transition: background-color 0.3s;
@@ -308,26 +339,26 @@ input, select {
 /*MemberPaymentManager*/
 /* Container */
 .payment-wrapper {
+background-color: rgba(255, 255, 255, 0.50); /* semi-transparent */
+border:none;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: auto;
-  background-color: #f8f8f8;
-  padding: 10px;
+
 }
 
 .payment-container {
   padding: 20px;
   max-width: 1600px;
   width: 100%;
-  font-family: Arial, sans-serif;
-  background: white;
+  background: rgba(255, 255, 255, 0.50); /* semi-transparent */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
 .payment-container h2 {
-  color: #008080;
+  color: black;
   font-size: 25px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -344,7 +375,7 @@ input, select {
 .search-box input {
   padding: 8px;
   font-size: 16px;
-  border: 3px solid #008080;
+  border: 3px solid black important!;
   text-transform: uppercase;
   flex: 1 1 200px;
   min-width: 150px;
@@ -352,11 +383,11 @@ input, select {
 
 .search-box button {
   padding: 12px;
-  background: #008B8B;
-  color: white;
+  background: #F08080;
+  color: black;
   font-weight: bold;
   font-size: 16px;
-  border: none;
+  border: 2px solid #CD5C5C;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s;
@@ -365,8 +396,40 @@ input, select {
 }
 
 .search-box button:hover {
-  background: #20B2AA;
+  background: #9e1b32;
+  color:white;
 }
+
+.attendance-btn-container {
+  margin-top: 10px;
+  text-align: center; /* optional - centers button */
+}
+
+.enter-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #F05F57 10%, #360940 100%);
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Hover effect */
+.enter-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(240, 95, 87, 0.5);
+}
+
+/* Active (when clicked) */
+.enter-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 0 8px rgba(240, 95, 87, 0.6);
+}
+
 
 /* Member info table */
 /* Default (Desktop) */
@@ -383,7 +446,7 @@ input, select {
 }
 
 .member-info-table td strong {
-  color: #008080;
+  color: black;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -495,8 +558,11 @@ input, select {
 .payment-table {
   width: 100%;
   overflow-x: auto;
+  background: rgba(255, 255, 255, 0.50); /* semi-transparent */
 
 }
+
+
 
 .payment-table table {
   width: 100%;
@@ -508,7 +574,7 @@ input, select {
 /* Keep th/td padding responsive */
 .payment-table th,
 .payment-table td {
-  border: 1px solid #81D8D0;
+  border: 1px solid #CD5C5C;
   padding: 10px;
   text-align: left; /* align all text left */
   font-weight: 500;
@@ -516,7 +582,7 @@ input, select {
   word-break: break-word; /* prevent long text from overflowing */
 }
 .payment-table th {
-  border: 1px solid #81D8D0;
+  border: 1px solid #CD5C5C;
   padding: 10px;
   text-align: left; /* align all text left */
   font-weight: 600;
@@ -552,6 +618,12 @@ input, select {
     overflow-x: auto;
     background-color:gray;
   }
+  .payment-container h2 {
+    color: black;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 }
 
 /* Mobile stacking for action buttons */
@@ -570,17 +642,14 @@ input, select {
     font-size: 12px;
     padding: 5px;
   }
+
+  .payment-container h2 {
+    color: black;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -648,7 +717,7 @@ input, select {
   padding: 8px;
   width: 100%;
   font-size: 16px;
-  border: 3px solid #008080;
+  border: 3px solid black;
   text-transform: uppercase;
   box-sizing: border-box;
 }
@@ -759,7 +828,7 @@ input, select {
 
 /* Modal Content */
 .modal-content {
-  background: #008080;
+  background: black;
   padding: 30px;
   border-radius: 10px;
   width: 500px;
@@ -793,7 +862,7 @@ input, select {
   padding: 10px 15px;
   margin: 10px 0;
   font-size: 16px;
-  border: 2px solid #008080;
+  border: 2px solid black;
   border-radius: 8px;
   box-sizing: border-box;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -813,7 +882,7 @@ input, select {
   padding: 10px 15px;
   margin: 10px 0;
   font-size: 16px;
-  border: 2px solid #008080;
+  border: 2px solid black;
   border-radius: 8px;
   box-sizing: border-box;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -919,7 +988,7 @@ input, select {
   margin-right: 10px;
   width: 300px;
   font-size: 16px;
-  border: 3px solid #008080;
+  border: 3px solid black;
   text-transform: uppercase;
   box-sizing: border-box;
 }
@@ -1113,7 +1182,7 @@ th {
   margin-top: 15px;
   padding: 8px 16px;
   border: none;
-  background: #008080;
+  background: black;
   color: white;
   border-radius: 5px;
   cursor: pointer;
@@ -1132,7 +1201,7 @@ th {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #008080;
+  background-color: black;
   color: white;
 }
 
@@ -1146,16 +1215,37 @@ th {
   gap: 15px;
   margin-bottom: 20px;
   margin-top: 30px;
+  flex-wrap: wrap; /* allow wrapping */
 }
 
 .card {
-  background: #008080;
+  background: black;
   color: white;
-  padding: 15px 20px;
+  padding: 10px 10px;
   border-radius: 8px;
   flex: 1;
   text-align: center;
+  min-width: 200px; /* helps maintain a reasonable size */
 }
+
+/* ✅ Mobile responsive: show 2 cards per row */
+@media (max-width: 768px) {
+  .analytics-cards {
+    justify-content: center;
+  }
+
+  .card {
+    flex: 0 0 calc(50% - 10px); /* two per row */
+  }
+}
+
+/* ✅ Extra small screens: one card per row */
+@media (max-width: 480px) {
+  .card {
+    flex: 0 0 100%;
+  }
+}
+
 .filters input {
   margin-right: 10px;
   padding: 5px;
@@ -1169,7 +1259,7 @@ th {
   padding: 15px;
   max-width: 350px;           /* Limit max width */
   background-color: #f5f5f5;  /* Light gray background */
-  border: 2px solid #008080;  /* Teal border */
+  border: 2px solid black;  /* Teal border */
   border-radius: 12px;        /* Rounded corners */
   box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
   text-align: center;
@@ -1179,7 +1269,7 @@ th {
 .qr-reader h4 {
   font-size: 16px;
   font-weight: bold;
-  color: #008080;             /* Teal color */
+  color: black;             /* Teal color */
   margin-bottom: 12px;
 }
 
@@ -1204,7 +1294,7 @@ th {
 }
 
 .scan-toggle-button {
-  background-color: #008080;
+  background-color: black;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -1315,35 +1405,86 @@ th {
   justify-content: center;  /* horizontal center */
   align-items: center;      /* vertical center */
   height: 100vh;            /* full viewport height */
-  background-color: black;
+  background-image: linear-gradient(135deg, #F05F57 10%, #360940 100%);
   padding: 15px;            /* small padding for mobile */
   box-sizing: border-box;
-  border: 5px solid #008080;
 }
 
-
+/* Transparent, frosted glass login form */
 .login-container {
-  background: #915F6D;
+  background: rgba(255, 255, 255, 0.15); /* semi-transparent */
+  backdrop-filter: blur(10px);           /* frosted glass effect */
+  -webkit-backdrop-filter: blur(10px);   /* for Safari */
   padding: 30px;
   border-radius: 15px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 8px 32px rgba(0, 0, 0, 0.25);
   width: 100%;
   max-width: 350px;
   text-align: center;
+  color: #fff;                           /* white text for contrast */
 }
 
-.title {
-  font-size: 30px;
-  font-weight: bold;
+/* Input fields */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 12px 15px;
   margin-bottom: 20px;
-  color: #C3B1E1;
-  letter-spacing:1.75px;
+  border: none;
+ border-radius: 20px;
+   background: rgba(255, 255, 255, 0.10);
+   border: 0.5px solid #8B0000;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
 }
+
+.login-container input::placeholder {
+  color: #f0f0f0;
+}
+
+.login-container input:focus {
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+}
+
+/* Button */
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1.5px solid #8B0000;
+  color: #fff;
+  font-size: 18px;
+  letter-spacing:1.75px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-container button:hover {
+  background-color: #841617;
+}
+
+
+.login-logo {
+  display: block;
+  margin: 0 auto 20px auto; /* center the logo and add spacing below */
+  width: 150px;              /* adjust size */
+  height: auto;
+  border-radius: 10px;       /* optional: rounded logo */
+}
+
+
 
 .login-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
+
 }
 
 .login-form input,
@@ -1356,26 +1497,21 @@ th {
   letter-spacing:1.75px;
   width: 100%; /* Make inputs fill container */
   box-sizing: border-box;
+  width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.25); /* slightly transparent input */
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
 }
 
-button {
-  background: #008080;
-  color: #fff;
-  font-size: 16px;
-  font-weight:bold;
-  letter-spacing:1.75px;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
-  width: 100%; /* Button fills width */
-}
 
-button:hover {
-  background: #006666;
-}
+
+
 
 .message {
   margin-top: 15px;
@@ -1585,49 +1721,267 @@ button:hover {
 .welcome-container {
   text-align: center;
   margin-top: 80px;
+  padding: 0 20px;
 }
 
 .welcome-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: bold;
   margin-bottom: 10px;
+  color: black;
+  text-transform: uppercase;
 }
 
 .welcome-subtext {
-  font-size: 18px;
-  color: #555;
+  font-size: 19px;
+  color: black;
   margin-bottom: 30px;
 }
 
+/* Button container */
 .button-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 
-.big-btn {
-  padding: 15px 30px;
+/* Main button style */
+.big-btn,
+.big-btn.blue {
+  padding: 12px 20px;
   width: 280px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   border: none;
   cursor: pointer;
-  border-radius: 8px;
-  background-color: #44b76f;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.5); /* semi-transparent */
+  backdrop-filter: blur(10px);           /* frosted glass */
+  -webkit-backdrop-filter: blur(10px);   /* Safari support */
+  border: 3px solid #8B0000;
+  color: black;
+  transition: all 0.3s ease;
+}
+
+.big-btn:hover,
+.big-btn.blue:hover {
+  background-color: #960018;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ✅ Responsive layout for small screens */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 22px;
+  }
+
+  .welcome-subtext {
+    font-size: 16px;
+  }
+
+  .button-container {
+    flex-direction: column;   /* stack buttons */
+    gap: 15px;
+  }
+
+  .big-btn,
+  .big-btn.blue {
+    width: 100%;              /* full width buttons */
+    max-width: 350px;
+  }
+}
+
+/* ✅ Extra small screens (phones under 480px) */
+@media (max-width: 480px) {
+  .welcome-container {
+    margin-top: 60px;
+  }
+
+  .big-btn,
+  .big-btn.blue {
+    font-size: 15px;
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+}
+
+
+
+/*nack button css*/
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.50); /* semi-transparent */
+     backdrop-filter: blur(10px);           /* frosted glass effect */
+     -webkit-backdrop-filter: blur(10px);   /* Safari support */
+     border: 3px solid #8B0000;
+    color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect: glow and move up */
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  background-color: #960018;
+     color:white;
+  box-shadow: 0 0 15px rgba(255, 123, 123, 0.6);
+  transform: translateY(-3px);
+}
+
+
+/*pending form buttons*/
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Blue primary button */
+.btn-primary {
+  background: rgba(255, 255, 255, 0.50); /* semi-transparent */
+  border: 3px solid #8B0000;
+  color: black;
+  font-weight:bold;
+}
+
+.btn-primary:hover {
+  background-color: #9e1b32;
   color: white;
 }
 
-.big-btn:hover {
-  background-color: #34a35d;
+/* Gray secondary button */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.50); /* semi-transparent */
+  border: 3px solid #8B0000;
+  color: black;
+  font-weight:bold;
 }
 
-.big-btn.blue {
-  background-color: #007bff;
+.btn-secondary:hover {
+  background-color: #9e1b32;
+  color: white;
+
+}
+.expenditure-container {
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  max-width: 900px;
+  margin: 30px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-.big-btn.blue:hover {
-  background-color: #005fcc;
+.expenditure-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 25px;
 }
+
+.expenditure-form input,
+.expenditure-form select {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.btn-add {
+  background-color: #F08080;
+  color: black;
+  font-weight:bold;
+  border: 1px solid #CD5C5C;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filter-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.btn-add,
+.btn-filter,
+.btn-clear {
+  background-color: #F08080;
+  color: black;
+  font-weight: bold;
+  border: 1px solid #CD5C5C;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* 🌸 Hover Effects */
+.btn-add:hover,
+.btn-filter:hover,
+.btn-clear:hover {
+  background-color:#8B0000;
+   color:white;
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(205, 92, 92, 0.4);
+}
+
+
+
+
+.expenditure-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expenditure-table th,
+.expenditure-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.expenditure-table th {
+  background-color: #333;
+  color: white;
+}
+
+/* ✅ Responsive: stack filters and form */
+@media (max-width: 768px) {
+  .expenditure-form,
+  .filter-section {
+    flex-direction: column;
+  }
+}
+
+
+
+
+
+
+
 
 
 
