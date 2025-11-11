@@ -141,18 +141,19 @@ function DueMembers() {
                   <td>{m.memberId}</td>
                   <td>{m.name}</td>
                   <td>{m.mobile}</td>
-                  <td>{m.joinedDate}</td>
+                  <td>{formatDate(m.joinedDate)}</td> {/* ✅ Apply formatDate */}
                   <td>{m.membershipType}</td>
                   <td>{formatDate(m.lastPaymentDate)}</td>
                   <td style={{ color: "red", fontWeight: "bold" }}>
                     {formatDate(m.nextDueDate)}
                   </td>
                   <td style={{ color: "blue", fontWeight: "bold" }}>
-                    {m.daysOverdue ? Math.floor(m.daysOverdue) : 0}
+                    {m.attendanceAfterDueCount || 0}
                   </td>
                 </tr>
               ))}
             </tbody>
+
           </table>
         )}
       </div>

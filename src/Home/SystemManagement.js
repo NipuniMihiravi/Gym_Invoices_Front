@@ -21,8 +21,7 @@ const SystemManagement = () => {
 
     { title: "Finance Report", icon: "📈"},
     { title: "Member Management", icon: "📈"},
-    { title: "Membership Management", icon: "📋"},
-    { title: "Expenditure Management", icon: "📋"},
+    { title: "Finance Management", icon: "📋"},
     { title: "QR-Code", icon: "🔳" },
 
   ];

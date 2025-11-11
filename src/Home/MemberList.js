@@ -66,9 +66,6 @@ const fetchMembers = async () => {
   }
 };
 
-
-
-
   // Filter logic: match search term in ANY field
 const filteredMembers = members.filter((m) => {
 
@@ -130,10 +127,6 @@ const handleEditClick = (member) => {
 
 
 
-
-
-
-
 const handleUpdate = async () => {
   // ✅ Required member validations
   if (!editForm.membershipStatus || !editForm.membershipType || !editForm.joinedDate) {
@@ -155,15 +148,20 @@ const handleUpdate = async () => {
     );
 
     // 2️⃣ Update or create Payment document
-    if (editForm.amount || editForm.payDate || editForm.date) {
+    if (editForm.amount || editForm.payDate || editForm.date|| editForm.paymentMethod) {
       const paymentPayload = {
-        memberId: editForm.memberId,
-        amount: parseFloat(editForm.amount) || 0,
-        payDate: editForm.payDate || editForm.date || null,
-        date: editForm.date || editForm.payDate || null,
-        status: editForm.amount && editForm.payDate ? "Done" : "Pending",
-        paymentMethod: editForm.paymentMethod || "Cash"
-      };
+         memberId: editForm.memberId,
+         memberName: editForm.name || "",
+         memberEmail: editForm.email || "",
+         joinedDate: editForm.joinedDate || null,
+         membershipType: editForm.membershipType || "",
+         amount: parseFloat(editForm.amount) || 0,
+         payDate: editForm.payDate || editForm.date || null,
+         date: editForm.date || editForm.payDate || null, // due date
+         paymentMethod: editForm.paymentMethod || "Cash",
+         status: editForm.amount && editForm.payDate ? "Done" : "Pending",
+       };
+
 
       // Use your backend endpoint to save or update the payment
       await axios.post(
@@ -317,7 +315,7 @@ const handleUpdate = async () => {
 
              <div className="form-row">
                              <label>Phone</label>
-                             <input name="phone" value={editForm.phone || ""} onChange={handleEditChange} />
+                             <input name="mobile" value={editForm.mobile || ""} onChange={handleEditChange} />
                            </div>
 
              <div className="form-row">
@@ -378,34 +376,7 @@ const handleUpdate = async () => {
                        </select>
                      </div>
 
-                     {/* 🔹 Payment fields */}
-                     <div className="form-row">
-                       <label>Payment Amount</label>
-                       <input
-                         type="number"
-                         name="amount"
-                         value={editForm.amount || ""}
-                         onChange={handleEditChange}
-                       />
-                     </div>
-                     <div className="form-row">
-                       <label>Payment Date</label>
-                       <input
-                         type="date"
-                         name="payDate"
-                         value={editForm.payDate || ""}
-                         onChange={handleEditChange}
-                       />
-                     </div>
-                     <div className="form-row">
-                       <label>Due Date</label>
-                       <input
-                         type="date"
-                         name="date"
-                         value={editForm.date || ""}
-                         onChange={handleEditChange}
-                       />
-                     </div>
+
 
 
 

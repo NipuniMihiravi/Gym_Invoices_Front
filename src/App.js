@@ -14,6 +14,9 @@ import MemberTable from "./Home/MemberTable";
 import ExpenditurePage from "./Home/ExpenditurePage";
 import Header from "./Home/Header";
 import MemberManagementPage from "./Home/MemberManagementPage";
+import FinanceManagementPage from "./Home/FinanceManagementPage";
+import PaymentListAdmin from "./Home/PaymentListAdmin";
+import ExpenditureView from "./Home/ExpenditureView";
 
 import AdminPanel from "./Admin/AdminPanel";
 import DashBoard from "./Admin/DashBoard";
@@ -46,7 +49,7 @@ function App() {
           <Route path="/service/attendance" element={<Attendance />} />
             <Route path="/service/system" element={<SystemManagement/>} />
           <Route path="/service/payment" element={<MemberPaymentManager />} />
-          <Route path="/service/membership-management" element={<MemberShipType />} />
+          <Route path="/membership-management" element={<MemberShipType />} />
           <Route path="/income-management" element={<PaymentView />} />
           <Route path="/service/QR-code" element={<QRPage />} />
           <Route path="/members-list" element={<MemberList />} />
@@ -54,8 +57,11 @@ function App() {
           <Route path="/member-management" element={<MemberListAdmin />} />
           <Route path="/service/finance-report" element={<IncomeManagement />} />
           <Route path="/pending-payment" element={<PendingPayment />} />
-          <Route path="/service/expenditure-management" element={<ExpenditurePage />} />
+          <Route path="/expenditure-management" element={<ExpenditurePage />} />
           <Route path="/service/member-management" element={<MemberManagementPage />} />
+          <Route path="/service/finance-management" element={<FinanceManagementPage />} />
+          <Route path="/payment-management" element={<PaymentListAdmin />} />
+          <Route path="/expenditure-analyze" element={<ExpenditureView />} />
 
           <Route path="/assis/members-list" element={<MemberListAssis />} />
           <Route path="/assis/payment" element={<MemberPaymentManagerAssis />} />

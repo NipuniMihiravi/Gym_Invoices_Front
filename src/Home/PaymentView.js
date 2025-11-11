@@ -145,7 +145,7 @@ function PaymentAnalytics() {
            <Header />
 
       <div className="payment-container">
-        <h2>Payment Analytics Dashboard</h2>
+        <h2>💰Payment Analytics Dashboard</h2>
 
         {/* Filters */}
         <div className="filters">

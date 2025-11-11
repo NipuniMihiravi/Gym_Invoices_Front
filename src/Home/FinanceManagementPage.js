@@ -13,21 +13,21 @@ export default function NewMemberHome() {
           <Header />
 
       <div className="welcome-container">
-        <h1 className="welcome-title">FINANCE REPORT ANALYZE</h1>
+        <h1 className="welcome-title">PAYMENT & EXPENSE MANAGEMENT</h1>
 
 
         <div className="button-container">
-          <button className="big-btn" onClick={() => navigate("/income-management")}>
-            📝 Revenue Report
+          <button className="big-btn" onClick={() => navigate("/payment-management")}>
+            📝 Payments
           </button>
 
-          <button className="big-btn blue" onClick={() => navigate("/expenditure-analyze")}>
-            📝 Expenditure Report
+          <button className="big-btn blue" onClick={() => navigate("/expenditure-management")}>
+            📝 Expense
           </button>
 
-         <button className="big-btn blue" onClick={() => navigate("/pending-payment")}>
-            📝 Pending Payment Report
-         </button>
+
+
+
         </div>
       </div>
     </div>

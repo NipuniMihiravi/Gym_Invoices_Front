@@ -45,7 +45,7 @@ const Dashboard = () => {
       </header>
 
       <section className="services">
-        <h3>DASHBOARD - ADMIN PANEL</h3>
+        <h3>ADMIN DASHBOARD</h3>
         <div className="service-grid">
           {services.map((service, index) => (
             <Link

@@ -21,9 +21,11 @@ export default function NewMemberHome() {
             📝 Registered Member
           </button>
 
-          <button className="big-btn blue" onClick={() => navigate("/attendance-management")}>
-            📝 Member Attendence
-          </button>
+
+
+          <button className="big-btn blue" onClick={() => navigate("/membership-management")}>
+                      📝 Membership Type
+                    </button>
 
 
         </div>

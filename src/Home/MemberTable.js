@@ -182,14 +182,14 @@ const printRef = useRef();
                 <div className="table-action-buttons">
                   <button onClick={() => handleView(m)} className="action-btn view-btn"><MdVisibility size={20} /> View</button>
                   <button onClick={() => handleEdit(m)}className="action-btn edit-btn"> <MdEdit size={20} /> Edit</button>
-                  <button onClick={() => handleDelete(m.id)}className="action-btn delete-btn"> <MdDelete size={20} /> Edit</button>
+
                 </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      )}
+
 
       {/* ✅ MODAL */}
       {selectedMember && (

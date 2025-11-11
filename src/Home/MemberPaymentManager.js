@@ -77,46 +77,55 @@ const handleSearch = async () => {
     const paymentHistory = Array.isArray(pay.data) ? pay.data : [];
     setPayments(paymentHistory);
 
-    // Determine last payment or joined date
-    const lastPaidDate = paymentHistory.length
-      ? new Date(
-          paymentHistory.sort(
-            (a, b) => new Date(b.date) - new Date(a.date)
-          )[0].date
-        )
-      : new Date(member.joinedDate);
+    // ✅ Get last payment date (most recent)
+    if (paymentHistory.length > 0) {
+      const lastPayment = paymentHistory.sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      )[0];
+      setMemberData({ ...member, lastPaymentDate: lastPayment.date });
+    } else {
+      setMemberData({ ...member, lastPaymentDate: null });
+    }
 
-    // Calculate next due date
-    const getNextDueDate = (type, last) => {
-      const next = new Date(last);
-      const plan = {
-        "one-one": 1,
-        "one-two": 1,
-        "three-one": 3,
-        "three-two": 3,
-        "six-one": 6,
-        "six-two": 6,
-        "twelve-one": 12,
-        "twelve-two": 12,
-      };
-      next.setMonth(next.getMonth() + (plan[type] || 1));
-      return next;
+    // Membership duration mapping
+    const plan = {
+      "one-one": 1, "one-two": 1,
+      "three-one": 3, "three-two": 3,
+      "six-one": 6, "six-two": 6,
+      "twelve-one": 12, "twelve-two": 12
     };
 
-    const calculatedNextDue = getNextDueDate(member.membershipType, lastPaidDate);
+    // Determine next due date
+    let calculatedNextDue;
+    if (paymentHistory.length === 0) {
+      // ✅ No payments: use joined date
+      calculatedNextDue = new Date(member.joinedDate);
+    } else {
+      // ✅ Payments exist: last payment + membership duration
+      const lastPaymentDate = new Date(
+        paymentHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0].date
+      );
+      calculatedNextDue = new Date(lastPaymentDate);
+      calculatedNextDue.setMonth(
+        calculatedNextDue.getMonth() + (plan[member.membershipType] || 1)
+      );
+    }
+
     setDueDate(calculatedNextDue);
 
     // Get membership fee
-    const selectedType = membershipTypes.find((t) => t.type === member.membershipType);
+    const selectedType = membershipTypes.find(
+      (t) => t.type === member.membershipType
+    );
     const fee = selectedType ? selectedType.fee : 0;
     setFeeAmount(fee);
 
     // Set default form values
     setForm({
       amount: fee,
-      date: paymentHistory.length
-        ? calculatedNextDue.toISOString().substring(0, 10)
-        : new Date().toISOString().substring(0, 10),
+      date: paymentHistory.length === 0
+        ? new Date().toISOString().substring(0, 10)
+        : calculatedNextDue.toISOString().substring(0, 10),
       paymentMethod: "",
     });
 
@@ -131,18 +140,28 @@ const handleSearch = async () => {
 
 
 
-  const fetchAttendance = async (id) => {
-    try {
-      const res = await axios.get(
-        `https://gym-invoice-back.onrender.com/api/attendance/member/${id}`
-      );
-      const dates = (res.data || []).map((a) => new Date(a.date));
-      setAttendanceDates(dates);
-    } catch (err) {
-      console.error("Error fetching attendance:", err);
-      setAttendanceDates([]);
-    }
-  };
+// Add this inside your component
+useEffect(() => {
+  // Fetch attendance whenever memberData changes
+  if (memberData) {
+    fetchAttendance(memberData.memberId);
+  }
+}, [memberData]);
+
+const fetchAttendance = async (id) => {
+  try {
+    const res = await axios.get(
+      `https://gym-invoice-back.onrender.com/api/attendance/member/${id}`
+    );
+    // Convert attendance dates to Date objects
+    const dates = (res.data || []).map((a) => new Date(a.date));
+    setAttendanceDates(dates);
+  } catch (err) {
+    console.error("Error fetching attendance:", err);
+    setAttendanceDates([]);
+  }
+};
+
 
   const handleScan = (result) => {
     if (result) {
@@ -183,7 +202,7 @@ const handlePaymentSubmit = async (e) => {
 
       <div className="payment-wrapper">
         <div className="payment-container">
-          <h2>Manage Member Payments</h2>
+          <h2>Member Payments</h2>
 
           <div className="search-box">
             <input
@@ -226,10 +245,10 @@ const handlePaymentSubmit = async (e) => {
                   </tr>
                   <tr>
                     <td>
-                      <strong>Email:</strong> {memberData.username}
+                      <strong>Email:</strong> {memberData.email}
                     </td>
                     <td>
-                      <strong>Phone No:</strong> {memberData.phone}
+                      <strong>Phone No:</strong> {memberData.mobile}
                     </td>
                   </tr>
                   <tr>
@@ -244,10 +263,21 @@ const handlePaymentSubmit = async (e) => {
                     <td>
                       <strong>Fee (Rs.):</strong> {feeAmount}
                     </td>
+
                    <td>
-                     <strong>Next Due:</strong>{" "}
-                     {dueDate ? new Date(dueDate).toLocaleDateString() : "-"}
+                   <strong>Last Payment Date:</strong>{" "}
+                                         {memberData.lastPaymentDate
+                                           ? new Date(memberData.lastPaymentDate).toLocaleDateString()
+                                           : "-"}
+
                    </td>
+                  </tr>
+
+                  <tr>
+                    <td colSpan="2">
+                       <strong>Next Due:</strong>{" "}
+                                           {dueDate ? new Date(dueDate).toLocaleDateString() : "-"}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -258,7 +288,7 @@ const handlePaymentSubmit = async (e) => {
                   className={`toggle-button ${viewMode === "payment" ? "active" : ""}`}
                   onClick={() => setViewMode("payment")}
                 >
-                  Once Payment
+                   Payment
                 </button>
                 <button
                   className={`toggle-button ${viewMode === "attendance" ? "active" : ""}`}
@@ -308,24 +338,25 @@ const handlePaymentSubmit = async (e) => {
                 </div>
               )}
 
-              {viewMode === "attendance" && (
-                <div className="attendance-calendar">
-                  <h3>Attendance Calendar</h3>
-                  <Calendar
-                    tileClassName={({ date, view }) => {
-                      if (view === "month") {
-                        const found = attendanceDates.find(
-                          (d) =>
-                            d.getFullYear() === date.getFullYear() &&
-                            d.getMonth() === date.getMonth() &&
-                            d.getDate() === date.getDate()
-                        );
-                        if (found) return "attended-day"; // CSS class for attended days
-                      }
-                    }}
-                  />
-                </div>
-              )}
+             {viewMode === "attendance" && (
+               <div className="attendance-calendar">
+                 <h3>Attendance Calendar</h3>
+                 <Calendar
+                   tileClassName={({ date, view }) => {
+                     if (view === "month") {
+                       const attended = attendanceDates.find(
+                         (d) =>
+                           d.getFullYear() === date.getFullYear() &&
+                           d.getMonth() === date.getMonth() &&
+                           d.getDate() === date.getDate()
+                       );
+                       if (attended) return "attended-day"; // class for attended dates
+                     }
+                   }}
+                 />
+               </div>
+             )}
+
 
             </>
           )}
