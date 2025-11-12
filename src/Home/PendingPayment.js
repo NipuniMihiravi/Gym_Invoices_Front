@@ -80,9 +80,10 @@ function DueMembers() {
         <h2>📋 Due Payments & Due Date</h2>
 
         {/* Filters */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+        <div className="filters">
           <input
             type="date"
+            placeholder="Search By Date"
             value={filters.dueDate}
             onChange={(e) =>
               setFilters({ ...filters, dueDate: e.target.value })

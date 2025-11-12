@@ -117,12 +117,14 @@ function ExpenditureAnalytics() {
         <div className="filters">
           <input
             type="date"
+            placeholder="From"
             name="fromDate"
             value={filters.fromDate}
             onChange={handleFilterChange}
           />
           <input
             type="date"
+            placeholder="To"
             name="toDate"
             value={filters.toDate}
             onChange={handleFilterChange}

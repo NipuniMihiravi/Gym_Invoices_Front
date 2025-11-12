@@ -1163,9 +1163,43 @@ border:none;
 }
 
 /* Focus/active state */
-.payment-container input[type="text"]:focus {
+payment-container. input[type="text"]:focus {
  border: 3px solid #9e1b32;       /* blue border on focus */
 
+}
+
+/* Mobile Devices */
+@media (max-width: 600px) {
+  .payment-container {
+    padding: 10px;
+  }
+
+  .payment-container input[type="text"],
+  .payment-container input[type="date"],
+  .payment-container select {
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 2px solid #444;
+  }
+
+  /* Date input: bigger tap area and text visible */
+  .payment-container input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #fff;
+    font-weight: 600;
+    color: #222;
+    cursor: pointer;
+  }
+}
+
+/* Smallest devices */
+@media (max-width: 400px) {
+  .payment-container input,
+  .payment-container select {
+    font-size: 13px;
+    padding: 9px 10px;
+  }
 }
 
 /* Table Styles */
@@ -2103,6 +2137,7 @@ th {
 .filter-buttons {
   display: flex;
   gap: 10px;
+  margin-top:10px;
 }
 
 .btn {
@@ -2320,6 +2355,8 @@ input:focus:invalid, select:focus:invalid {
   gap: 10px; /* Space between buttons */
   margin-top: 15px;
 }
+
+
 
 
 
