@@ -195,6 +195,30 @@ const handlePaymentSubmit = async (e) => {
     }
   };
 
+  const handleMarkAbsent = async () => {
+    if (!memberId) return;
+
+    try {
+      await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
+        memberId,
+        amount: 0,
+        date: new Date(dueDate).toISOString().substring(0, 10), // For that month
+        payDate: new Date().toISOString().substring(0, 10), // today
+        status: "Absent",
+        paymentMethod: "Absent",
+      });
+
+      setDialogMessage("⚠️ Member marked as Absent for this month!");
+      setShowDialog(true);
+      handleSearch(); // refresh payment table
+    } catch (err) {
+      console.error(err);
+      setDialogMessage("❌ Failed to mark as absent.");
+      setShowDialog(true);
+    }
+  };
+
+
   return (
     <div className="dashboard">
 
@@ -326,14 +350,22 @@ const handlePaymentSubmit = async (e) => {
                     >
                       <option value="">Select Method</option>
                       <option value="Cash">Cash</option>
-                      <option value="Card">Card</option>
-                      <option value="Bank">Bank</option>
                       <option value="Online">Online</option>
                     </select>
 
-                    <button className="pay-button" type="submit">
-                      ✅ Submit Payment
-                    </button>
+                    <div className="payment-buttons">
+                      <button className="pay-button" type="submit">
+                        ✅ Submit Payment
+                      </button>
+                      <button
+                        type="button"
+                        className="pay-button"
+                        onClick={handleMarkAbsent}
+
+                      >
+                        🚫 Mark Absent
+                      </button>
+                    </div>
                   </form>
                 </div>
               )}

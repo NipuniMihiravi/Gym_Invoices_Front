@@ -2314,6 +2314,17 @@ input:focus:invalid, select:focus:invalid {
   background: black;
 }
 
+.payment-buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px; /* Space between buttons */
+  margin-top: 15px;
+}
+
+
+
+
+
 
 
 
