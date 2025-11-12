@@ -67,20 +67,10 @@ function MemberTable() {
 
  // ✅ Filter members
  const filteredMembers = members.filter((m) => {
-   // Skip members that already have a membershipStatus
-   if (m.membershipStatus && m.membershipStatus.trim() !== "") {
-     return false;
-   }
-
-   // Check all search filters
-   return (
-     m.memberId?.toString().toLowerCase().includes(searchId.toLowerCase()) &&
-     m.name?.toLowerCase().includes(searchName.toLowerCase()) &&
-     m.mobile?.toLowerCase().includes(searchPhone.toLowerCase()) &&
-     m.membershipStatus?.toLowerCase().includes(searchStatus.toLowerCase()) &&
-     m.membershipType?.toLowerCase().includes(searchMembershipType.toLowerCase())
-   );
+   // Only include members with empty membershipStatus
+   return !m.membershipStatus || m.membershipStatus.trim() === "";
  });
+
 
 
   // ✅ Handle edit form changes
@@ -163,52 +153,13 @@ function MemberTable() {
       <Header />
 
 
-  {/* ✅ Dialog box placed here, top-level */}
-  {dialog.show && (
-    <div className="dialog-overlay">
-      <div className={`dialog-box ${dialog.type}`}>
-        {dialog.title && <h4>{dialog.title}</h4>}
-        <p>{dialog.message}</p>
-        <div className="dialog-buttons">
-          {dialog.type === "confirm" ? (
-            <>
-              <button
-                onClick={() => {
-                  dialog.onConfirm && dialog.onConfirm();
-                  setDialog({ ...dialog, show: false });
-                }}
-              >
-                Yes
-              </button>
-              <button onClick={() => setDialog({ ...dialog, show: false })}>No</button>
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                dialog.onConfirm ? dialog.onConfirm() : setDialog({ ...dialog, show: false });
-              }}
-            >
-              OK
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  )}
 
 
       <div className="payment-container">
         <h2>📝 Newly Registered Members</h2>
 
-        {/* 🔍 Search Inputs */}
-        <div className="payment-card">
-        <h2>🔍 Search Details</h2>
-          <input placeholder="Search by Member ID" value={searchId} onChange={(e) => setSearchId(e.target.value)} />
-          <input placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
-          <input placeholder="Search by Phone" value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />
-          <input placeholder="Search by Status" value={searchStatus} onChange={(e) => setSearchStatus(e.target.value)} />
-          <input placeholder="Search by Membership Type" value={searchMembershipType} onChange={(e) => setSearchMembershipType(e.target.value)} />
-        </div>
+
+
 
         {/* ✅ Member Table */}
         <table className="payment-table">

@@ -40,6 +40,35 @@ function PaymentAnalytics() {
     fetchMembers();
   }, []);
 
+  // ✅ Filter members by joined date range
+// ✅ Filter members by joined date range AND active status
+const filteredMembers = members.filter((m) => {
+  if (!m.joinedDate) return false; // skip if no date
+  if (!m.membershipStatus || m.membershipStatus.toLowerCase() !== "active") return false; // only active members
+
+  const joinedDate = new Date(m.joinedDate);
+  const fromDate = filters.fromDate ? new Date(filters.fromDate) : null;
+  const toDate = filters.toDate ? new Date(filters.toDate) : null;
+
+  if (fromDate && joinedDate < fromDate) return false;
+  if (toDate && joinedDate > toDate) return false;
+
+  return true;
+});
+
+
+  // ✅ Membership count based on filtered members
+  const membershipCounts = filteredMembers.reduce((acc, m) => {
+    if (!m.membershipType) return acc;
+    if (!acc[m.membershipType]) acc[m.membershipType] = 0;
+    acc[m.membershipType]++;
+    return acc;
+  }, {});
+
+
+
+
+
   const fetchPayments = async () => {
     try {
       const res = await axios.get(
@@ -62,10 +91,14 @@ function PaymentAnalytics() {
     }
   };
 
+
+
   // ✅ Handle filter input change
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
+
+
 
   // ✅ Apply filters to payments
   const filteredPayments = payments.filter((p) => {
@@ -136,6 +169,9 @@ function PaymentAnalytics() {
     name: status,
     value,
   }));
+
+
+
 
   const COLORS = ["#0088FE", "#FF8042", "#00C49F", "#AA66CC", "#33B5E5"];
 
@@ -212,6 +248,26 @@ function PaymentAnalytics() {
             ))}
           </tbody>
         </table>
+
+        {/* Membership Count by Joined Date */}
+        <h3>Membership Count (By Joined Date)</h3>
+        <table className="payment-table">
+          <thead>
+            <tr>
+              <th>Membership Type</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(membershipCounts).map(([type, count]) => (
+              <tr key={type}>
+                <td>{type}</td>
+                <td>{count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
 
         {/* Monthly Revenue Line Chart */}
         <h3>Monthly Revenue Trend</h3>

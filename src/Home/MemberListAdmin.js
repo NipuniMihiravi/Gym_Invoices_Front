@@ -63,14 +63,20 @@ function MemberTable() {
     }
   };
 
-  // ✅ Filter members
-  const filteredMembers = members.filter((m) =>
-    m.memberId?.toLowerCase().includes(searchId.toLowerCase()) &&
-    m.name?.toLowerCase().includes(searchName.toLowerCase()) &&
-    m.mobile?.toLowerCase().includes(searchPhone.toLowerCase()) &&
-    m.membershipStatus?.toLowerCase().includes(searchStatus.toLowerCase()) &&
-    m.membershipType?.toLowerCase().includes(searchMembershipType.toLowerCase())
-  );
+const filteredMembers = members.filter((m) => {
+  const idMatch = (m.memberId || "").toLowerCase().includes(searchId.toLowerCase());
+  const nameMatch = (m.name || "").toLowerCase().includes(searchName.toLowerCase());
+  const phoneMatch = (m.mobile || "").toLowerCase().includes(searchPhone.toLowerCase());
+  const typeMatch = (m.membershipType || "").toLowerCase().includes(searchMembershipType.toLowerCase());
+
+  // Normalize both backend data and user input to lowercase
+  const statusMatch = (m.membershipStatus || "")
+    .toLowerCase()
+    .includes(searchStatus.toLowerCase());
+
+  return idMatch && nameMatch && phoneMatch && typeMatch && statusMatch;
+});
+
 
   // ✅ Handle edit form changes
   const handleEditChange = (e) => {

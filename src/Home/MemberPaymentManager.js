@@ -299,7 +299,7 @@ const handlePaymentSubmit = async (e) => {
 
                   <tr>
                     <td colSpan="2">
-                       <strong>Next Due:</strong>{" "}
+                       <strong>Month to be Pay:</strong>{" "}
                                            {dueDate ? new Date(dueDate).toLocaleDateString() : "-"}
                     </td>
                   </tr>
