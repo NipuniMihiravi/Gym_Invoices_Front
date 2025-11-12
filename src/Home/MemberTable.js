@@ -7,9 +7,16 @@ import { useNavigate } from "react-router-dom";
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 import '../Admin/Admin.css';
 import Header from "../Home/Header";
+import { MdClose } from "react-icons/md";
+
 
 export default function Member() {
   const [members, setMembers] = useState([]);
+  const [searchMembershipType, setSearchMembershipType] = useState("");
+    const [searchId, setSearchId] = useState("");
+    const [searchName, setSearchName] = useState("");
+    const [searchPhone, setSearchPhone] = useState("");
+    const [searchStatus, setSearchStatus] = useState("");
   const [selectedMember, setSelectedMember] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // ✅ new search state
   const [isEdit, setIsEdit] = useState(false);
@@ -35,14 +42,19 @@ const printRef = useRef();
 
 
 
-  const fetchMembers = async () => {
-    try {
-      const res = await axios.get("https://gym-invoice-back.onrender.com/api/members");
-      setMembers(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+ const fetchMembers = async () => {
+     try {
+       const res = await axios.get("https://gym-invoice-back.onrender.com/api/members");
+       const sorted = res.data.sort((a, b) => {
+         const idA = parseInt(a.memberId.replace(/\D/g, ""));
+         const idB = parseInt(b.memberId.replace(/\D/g, ""));
+         return idB - idA;
+       });
+       setMembers(sorted);
+     } catch (error) {
+       console.error("Error fetching members:", error);
+     }
+   };
 
   const handleView = (m) => {
     setSelectedMember(m);
@@ -84,52 +96,210 @@ const printRef = useRef();
     )
   );
 
-  const downloadProfilePDF = async () => {
-    const element = printRef.current;
+const downloadProfilePDF = () => {
+  if (!selectedMember) return;
 
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true
-    });
+  const pdf = new jsPDF("p", "mm", "a4");
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+  // Add Logo
+  const logo = new Image();
+  logo.src = `${process.env.PUBLIC_URL}/Images/logo.jpeg`;
+  logo.crossOrigin = "anonymous";
+  logo.onload = () => {
+    pdf.addImage(logo, "JPEG", 10, 10, 15, 15); // smaller logo
+    let y = 10 + 15 + 10; // start after logo
 
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+// Header
+pdf.setFontSize(16);
+pdf.setFont("helvetica", "bold");
+pdf.text("Membership Application Form", 105, y, { align: "center" });
+y += 15; // more space for Member ID line
 
-    let heightLeft = imgHeight;
-    let position = 0;
+// Add blank line for Member ID
+pdf.setFontSize(12);
+pdf.setFont("helvetica", "normal");
+pdf.text("Member ID: ____________________________", 10, y);
+y += 10; // move y down for next table
 
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+    // Personal Details Table
+        autoTable(pdf, {
+          startY: y,
+          theme: "grid",
+          head: [["Personal Details", ""]],
+          body: [
+            ["Full Name", selectedMember.name || "-"],
+            ["Address", selectedMember.residence || "-"],
+            ["City", selectedMember.city || "-"],
+            ["Land Phone", selectedMember.landPhone || "-"],
+            ["Mobile", selectedMember.mobile || "-"],
+            ["DOB", selectedMember.dob || "-"],
+            ["Gender", selectedMember.gender || "-"],
+            ["Civil Status", selectedMember.civilStatus || "-"],
+            ["ID Type", selectedMember.idType || "-"],
+            ["ID Number", selectedMember.idNumber || "-"],
+            ["Email", selectedMember.email || "-"]
+          ],
+          styles: { fontSize: 10 },
+          headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+        });
 
-    while (heightLeft > 0) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
+        y = pdf.lastAutoTable.finalY + 10;
+
+        // Professional Details Table
+        autoTable(pdf, {
+          startY: y,
+          theme: "grid",
+          head: [["Professional Details", ""]],
+          body: [
+            ["Profession", selectedMember.profession || "-"],
+            ["Office Address", selectedMember.officeAddress || "-"],
+            ["Office Mobile", selectedMember.officeMobile || "-"]
+          ],
+          styles: { fontSize: 10 },
+          headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+        });
+
+        y = pdf.lastAutoTable.finalY + 10;
+
+        // Reasons for Joining
+        autoTable(pdf, {
+          startY: y,
+          theme: "grid",
+          head: [["Reasons for Joining", ""]],
+          body: [
+            ["Selected Reasons", [
+              selectedMember.reasonEndurance && "Endurance",
+              selectedMember.reasonFitness && "Fitness",
+              selectedMember.reasonWeightLoss && "Weight Loss",
+              selectedMember.reasonStrength && "Strength",
+              selectedMember.reasonMuscle && "Muscle"
+            ].filter(Boolean).join(", ")]
+          ],
+          styles: { fontSize: 10 },
+          headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+        });
+
+        y = pdf.lastAutoTable.finalY + 10;
+
+         autoTable(pdf, {
+                  startY: y,
+                  theme: "grid",
+                  head: [["How did you hear about us", ""]],
+                  body: [
+                    ["Selected Reasons", [
+                      selectedMember.newspaper && "Newspaper",
+                      selectedMember.leaflet && "Leaflet",
+                      selectedMember.friend && "Friend",
+                      selectedMember.member && "Existing Member",
+                      selectedMember.facebook && "Facebook"
+                    ].filter(Boolean).join(", ")]
+                  ],
+                  styles: { fontSize: 10 },
+                  headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+                });
+
+                y = pdf.lastAutoTable.finalY + 10;
+
+        // Emergency Contact Table
+        autoTable(pdf, {
+          startY: y,
+          theme: "grid",
+          head: [["Emergency Contact", ""]],
+          body: [
+            ["Name", selectedMember.emergencyName || "-"],
+            ["Relationship", selectedMember.emergencyRelationship || "-"],
+            ["Mobile", selectedMember.emergencyMobile || "-"],
+            ["Land Phone", selectedMember.emergencyLand || "-"]
+          ],
+          styles: { fontSize: 10 },
+          headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+        });
+        y = pdf.lastAutoTable.finalY + 10;
+
+    // ----------------------
+    // Liability
+    // ----------------------
+     autoTable(pdf, {
+              startY: y,
+              theme: "grid",
+              head: [["", "Release of Liability & Membership Agreement"]],
+             body: [
+               ["1", "In consideration of gaining membership or being allowed to participate in the activities and programs of Power Life Fitness and to use its facilities, equipment, and machinery, I hereby waive, release, and forever discharge Power Life Fitness and its officers, employees, and representatives from any and all liability for injuries or damages resulting from participation or use of equipment in the facility."],
+               ["2", "I understand that strength, flexibility, and aerobic exercise, including the use of gym equipment, may involve risk of injury or even death. I voluntarily participate with full knowledge of these risks."],
+               ["3", "I confirm that I am physically fit and have no medical condition that prevents me from exercise. I acknowledge that I should consult a physician before beginning any exercise program."],
+               ["4", "I declare that I am physically sound and understand the need for a physician's clearance where necessary. I accept full responsibility for my participation and use of equipment."],
+               ["5", "I agree to comply with all gym rules and regulations."],
+               ["6", "I understand that membership fees are non-refundable under any circumstances."],
+               ["7", "I consent to my personal data being collected and stored by Power Life Fitness."],
+               ["8", "I accept that Power Life Fitness will contact me via SMS or email when required."],
+             ],
+              styles: { fontSize: 10 },
+              headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+            });
+            y = pdf.lastAutoTable.finalY + 10;
+
+            autoTable(pdf, {
+                      startY: y,
+                      theme: "grid",
+                      head: [["Term and Condition", ""]],
+                      body: [
+                        ["Selected Reasons", [selectedMember.termsAccepted && "Terms Accepted"].filter(Boolean).join(", ")]
+
+                      ],
+                      styles: { fontSize: 10 },
+                      headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+                    });
+
+                    y = pdf.lastAutoTable.finalY + 10;
+
+     autoTable(pdf, {
+              startY: y,
+              theme: "grid",
+              head: [["Signatures", ""]],
+              body: [
+                ["Member Date", selectedMember.liabilityDate || "-"],
+                ["Member Signature", selectedMember.memberSignature || "-"],
+
+              ],
+              styles: { fontSize: 10 },
+              headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+            });
+            y = pdf.lastAutoTable.finalY + 10;
+
+
+   autoTable(pdf, {
+                startY: y,
+                theme: "grid",
+                head: [["Office Use", ""]],
+                body: [
+                  ["Note", selectedMember.note || "-"],
+                  ["Date", selectedMember.dateOffice || "-"],
+                  ["Authorized Signature", selectedMember.signatureOwner || "-"],
+
+                ],
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [200, 200, 200], fontStyle: "bold" }
+              });
+              y = pdf.lastAutoTable.finalY + 10;
+
 
     pdf.save(`${selectedMember.name}_Profile.pdf`);
   };
+};
 
 
-    // Filter logic: match search term in ANY field
-  const filteredMembers = members.filter((m) => {
 
-    // ✅ Show ONLY new members (membershipStatus not set yet)
-    if (m.membershipStatus && m.membershipStatus.trim() !== "") {
-      return false;
-    }
 
-    // ✅ Search filter
-    return Object.values(m).some((val) =>
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
+
+
+   // ✅ Filter members
+   const filteredMembers = members.filter((m) =>
+     m.memberId?.toLowerCase().includes(searchId.toLowerCase()) &&
+     m.name?.toLowerCase().includes(searchName.toLowerCase()) &&
+     m.mobile?.toLowerCase().includes(searchPhone.toLowerCase()) &&
+     m.membershipStatus?.toLowerCase().includes(searchStatus.toLowerCase()) &&
+     m.membershipType?.toLowerCase().includes(searchMembershipType.toLowerCase())
+   );
 
 
   return (
@@ -139,21 +309,16 @@ const printRef = useRef();
       <Header />
 
 <div className="payment-container">
-        <h2>Registered Member Details</h2>
+        <h2>🧑‍💼 Registered Member Details</h2>
 
         {/* 🔍 Search input */}
-        <input
-          type="text"
-          placeholder="Search by any field..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            marginBottom: "10px",
-            padding: "8px",
-            width: "100%",
-            maxWidth: "300px",
-          }}
-        />
+        <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
+                  <input placeholder="Search by Member ID" value={searchId} onChange={(e) => setSearchId(e.target.value)} />
+                  <input placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+                  <input placeholder="Search by Phone" value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />
+                  <input placeholder="Search by Status" value={searchStatus} onChange={(e) => setSearchStatus(e.target.value)} />
+                  <input placeholder="Search by Membership Type" value={searchMembershipType} onChange={(e) => setSearchMembershipType(e.target.value)} />
+                </div>
 
         <table className="payment-table">
 
@@ -195,6 +360,13 @@ const printRef = useRef();
       {selectedMember && (
         <div className="modal1">
                     <div className="modal1-content" ref={printRef}>
+                    {/* Close button */}
+                        <button
+                          className="modal-close-btn"
+                          onClick={() => setSelectedMember(null)}
+                        >
+                          <MdClose size={24} />
+                        </button>
 
             <h3>{isEdit ? "Edit Member" : "Member Details"}</h3>
 

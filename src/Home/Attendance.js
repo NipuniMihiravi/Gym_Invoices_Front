@@ -56,7 +56,7 @@ function AttendanceScanner() {
       <div className="payment-wrapper">
         <div className="payment-container">
 
-            <h2>Mark Member Attendance</h2>
+            <h2>⏰ Mark Member Attendance</h2>
 
           <div className="search-box">
             <input

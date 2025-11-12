@@ -202,7 +202,7 @@ const handlePaymentSubmit = async (e) => {
 
       <div className="payment-wrapper">
         <div className="payment-container">
-          <h2>Member Payments</h2>
+          <h2> 💵 Member Payments</h2>
 
           <div className="search-box">
             <input

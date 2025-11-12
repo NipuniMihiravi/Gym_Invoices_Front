@@ -17,6 +17,7 @@ import MemberManagementPage from "./Home/MemberManagementPage";
 import FinanceManagementPage from "./Home/FinanceManagementPage";
 import PaymentListAdmin from "./Home/PaymentListAdmin";
 import ExpenditureView from "./Home/ExpenditureView";
+import DialogBox from "./Home/DialogBox";
 
 import AdminPanel from "./Admin/AdminPanel";
 import DashBoard from "./Admin/DashBoard";

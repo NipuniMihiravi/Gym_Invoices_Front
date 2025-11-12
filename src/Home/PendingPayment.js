@@ -77,7 +77,7 @@ function DueMembers() {
             <Header />
 
       <div className="payment-container">
-        <h2>Members Attending After Due Date</h2>
+        <h2>📋 Due Payments & Due Date</h2>
 
         {/* Filters */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>

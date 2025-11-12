@@ -6,34 +6,34 @@ import Header from "../Home/Header";
 import { Link, useNavigate } from 'react-router-dom';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 
-
-
-
 function MemberTable() {
   const [members, setMembers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // ✅ new search state
+  const [searchMembershipType, setSearchMembershipType] = useState("");
+  const [searchId, setSearchId] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchPhone, setSearchPhone] = useState("");
+  const [searchStatus, setSearchStatus] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [viewForm, setViewForm] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState({ type: "", text: "" });
-  const navigate = useNavigate();
   const [membershipTypes, setMembershipTypes] = useState([]);
- const [dialog, setDialog] = useState({
-   show: false,
-   title: "",
-   message: "",
-   type: "", // "success", "error", "warning", "confirm"
-   onConfirm: null, // optional callback for confirm dialogs
- });
+  const [dialog, setDialog] = useState({
+    show: false,
+    title: "",
+    message: "",
+    type: "", // "success", "error", "warning", "confirm"
+    onConfirm: null,
+  });
 
+  const navigate = useNavigate();
+
+  // ✅ Ensure user is logged in
   useEffect(() => {
-       const role = sessionStorage.getItem("userRole");
-       if (!role) {
-         navigate("/"); // redirect to login if no session
-       }
-     }, [navigate]);
-
+    const role = sessionStorage.getItem("userRole");
+    if (!role) navigate("/");
+  }, [navigate]);
 
   useEffect(() => {
     fetchMembers();
@@ -49,146 +49,112 @@ function MemberTable() {
     }
   };
 
+  const fetchMembers = async () => {
+    try {
+      const res = await axios.get("https://gym-invoice-back.onrender.com/api/members");
+      const sorted = res.data.sort((a, b) => {
+        const idA = parseInt(a.memberId.replace(/\D/g, ""));
+        const idB = parseInt(b.memberId.replace(/\D/g, ""));
+        return idB - idA;
+      });
+      setMembers(sorted);
+    } catch (error) {
+      console.error("Error fetching members:", error);
+    }
+  };
 
-const fetchMembers = async () => {
-  try {
-    const res = await axios.get("https://gym-invoice-back.onrender.com/api/members");
 
-    const sorted = res.data.sort((a, b) => {
-      const idA = parseInt(a.memberId.replace(/\D/g, "")); // remove non-digits
-      const idB = parseInt(b.memberId.replace(/\D/g, ""));
-      return idB - idA; // highest first
-    });
 
-    setMembers(sorted);
-  } catch (error) {
-    console.error("Error fetching members:", error);
-  }
-};
+ // ✅ Filter members
+ const filteredMembers = members.filter((m) => {
+   // Skip members that already have a membershipStatus
+   if (m.membershipStatus && m.membershipStatus.trim() !== "") {
+     return false;
+   }
 
-  // Filter logic: match search term in ANY field
-const filteredMembers = members.filter((m) => {
+   // Check all search filters
+   return (
+     m.memberId?.toString().toLowerCase().includes(searchId.toLowerCase()) &&
+     m.name?.toLowerCase().includes(searchName.toLowerCase()) &&
+     m.mobile?.toLowerCase().includes(searchPhone.toLowerCase()) &&
+     m.membershipStatus?.toLowerCase().includes(searchStatus.toLowerCase()) &&
+     m.membershipType?.toLowerCase().includes(searchMembershipType.toLowerCase())
+   );
+ });
 
-  // ✅ Show ONLY new members (membershipStatus not set yet)
-  if (m.membershipStatus && m.membershipStatus.trim() !== "") {
-    return false;
-  }
 
-  // ✅ Search filter
-  return Object.values(m).some((val) =>
-    String(val).toLowerCase().includes(searchTerm.toLowerCase())
-  );
-});
-
+  // ✅ Handle edit form changes
   const handleEditChange = (e) => {
     const { name, value } = e.target;
     if (name === "membershipType") {
       const selectedType = membershipTypes.find((type) => type.type === value);
       const fee = selectedType ? selectedType.fee : "";
-      setEditForm((prevForm) => ({
-        ...prevForm,
-        membershipType: value,
-        fees: fee
-      }));
+      setEditForm((prev) => ({ ...prev, membershipType: value, fees: fee }));
     } else {
-      setEditForm((prevForm) => ({
-        ...prevForm,
-        [name]: value
-      }));
+      setEditForm((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  // ✅ View modal
   const handleView = (member) => setViewForm(member);
 
-const handleDelete = (id) => {
-  setDialog({
-    show: true,
-    type: "confirm",
-    message: "⚠️ Are you sure you want to delete this member?",
-    onConfirm: async () => {
-      try {
-        await axios.delete(`https://gym-invoice-back.onrender.com/api/members/${id}`);
-        fetchMembers();
-        setDialog({ show: true, type: "success", message: "✅ Member deleted successfully!" });
-      } catch (error) {
-        console.error("Error deleting member:", error);
-        setDialog({ show: true, type: "error", message: "❌ Failed to delete member." });
-      }
-    },
-  });
-};
+  // ✅ Delete member with confirmation
+  const handleDelete = (id) => {
+    setDialog({
+      show: true,
+      type: "confirm",
+      message: "⚠️ Are you sure you want to delete this member?",
+      onConfirm: async () => {
+        try {
+          await axios.delete(`https://gym-invoice-back.onrender.com/api/members/${id}`);
+          fetchMembers();
+          setDialog({ show: true, type: "success", message: "✅ Member deleted successfully!" });
+        } catch (error) {
+          console.error("Error deleting member:", error);
+          setDialog({ show: true, type: "error", message: "❌ Failed to delete member." });
+        }
+      },
+    });
+  };
 
+  // ✅ Open edit modal
+  const handleEditClick = (member) => {
+    setEditingId(member.id);
+    setEditForm({ ...member });
+    setShowModal(true);
+  };
 
-const handleEditClick = (member) => {
-  setEditingId(member.id); // using your custom memberId
-  setEditForm({ ...member });
-    setShowModal(true); // explicitly show modal
-};
-
-
-
-const handleUpdate = async () => {
-  // ✅ Required member validations
-  if (!editForm.membershipStatus || !editForm.membershipType || !editForm.joinedDate) {
-    setModalMessage({ type: "warning", text: "⚠️ Membership Status, Membership Type, and Joined Date are required." });
-    return;
-  }
-
-  try {
-    // 1️⃣ Update Member collection
-    const memberPayload = {
-      ...editForm, // keep all member fields
-      regFee: editForm.regFee || 0,
-      regStatus: editForm.regStatus || "Pending"
-    };
-
-    await axios.put(
-      `https://gym-invoice-back.onrender.com/api/members/${editingId}`,
-      memberPayload
-    );
-
-    // 2️⃣ Update or create Payment document
-    if (editForm.amount || editForm.payDate || editForm.date|| editForm.paymentMethod) {
-      const paymentPayload = {
-         memberId: editForm.memberId,
-         memberName: editForm.name || "",
-         memberEmail: editForm.email || "",
-         joinedDate: editForm.joinedDate || null,
-         membershipType: editForm.membershipType || "",
-         amount: parseFloat(editForm.amount) || 0,
-         payDate: editForm.payDate || editForm.date || null,
-         date: editForm.date || editForm.payDate || null, // due date
-         paymentMethod: editForm.paymentMethod || "Cash",
-         status: editForm.amount && editForm.payDate ? "Done" : "Pending",
-       };
-
-
-      // Use your backend endpoint to save or update the payment
-      await axios.post(
-        `https://gym-invoice-back.onrender.com/api/payments`,
-        paymentPayload
-      );
+  // ✅ Save edit form
+  const handleUpdate = async () => {
+    // ✅ Validation
+    if (!editForm.membershipStatus || !editForm.membershipType || !editForm.joinedDate) {
+      setModalMessage({ type: "warning", text: "⚠️ Membership Status, Type, and Joined Date are required." });
+      return;
     }
 
-    // Refresh members table
-    fetchMembers();
+    try {
+      // ✅ Update member
+      await axios.put(`https://gym-invoice-back.onrender.com/api/members/${editingId}`, editForm);
 
-    // ✅ Show success message
-    setModalMessage({ type: "success", text: "✅ Member & Payment updated successfully!" });
-
-    // Close modal after 1.5 seconds
-    setTimeout(() => {
+      // ✅ Close modal immediately
       setEditingId(null);
       setEditForm({});
-      setModalMessage({ type: "", text: "" });
-      setShowModal(false); // close modal
-    }, 1500);
+      setShowModal(false);
 
-  } catch (error) {
-    console.error("Update failed:", error);
-    setModalMessage({ type: "error", text: "❌ Failed to update member or payment. Please try again." });
-  }
-};
+      // ✅ Optional: Show success message via dialog
+      setDialog({ show: true, type: "success", message: "✅ Member updated successfully!" });
+
+      // ✅ Refresh member list (preferred way, faster than full page reload)
+      fetchMembers();
+
+      // OR, if you want a full page reload instead
+      // window.location.reload();
+
+    } catch (error) {
+      console.error("Update failed:", error);
+      setModalMessage({ type: "error", text: "❌ Failed to update member." });
+    }
+  };
 
   const handleLogout = () => navigate('/');
 
@@ -196,37 +162,55 @@ const handleUpdate = async () => {
     <div className="dashboard">
       <Header />
 
+
+  {/* ✅ Dialog box placed here, top-level */}
+  {dialog.show && (
+    <div className="dialog-overlay">
+      <div className={`dialog-box ${dialog.type}`}>
+        {dialog.title && <h4>{dialog.title}</h4>}
+        <p>{dialog.message}</p>
+        <div className="dialog-buttons">
+          {dialog.type === "confirm" ? (
+            <>
+              <button
+                onClick={() => {
+                  dialog.onConfirm && dialog.onConfirm();
+                  setDialog({ ...dialog, show: false });
+                }}
+              >
+                Yes
+              </button>
+              <button onClick={() => setDialog({ ...dialog, show: false })}>No</button>
+            </>
+          ) : (
+            <button
+              onClick={() => {
+                dialog.onConfirm ? dialog.onConfirm() : setDialog({ ...dialog, show: false });
+              }}
+            >
+              OK
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )}
+
+
       <div className="payment-container">
-        <h2>New Member Registrations</h2>
+        <h2>📝 Newly Registered Members</h2>
 
-        {/* 🔍 Search input */}
-        <input
-          type="text"
-          placeholder="Search by any field..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            marginBottom: "10px",
-            padding: "8px",
-            width: "100%",
-            maxWidth: "300px",
-          }}
-        />
+        {/* 🔍 Search Inputs */}
+        <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
+          <input placeholder="Search by Member ID" value={searchId} onChange={(e) => setSearchId(e.target.value)} />
+          <input placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
+          <input placeholder="Search by Phone" value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />
+          <input placeholder="Search by Status" value={searchStatus} onChange={(e) => setSearchStatus(e.target.value)} />
+          <input placeholder="Search by Membership Type" value={searchMembershipType} onChange={(e) => setSearchMembershipType(e.target.value)} />
+        </div>
 
+        {/* ✅ Member Table */}
         <table className="payment-table">
-        {filteredMembers.length === 0 ? (
-          <tr>
-            <td colSpan="10" style={{ textAlign: "center", padding: "15px", fontWeight: "bold", color: "#555" }}>
-              ✅ No newly registered members pending to update.
-            </td>
-          </tr>
-        ) : (
-          filteredMembers.map((member) => (
-            <tr key={member.id}>
-              {/* your table columns */}
-            </tr>
-          ))
-        )}
           <thead>
             <tr>
               <th>Member ID</th>
@@ -235,234 +219,123 @@ const handleUpdate = async () => {
               <th>Joined Date</th>
               <th>Membership Type</th>
               <th>Membership Status</th>
+
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredMembers.map((m) => (
-              <tr key={m.id}>
-                <td>{m.memberId}</td>
-                <td>{m.name}</td>
-                <td>{m.mobile}</td>
-                <td>{m.joinedDate}</td>
-                <td>{m.membershipType}</td>
-                <td>{m.membershipStatus}</td>
-               <td>
-                     <div className="table-action-buttons">
-                       <button onClick={() => handleView(m)} className="action-btn view-btn">
-                         <MdVisibility size={20} /> View
-                       </button>
-                       <button onClick={() => handleEditClick(m)} className="action-btn edit-btn">
-                         <MdEdit size={20} /> Edit
-                       </button>
-
-                     </div>
-                   </td>
+            {filteredMembers.length === 0 ? (
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center", padding: "15px", fontWeight: "bold", color: "#555" }}>
+                  ✅ No members found.
+                </td>
               </tr>
-            ))}
+            ) : (
+              filteredMembers.map((m) => (
+                <tr key={m.id}>
+                  <td>{m.memberId}</td>
+                  <td>{m.name}</td>
+                  <td>{m.mobile}</td>
+                  <td>{m.joinedDate}</td>
+                  <td>{m.membershipType}</td>
+                  <td>{m.membershipStatus}</td>
+
+                  <td>
+                    <div className="table-action-buttons">
+                      <button onClick={() => handleView(m)} className="action-btn view-btn"><MdVisibility size={20} /> View</button>
+                      <button onClick={() => handleEditClick(m)} className="action-btn edit-btn"><MdEdit size={20} /> Edit</button>
+                      <button onClick={() => handleDelete(m.id)} className="action-btn delete-btn"><MdDelete size={20} /> Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
-      {editingId && (
-        <div className="modal1">
-          <div className="modal1-content">
-           {modalMessage.text && (
-                  <div className={`modal-message ${modalMessage.type}`}>
-                    {modalMessage.text}
-                  </div>
-                )}
-
-
-            <h4>Edit Member Details</h4>
-            <div className="modal1-grid">
-              <div className="form-row">
-                <label>Member ID</label>
-                <input name="memberId" value={editForm.memberId || ""} readOnly />
+        {/* ✅ Edit Modal */}
+        {editingId && (
+          <div className="modal1">
+            <div className="modal1-content">
+              {modalMessage.text && <div className={`modal-message ${modalMessage.type}`}>{modalMessage.text}</div>}
+              <h4>Edit Member Details</h4>
+              <div className="modal1-grid">
+                <div className="form-row">
+                  <label>Member ID</label>
+                  <input name="memberId" value={editForm.memberId || ""} readOnly />
+                </div>
+                <div className="form-row">
+                  <label>Full Name</label>
+                  <input name="name" value={editForm.name || ""} onChange={handleEditChange} />
+                </div>
+                <div className="form-row">
+                  <label>Membership Status</label>
+                  <select name="membershipStatus" value={editForm.membershipStatus || ""} onChange={handleEditChange}>
+                    <option value="">-- Select Status --</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+                <div className="form-row">
+                  <label>Membership Type</label>
+                  <select name="membershipType" value={editForm.membershipType || ""} onChange={handleEditChange}>
+                    <option value="">Select Membership Type</option>
+                    {membershipTypes.map((type) => (
+                      <option key={type._id} value={type.type}>{type.type}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-row">
+                  <label>Joined Date</label>
+                  <input type="date" name="joinedDate" value={editForm.joinedDate || ""} onChange={handleEditChange} />
+                </div>
+                <div className="form-row">
+                  <label>Special Description</label>
+                  <textarea name="specialDescription" value={editForm.specialDescription || ""} onChange={handleEditChange} rows="4" cols="50" />
+                </div>
+                <div className="form-row">
+                  <label>Registration Fee</label>
+                  <input type="number" name="regFee" value={editForm.regFee || ""} onChange={handleEditChange} />
+                </div>
+                <div className="form-row">
+                  <label>Registration Status</label>
+                  <select name="regStatus" value={editForm.regStatus || ""} onChange={handleEditChange}>
+                    <option value="">-- Select Status --</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                  </select>
+                </div>
               </div>
-              <div className="form-row">
-                <label>Full Name</label>
-                <input name="name" value={editForm.name || ""} onChange={handleEditChange} />
+              <div className="form-actions">
+                <button onClick={handleUpdate}>Save</button>
+                <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}>Cancel</button>
               </div>
-
-              <div className="form-row">
-                          <label>Membership Status</label>
-                          <select
-                            name="membershipStatus"
-                            value={editForm.membershipStatus || ""}
-                            onChange={handleEditChange}
-                          >
-                            <option value="">-- Select Status --</option>
-                            <option value="ACTIVE">Active</option>
-                            <option value="Inactive">Inactive</option>
-                          </select>
-                        </div>
-
-      <div className="form-row">
-        <label>Membership Type</label>
-        <select
-          name="membershipType"
-          value={editForm.membershipType || ""}
-          onChange={handleEditChange}
-        >
-          <option value="">Select Membership Type</option>
-          {membershipTypes.map((type) => (
-            <option key={type._id} value={type.type}>
-              {type.type}
-            </option>
-          ))}
-        </select>
-      </div>
-
-             <div className="form-row">
-                             <label>Phone</label>
-                             <input name="mobile" value={editForm.mobile || ""} onChange={handleEditChange} />
-                           </div>
-
-             <div className="form-row">
-               <label>Joined Date</label>
-               <input
-                 type="date"
-                 name="joinedDate"
-                 value={editForm.joinedDate || ""}
-                 onChange={handleEditChange}
-               />
-             </div>
-
-              <div className="form-row">
-                <label>Gender</label>
-                <input name="gender" value={editForm.gender || ""} onChange={handleEditChange} />
-              </div>
-
-
-              <div className="form-row">
-                <label>Address</label>
-                <input name="city" value={editForm.city || ""} onChange={handleEditChange} />
-              </div>
-              <div className="form-row">
-                <label>Occupation</label>
-                <input name="profession" value={editForm.profession || ""} onChange={handleEditChange} />
-              </div>
-             <div className="form-row">
-               <label>Special Description</label>
-               <textarea
-                 name="specialDescription"
-                 value={editForm.specialDescription || ""}
-                 onChange={handleEditChange}
-                 rows="4" // You can adjust the number of visible rows
-                 cols="50" // Optional: adjust width
-               />
-             </div>
-
-             {/* 🔹 New Member fields */}
-                     <div className="form-row">
-                       <label>Registration Fee</label>
-                       <input
-                         type="number"
-                         name="regFee"
-                         value={editForm.regFee || ""}
-                         onChange={handleEditChange}
-                       />
-                     </div>
-                     <div className="form-row">
-                       <label>Registration Status</label>
-                       <select
-                         name="regStatus"
-                         value={editForm.regStatus || ""}
-                         onChange={handleEditChange}
-                       >
-                         <option value="">-- Select Status --</option>
-                         <option value="Pending">Pending</option>
-                         <option value="Paid">Paid</option>
-                       </select>
-                     </div>
-
-
-
-
-
-
-            </div>
-            <div className="form-actions">
-              <button onClick={handleUpdate}>Save</button>
-              <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}>Cancel</button>
             </div>
           </div>
-        </div>
-      )}
-
-       {/* View Modal */}
-          {viewForm && (
-            <div className="modal1">
-              <div className="modal1-content">
-                <h4>View Member Details</h4>
-                <div className="modal1-grid">
-                  <div className="form-row"><label>Member ID</label><input value={viewForm.memberId} disabled /></div>
-                  <div className="form-row"><label>Full Name</label><input value={viewForm.name} disabled /></div>
-                  <div className="form-row"><label>Phone</label><input value={viewForm.mobile} disabled /></div>
-                  <div className="form-row"><label>Membership Type</label><input value={viewForm.membershipType} disabled /></div>
-                  <div className="form-row"><label>Membership Status</label><input value={viewForm.membershipStatus} disabled /></div>
-                  <div className="form-row"><label>Joined Date</label><input value={viewForm.joinedDate} disabled /></div>
-                  <div className="form-row"><label>Gender</label><input value={viewForm.gender} disabled /></div>
-                  <div className="form-row"><label>Username</label><input value={viewForm.email} disabled /></div>
-
-                  <div className="form-row"><label>Address</label><input value={viewForm.residence} disabled /></div>
-                  <div className="form-row"><label>Occupation</label><input value={viewForm.profession} disabled /></div>
-                  <div className="form-row"><label>Special Description</label><input value={viewForm.specialDescription} disabled /></div>
-
-
-                </div>
-                <div className="form-actions">
-                  <button onClick={() => setViewForm(null)}>Close</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-     </div>
-{dialog.show && (
-  <div className="dialog-overlay">
-    <div className={`dialog-box ${dialog.type}`}>
-      {dialog.title && <h4>{dialog.title}</h4>}
-      <p>{dialog.message}</p>
-
-      <div className="dialog-buttons">
-        {dialog.type === "confirm" ? (
-          <>
-            <button
-              onClick={() => {
-                dialog.onConfirm && dialog.onConfirm();
-                setDialog({ ...dialog, show: false });
-              }}
-            >
-              Yes
-            </button>
-            <button onClick={() => setDialog({ ...dialog, show: false })}>
-              No
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => {
-              if (dialog.onConfirm) {
-                dialog.onConfirm();
-              } else {
-                setDialog({ ...dialog, show: false });
-              }
-            }}
-          >
-            OK
-          </button>
-
         )}
+
+        {/* ✅ View Modal */}
+        {viewForm && (
+          <div className="modal1">
+            <div className="modal1-content">
+              <h4>View Member Details</h4>
+              <div className="modal1-grid">
+                <div className="form-row"><label>Member ID</label><input value={viewForm.memberId} disabled /></div>
+                <div className="form-row"><label>Full Name</label><input value={viewForm.name} disabled /></div>
+                <div className="form-row"><label>Membership Type</label><input value={viewForm.membershipType} disabled /></div>
+                <div className="form-row"><label>Membership Status</label><input value={viewForm.membershipStatus} disabled /></div>
+                <div className="form-row"><label>Joined Date</label><input value={viewForm.joinedDate} disabled /></div>
+                <div className="form-row"><label>Special Description</label><input value={viewForm.specialDescription} disabled /></div>
+                <div className="form-row"><label>Registration Status</label><input value={viewForm.regStatus || "-"} disabled /></div>
+              </div>
+              <div className="form-actions"><button onClick={() => setViewForm(null)}>Close</button></div>
+            </div>
+          </div>
+        )}
+
+
       </div>
     </div>
-  </div>
-)}
-
-     </div>
-
-
-
   );
 }
 

@@ -3,10 +3,28 @@ import axios from "axios";
 import "./AppHome.css";
 import '../Admin/Admin.css';
 import Header from "../Home/Header";
+import DialogBox from "../Home/DialogBox";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const [dialog, setDialog] = useState({
+     show: false,
+     title: "",
+     message: "",
+     type: "", // "success", "error", "warning", "confirm"
+     onConfirm: null, // optional callback for confirm dialogs
+   });
+   const showDialog = (type, message, onConfirm = null, title = "") => {
+     setDialog({
+       show: true,
+       type,
+       message,
+       title,
+       onConfirm,
+     });
+   };
+
   useEffect(() => {
     const role = sessionStorage.getItem("userRole");
     if (!role) navigate("/");
@@ -56,6 +74,43 @@ export default function RegisterForm() {
     signatureOwner: ""
   });
 
+  const validateForm = () => {
+    const requiredFields = [
+      "name",
+      "residence",
+      "city",
+      "mobile",
+      "dob",
+      "gender",
+      "idType",
+      "idNumber",
+      "email",
+      "emergencyName",
+      "emergencyRelationship",
+      "emergencyMobile",
+      "liabilityDate",
+      "memberSignature"
+    ];
+
+    for (let field of requiredFields) {
+      if (!form[field]) {
+        showDialog(
+          "error",
+          `❌ Please fill out the "${field.replace(/([A-Z])/g, " $1")}" field before submitting.`
+        );
+        return false;
+      }
+    }
+
+    if (!form.termsAccepted) {
+      showDialog("error", "❌ Please agree to the Terms and Conditions before submitting.");
+      return false;
+    }
+
+    return true;
+  };
+
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -73,16 +128,38 @@ export default function RegisterForm() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("https://gym-invoice-back.onrender.com/api/members/register", form);
-      alert("✅ Registration Successful!");
-      navigate("/dashboard-admin");
-    } catch (err) {
-      alert("❌ Error: " + err.message);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Step 1️⃣: Check validation first
+  if (!validateForm()) return;
+
+  // Step 2️⃣: Ask for confirmation
+  showDialog(
+    "confirm",
+    "⚠️ Are you sure you want to submit this registration?",
+    async () => {
+      try {
+        await axios.post(
+          "https://gym-invoice-back.onrender.com/api/members/register",
+          form
+        );
+
+        // Step 3️⃣: Show success
+        showDialog("success", "✅ Registration Successful!", () => {
+          navigate("/dashboard-admin");
+        });
+      } catch (err) {
+        showDialog(
+          "error",
+          `❌ Registration failed: ${err.response?.data?.message || err.message}`
+        );
+      }
     }
-  };
+  );
+};
+
+
 
   return (
     <div className="dashboard">
@@ -334,6 +411,8 @@ export default function RegisterForm() {
           <button type="submit" className="submit-btn">SUBMIT THE APPLICATION</button>
         </form>
       </div>
+      <DialogBox dialog={dialog} setDialog={setDialog} />
+
     </div>
   );
 }

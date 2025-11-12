@@ -162,7 +162,7 @@ const handleDelete = (id) => {
 
 
         <div className="payment-container">
-          <h2>SYSTEM MANAGEMENT ➤ MEMBERSHIP</h2>
+          <h2> 📋 MEMBERSHIP</h2>
           <div className="form">
             <input
               type="text"
