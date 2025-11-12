@@ -365,41 +365,91 @@ border:none;
 }
 
 /* Search box */
+/* 🔹 Main search box container */
 .search-box {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin: 20px auto;
+  max-width: 900px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* 🔹 Input fields */
 .search-box input {
-  padding: 8px;
-  font-size: 16px;
-  border: 3px solid red important!;
-  text-transform: uppercase;
   flex: 1 1 200px;
-  min-width: 150px;
+  min-width: 160px;
+  padding: 12px;
+  border: 2px solid #f08080;
+  border-radius: 6px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s ease;
 }
 
+.search-box input:focus {
+  border-color: #cd5c5c;
+  box-shadow: 0 0 5px rgba(240, 128, 128, 0.4);
+}
 
+/* 🔹 Button styles */
 .search-box button {
-  padding: 12px;
-  background: #F08080;
-  color: black;
+  padding: 12px 18px;
+  background: #f08080;
+  color: white;
   font-weight: bold;
   font-size: 16px;
-  border: 2px solid #CD5C5C;
+  border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
-  flex: 1 1 120px;
-  min-width: 120px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .search-box button:hover {
-  background: #9e1b32;
-  color:white;
+  background: #e06666;
+  transform: translateY(-2px);
 }
+
+.search-box button:active {
+  background: #cd5c5c;
+  transform: scale(0.97);
+}
+
+/* 🔹 Mobile Responsive Design */
+@media (max-width: 600px) {
+
+
+
+  .search-box button {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    background: #f08080;
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+  }
+
+  /* ✅ Date input fix for mobile look */
+  .search-box input[type="date"] {
+    color: #333;
+    font-family: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #fff;
+  }
+
+  .search-box input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(60%) sepia(80%) saturate(300%) hue-rotate(330deg);
+    cursor: pointer;
+  }
+}
+
 
 .attendance-btn-container {
   margin-top: 10px;
@@ -457,6 +507,7 @@ border:none;
   font-size: 24px;
   font-weight: bold;
   background-color: #f7f7f7;
+  color:#CD5C5C;
 }
 
 .member-details-row2 {
@@ -495,10 +546,15 @@ border:none;
     text-align: left;
   }
 
-  .member-name-row, .member-name {
-    font-size: 20px;
+  .member-name-row{
+    font-size: 16px;
      text-align: left;
   }
+
+ .member-name {
+      font-size: 16px;
+       text-align: center;
+    }
 
   .member-details-row2 {
     font-size: 13px;
@@ -532,11 +588,15 @@ border:none;
     width: 100%;
   }
 
-  .member-name-row, .member-name {
-    font-size: 18px;
-    text-align: left;
-    padding-right: 10px; /* Right padding for spacing */
-  }
+  .member-name-row{
+     font-size: 16px;
+      text-align: left;
+   }
+
+  .member-name {
+       font-size: 16px;
+        text-align: center;
+     }
 
   .member-details-row2 {
     font-size: 12px;
@@ -615,7 +675,7 @@ border:none;
   padding: 20px 25px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+  max-width: 420px;
   margin: 20px auto;
   font-family: 'Arial', sans-serif;
   transition: transform 0.2s ease;
@@ -625,7 +685,7 @@ border:none;
   transform: translateY(-3px);
 }
 
-/* Form labels */
+/* Labels */
 .payment-card label {
   display: block;
   margin-bottom: 6px;
@@ -633,26 +693,54 @@ border:none;
   color: #333;
 }
 
-/* Input fields */
+/* Input and Select Fields */
 .payment-card input,
 .payment-card select {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   margin-bottom: 15px;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 15px;
+  color: #333;
+  background-color: #fff;
   outline: none;
   transition: border 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;               /* Removes native styles */
+  -webkit-appearance: none;       /* Safari / iOS */
+  -moz-appearance: none;          /* Firefox */
 }
 
+/* Focus effect */
 .payment-card input:focus,
 .payment-card select:focus {
   border-color: #f08080;
   box-shadow: 0 0 5px rgba(240, 128, 128, 0.5);
 }
 
-/* Submit button */
+/* Date input style (fix blue text / small font on mobile) */
+.payment-card input[type="date"] {
+  color: #333;
+  font-weight: 600;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.payment-card input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(40%) sepia(60%) saturate(300%) hue-rotate(340deg);
+  cursor: pointer;
+}
+
+/* Dropdown arrow styling */
+.payment-card select {
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23f08080' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+/* Button */
 .pay-button {
   width: 100%;
   padding: 12px;
@@ -672,10 +760,16 @@ border:none;
 }
 
 /* Responsive */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .payment-card {
-    padding: 15px 20px;
-    margin: 15px;
+    padding: 15px;
+    margin: 10px;
+  }
+
+  .payment-card input,
+  .payment-card select {
+    font-size: 14px;
+    padding: 10px 12px;
   }
 
   .pay-button {
@@ -683,6 +777,7 @@ border:none;
     padding: 10px;
   }
 }
+
 
 
 /* Mobile specific adjustments */
@@ -1153,20 +1248,17 @@ border:none;
 
 /* Payment Container Inputs */
 .payment-container input {
-  padding: 8px;
-  margin-right: 10px;
-  width: 300px;
-  font-size: 16px;
-  border: 3px solid black;
-  text-transform: uppercase;
-  box-sizing: border-box;
+  max-width: 300px;
+    padding: 10px 15px;
+    margin: 10px 0;
+    font-size: 16px;
+    border: 2px solid black;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Focus/active state */
-payment-container. input[type="text"]:focus {
- border: 3px solid #9e1b32;       /* blue border on focus */
 
-}
 
 /* Mobile Devices */
 @media (max-width: 600px) {
@@ -1177,6 +1269,7 @@ payment-container. input[type="text"]:focus {
   .payment-container input[type="text"],
   .payment-container input[type="date"],
   .payment-container select {
+  width: 100%;
     font-size: 14px;
     padding: 10px 12px;
     border: 2px solid #444;
