@@ -131,7 +131,9 @@ function ExpenditurePage() {
         <h2>💰 Expenditure Management</h2>
 
         {/* ---------- Form ---------- */}
-        <form className="expenditure-form" onSubmit={handleSubmit}>
+        <div className="main-card-payment">
+        <form className="payment-card" onSubmit={handleSubmit}>
+        <h2>📝 Add Expenditure</h2>
           <select
             name="name"
             value={formData.name}
@@ -154,7 +156,7 @@ function ExpenditurePage() {
             onChange={handleChange}
             required
           />
-
+            <label>Select Date</label>
           <input
             type="date"
             name="date"
@@ -170,15 +172,16 @@ function ExpenditurePage() {
             value={formData.description}
             onChange={handleChange}
           />
-
-          <button type="submit" className="btn-add">
+            <div className="filter-buttons">
+          <button type="submit" className="btn btn-primary">
             {editId ? "💾 Update" : "➕ Add"}
           </button>
+
 
           {editId && (
             <button
               type="button"
-              className="btn-clear"
+              className="btn btn-primary"
               onClick={() => {
                 setEditId(null);
                 setFormData({
@@ -192,16 +195,20 @@ function ExpenditurePage() {
               Cancel
             </button>
           )}
+          </div>
         </form>
 
         {/* ---------- Filters ---------- */}
-        <div className="filter-section">
+        <div className="payment-card">
+        <h2>🔍 Search Expenditure</h2>
+        <label>Select Date From</label>
           <input
             type="date"
             name="fromDate"
             value={filters.fromDate}
             onChange={handleFilterChange}
           />
+          <label>Select Date To</label>
           <input
             type="date"
             name="toDate"
@@ -215,10 +222,12 @@ function ExpenditurePage() {
             value={filters.name}
             onChange={handleFilterChange}
           />
-
-          <button onClick={clearFilter} className="btn-clear">
+<div className="filter-buttons">
+          <button onClick={clearFilter} className="btn btn-primary">
             Clear
           </button>
+        </div>
+        </div>
         </div>
 
         {/* ---------- Table ---------- */}

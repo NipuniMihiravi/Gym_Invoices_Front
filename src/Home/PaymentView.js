@@ -148,7 +148,8 @@ function PaymentAnalytics() {
         <h2>💰Payment Analytics Dashboard</h2>
 
         {/* Filters */}
-        <div className="filters">
+        <div className="payment-card">
+        <label>Select Date From</label>
           <input
             type="date"
             placeholder="From"
@@ -156,6 +157,7 @@ function PaymentAnalytics() {
             value={filters.fromDate}
             onChange={handleFilterChange}
           />
+          <label>Select Date To</label>
           <input
             type="date"
             placeholder="To"
@@ -169,12 +171,7 @@ function PaymentAnalytics() {
             value={filters.memberId}
             onChange={handleFilterChange}
           />
-          <input
-            name="status"
-            placeholder="Status"
-            value={filters.status}
-            onChange={handleFilterChange}
-          />
+
         </div>
 
         {/* Summary Cards */}

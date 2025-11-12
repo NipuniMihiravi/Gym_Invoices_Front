@@ -80,7 +80,8 @@ function DueMembers() {
         <h2>📋 Due Payments & Due Date</h2>
 
         {/* Filters */}
-        <div className="filters">
+        <div className="payment-card">
+        <label>Select Date</label>
           <input
             type="date"
             placeholder="Search By Date"
@@ -89,6 +90,7 @@ function DueMembers() {
               setFilters({ ...filters, dueDate: e.target.value })
             }
           />
+
           <input
             type="text"
             placeholder="Member ID"

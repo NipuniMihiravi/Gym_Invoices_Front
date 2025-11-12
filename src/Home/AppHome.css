@@ -670,6 +670,13 @@ border:none;
   box-sizing: border-box;
 }
 /* Container */
+.main-card-payment {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  background-color: #fffaf9;
+}
 .payment-card {
   background-color: rgba(240, 128, 128, 0.1); /* Light Coral with transparency */
   padding: 20px 25px;
@@ -680,15 +687,26 @@ border:none;
   font-family: 'Arial', sans-serif;
   transition: transform 0.2s ease;
 }
+.payment-card h2 {
+ color: black;
+   font-size: 14px;
+   text-transform: uppercase;
+   letter-spacing: 0.25px;
+}
+
+
+
 
 .payment-card:hover {
   transform: translateY(-3px);
 }
 
 /* Labels */
-.payment-card label {
+.payment-card label,
+ .payment-card label{
   display: block;
   margin-bottom: 6px;
+   margin-top: 6px;
   font-weight: bold;
   color: #333;
 }
@@ -2312,8 +2330,20 @@ th {
   gap: 10px;
   margin-bottom: 20px;
 }
-.btn-add,
-.btn-filter,
+
+.filter-section input {
+  flex: 1 1 200px;
+  min-width: 160px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  color: #333;
+}
+
 .btn-clear {
   background-color: #F08080;
   color: black;
@@ -2326,8 +2356,7 @@ th {
 }
 
 /* 🌸 Hover Effects */
-.btn-add:hover,
-.btn-filter:hover,
+
 .btn-clear:hover {
   background-color:#8B0000;
    color:white;

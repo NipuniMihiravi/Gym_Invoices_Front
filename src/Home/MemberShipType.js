@@ -14,6 +14,13 @@ function MembershipManager() {
   const [editIndex, setEditIndex] = useState(null);
   const [viewForm, setViewForm] = useState(null);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    cost: "",
+    date: "",
+    description: "",
+  });
+
   const [dialog, setDialog] = useState({
     show: false,
     type: "", // "success", "error", "warning", "confirm"
@@ -163,7 +170,8 @@ const handleDelete = (id) => {
 
         <div className="payment-container">
           <h2> 📋 MEMBERSHIP</h2>
-          <div className="form">
+          <div className="payment-card">
+          <h2>📝 Add Membership</h2>
             <input
               type="text"
               name="type"
@@ -191,11 +199,30 @@ const handleDelete = (id) => {
               <option value="12 months">12 Months</option>
             </select>
 
-            <div className="search-box button">
-              <button className="submit-button" onClick={handleAddOrUpdate}>
-                {editIndex !== null ? "Update" : "Add"}
-              </button>
-            </div>
+           <div className="filter-buttons">
+             <button className="btn btn-primary" onClick={handleAddOrUpdate}>
+               {editIndex !== null ? "💾 Update" : "➕ Add"}
+             </button>
+
+             {editIndex !== null && (
+               <button
+                 type="button"
+                 className="btn btn-secondary"
+                 onClick={() => {
+                   setEditIndex(null); // reset edit state
+                   setFormData({
+                     name: "",
+                     cost: "",
+                     date: "",
+                     description: "",
+                   });
+                 }}
+               >
+                 ❌ Cancel
+               </button>
+             )}
+           </div>
+
 
           </div>
 

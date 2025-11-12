@@ -312,7 +312,8 @@ y += 10; // move y down for next table
         <h2>🧑‍💼 Registered Member Details</h2>
 
         {/* 🔍 Search input */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
+         <div className="payment-card">
+                <h2>🔍 Search Details</h2>
                   <input placeholder="Search by Member ID" value={searchId} onChange={(e) => setSearchId(e.target.value)} />
                   <input placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
                   <input placeholder="Search by Phone" value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />

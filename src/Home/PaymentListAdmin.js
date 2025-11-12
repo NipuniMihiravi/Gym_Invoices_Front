@@ -133,7 +133,8 @@ function PaymentTable() {
         <h2>SYSTEM MANAGEMENT ➤ PAYMENT DETAILS</h2>
 
         {/* 🔍 Filters */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "10px", flexWrap: "wrap" }}>
+        <div className="payment-card">
+        <h2>🔍 Search Details</h2>
           <input
             placeholder="Search by Member ID"
             value={searchId}

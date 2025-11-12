@@ -114,7 +114,8 @@ function ExpenditureAnalytics() {
         <h2>📊 Expenditure Analytics Dashboard</h2>
 
         {/* ---------- Filters ---------- */}
-        <div className="filters">
+        <div className="payment-card">
+        <label>Select Date From</label>
           <input
             type="date"
             placeholder="From"
@@ -122,6 +123,7 @@ function ExpenditureAnalytics() {
             value={filters.fromDate}
             onChange={handleFilterChange}
           />
+          <label>Select Date To</label>
           <input
             type="date"
             placeholder="To"
