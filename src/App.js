@@ -13,6 +13,7 @@ import NewMemberHome from "./Home/NewMemberHome";
 import MemberTable from "./Home/MemberTable";
 import ExpenditurePage from "./Home/ExpenditurePage";
 import Header from "./Home/Header";
+import HeaderMember from "./Home/HeaderMember";
 import MemberManagementPage from "./Home/MemberManagementPage";
 import FinanceManagementPage from "./Home/FinanceManagementPage";
 import PaymentListAdmin from "./Home/PaymentListAdmin";
