@@ -176,24 +176,42 @@ const fetchAttendance = async (id) => {
 const handlePaymentSubmit = async (e) => {
   e.preventDefault();
   try {
+    // 1️⃣ Fetch the last payment to get the last bill number
+    const lastPaymentRes = await axios.get(
+      "https://gym-invoice-back.onrender.com/api/payments/last-bill"
+    );
+    let lastBillNo = lastPaymentRes.data?.billNo || "LTF1000";
+
+    // 2️⃣ Generate next bill number
+    let nextBillNo;
+    if (lastBillNo.startsWith("LTF")) {
+      const num = parseInt(lastBillNo.replace("LTF", ""));
+      nextBillNo = "LTF" + (num + 1);
+    } else {
+      nextBillNo = "LTF1000";
+    }
+
+    // 3️⃣ Save payment with bill number
     await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
       memberId,
+      billNo: nextBillNo,
       amount: form.amount || feeAmount,
-      date: new Date(dueDate).toISOString().substring(0, 10),  // Next due date
-      payDate: form.date,                                       // Actual payment date (YYYY-MM-DD)
+      date: new Date(dueDate).toISOString().substring(0, 10), // Next due date
+      payDate: form.date, // Actual payment date (YYYY-MM-DD)
       status: "Done",
       paymentMethod: form.paymentMethod,
     });
 
-      setDialogMessage("✅ Payment saved successfully!");
-      setShowDialog(true);
-      handleSearch(); // refresh member info
-    } catch (err) {
-      console.error(err);
-      setDialogMessage("❌ Payment failed!");
-      setShowDialog(true);
-    }
-  };
+    setDialogMessage(`✅ Payment saved successfully! Bill No: ${nextBillNo}`);
+    setShowDialog(true);
+    handleSearch(); // refresh member info
+  } catch (err) {
+    console.error(err);
+    setDialogMessage("❌ Payment failed!");
+    setShowDialog(true);
+  }
+};
+
 
   const handleMarkAbsent = async () => {
     if (!memberId) return;

@@ -19,8 +19,8 @@ function PaymentTable() {
 
   // 🔍 Filters
   const [searchId, setSearchId] = useState("");
-  const [searchName, setSearchName] = useState("");
-  const [searchType, setSearchType] = useState("");
+  const [searchBillNo, setSearchBillNo] = useState("");
+
 
   useEffect(() => {
     fetchPayments();
@@ -45,8 +45,8 @@ function PaymentTable() {
   const filteredPayments = payments.filter(
     (p) =>
       p.memberId?.toLowerCase().includes(searchId.toLowerCase()) &&
-      p.memberName?.toLowerCase().includes(searchName.toLowerCase()) &&
-      p.membershipType?.toLowerCase().includes(searchType.toLowerCase())
+      p.BillNo?.toLowerCase().includes(searchBillNo.toLowerCase())
+
   );
 
   // ✅ Handle input change for edit
@@ -141,15 +141,11 @@ function PaymentTable() {
             onChange={(e) => setSearchId(e.target.value)}
           />
           <input
-            placeholder="Search by Member Name"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
+            placeholder="Search by Bill No"
+            value={searchBillNo}
+            onChange={(e) => setSearchBillNo(e.target.value)}
           />
-          <input
-            placeholder="Search by Membership Type"
-            value={searchType}
-            onChange={(e) => setSearchType(e.target.value)}
-          />
+
         </div>
 
         {/* ✅ Payment Table */}
@@ -157,6 +153,7 @@ function PaymentTable() {
           <thead>
             <tr>
               <th>Member ID</th>
+              <th>Bill No</th>
               <th>Member Name</th>
               <th>Membership Type</th>
               <th>Amount</th>
@@ -175,6 +172,7 @@ function PaymentTable() {
               filteredPayments.map((p) => (
                 <tr key={p.id}>
                   <td>{p.memberId}</td>
+                  <td>{p.billNo}</td>
                   <td>{p.memberName}</td>
                   <td>{p.membershipType}</td>
                   <td>{p.amount}</td>
@@ -208,6 +206,7 @@ function PaymentTable() {
               <h4>View Payment Details</h4>
               <div className="modal1-grid">
                 <div className="form-row"><label>Member ID</label><input value={viewPayment.memberId} disabled /></div>
+                <div className="form-row"><label>Bill No</label><input value={viewPayment.billNo} disabled /></div>
                 <div className="form-row"><label>Member Name</label><input value={viewPayment.memberName} disabled /></div>
                 <div className="form-row"><label>Member Email</label><input value={viewPayment.memberEmail} disabled /></div>
                 <div className="form-row"><label>Membership Type</label><input value={viewPayment.membershipType} disabled /></div>
