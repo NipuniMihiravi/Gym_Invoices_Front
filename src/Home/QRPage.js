@@ -20,7 +20,7 @@ function QRPage() {
 
       <h2>Scan to Register</h2>
       <QRCodeCanvas
-        value="https://gym-invoice-front.onrender.com/service/registration-member"
+        value="https://gym-invoice-front.onrender.com/registration-member"
         size={256}
       />
 

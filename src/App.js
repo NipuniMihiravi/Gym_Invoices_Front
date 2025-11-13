@@ -47,7 +47,7 @@ function App() {
           <Route path="/service/registered-member" element={<MemberTable />} />
           <Route path="/registration" element={<RegistrationForm />} />
 
-          <Route path="/service/registration-member" element={<RegistrationForm2 />} />
+          <Route path="/registration-member" element={<RegistrationForm2 />} />
           <Route path="/service/attendance" element={<Attendance />} />
             <Route path="/service/system" element={<SystemManagement/>} />
           <Route path="/service/payment" element={<MemberPaymentManager />} />
