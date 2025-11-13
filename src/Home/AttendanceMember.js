@@ -21,10 +21,6 @@ function AttendanceScanner() {
   const [memberName, setMemberName] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const role = sessionStorage.getItem("userRole");
-    if (!role) navigate("/"); // redirect to login if no session
-  }, [navigate]);
 
   // Step 1: Fetch member and show confirm dialog
   const handleAddClick = async () => {

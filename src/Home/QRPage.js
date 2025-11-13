@@ -20,13 +20,13 @@ function QRPage() {
 
       <h2>Scan to Register</h2>
       <QRCodeCanvas
-        value="https://gym-invoice-front.onrender.com/registration-member"
+        value="https://gym-invoice-front.onrender.com/#/registration-member"
         size={256}
       />
 
-      <h2 style={{ marginTop: "50px" }}>Scan to Mark Attendance</h2>
+       <h2>Scan to Mark Attendance</h2>
       <QRCodeCanvas
-        value="https://gym-invoice-front.onrender.com/mark-attendance"
+        value="https://gym-invoice-front.onrender.com/#/mark-attendance"
         size={256}
       />
     </div>

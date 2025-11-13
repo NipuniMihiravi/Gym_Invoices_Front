@@ -25,10 +25,7 @@ export default function RegisterForm() {
      });
    };
 
-  useEffect(() => {
-    const role = sessionStorage.getItem("userRole");
-    if (!role) navigate("/");
-  }, [navigate]);
+
 
   const [form, setForm] = useState({
 
