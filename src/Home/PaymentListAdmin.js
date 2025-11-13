@@ -4,6 +4,7 @@ import "./AppHome.css";
 import "../Admin/Admin.css";
 import Header from "../Home/Header";
 import { MdVisibility, MdEdit, MdDelete } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 
 function PaymentTable() {
   const [payments, setPayments] = useState([]);
@@ -203,6 +204,7 @@ function PaymentTable() {
         {viewPayment && (
           <div className="modal1">
             <div className="modal1-content">
+
               <h4>View Payment Details</h4>
               <div className="modal1-grid">
                 <div className="form-row"><label>Member ID</label><input value={viewPayment.memberId} disabled /></div>
@@ -217,8 +219,8 @@ function PaymentTable() {
                 <div className="form-row"><label>Status</label><input value={viewPayment.status} disabled /></div>
                 <div className="form-row"><label>Payment Method</label><input value={viewPayment.paymentMethod} disabled /></div>
               </div>
-              <div className="form-actions">
-                <button onClick={() => setViewPayment(null)}>Close</button>
+              <div className="filter-buttons">
+                <button onClick={() => setViewPayment(null)} className="btn btn-primary">Close</button>
               </div>
             </div>
           </div>
@@ -228,6 +230,8 @@ function PaymentTable() {
         {editPayment && (
           <div className="modal1">
             <div className="modal1-content">
+
+
               {modalMessage.text && (
                 <div className={`modal-message ${modalMessage.type}`}>
                   {modalMessage.text}
@@ -252,9 +256,9 @@ function PaymentTable() {
                   </select>
                 </div>
               </div>
-              <div className="form-actions">
-                <button onClick={handleUpdate}>Save</button>
-                <button onClick={() => setEditPayment(null)}>Cancel</button>
+              <div className="filter-buttons">
+                <button onClick={handleUpdate} className="btn btn-primary" >Save</button>
+                <button onClick={() => setEditPayment(null)} className="btn btn-primary" >Cancel</button>
               </div>
             </div>
           </div>

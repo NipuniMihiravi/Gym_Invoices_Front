@@ -5,6 +5,7 @@ import '../Admin/Admin.css';
 import Header from "../Home/Header";
 import { Link, useNavigate } from 'react-router-dom';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
+import { MdClose } from "react-icons/md";
 
 function MemberTable() {
   const [members, setMembers] = useState([]);
@@ -146,6 +147,7 @@ function MemberTable() {
     }
   };
 
+
   const handleLogout = () => navigate('/');
 
   return (
@@ -209,6 +211,18 @@ function MemberTable() {
         {editingId && (
           <div className="modal1">
             <div className="modal1-content">
+
+               {/* ✅ Working Close Button */}
+                   <button
+                     className="modal-close-btn"
+                     onClick={() => {
+                       setEditingId(null);
+                       setShowModal(false);
+                       setModalMessage({ type: "", text: "" });
+                     }}
+                   >
+                     <MdClose />
+                   </button>
               {modalMessage.text && <div className={`modal-message ${modalMessage.type}`}>{modalMessage.text}</div>}
               <h4>Edit Member Details</h4>
               <div className="modal1-grid">
@@ -258,9 +272,9 @@ function MemberTable() {
                   </select>
                 </div>
               </div>
-              <div className="form-actions">
-                <button onClick={handleUpdate}>Save</button>
-                <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}>Cancel</button>
+              <div className="filter-buttons">
+                <button onClick={handleUpdate} className="btn btn-primary">Save</button>
+                <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}className="btn btn-primary">Cancel</button>
               </div>
             </div>
           </div>

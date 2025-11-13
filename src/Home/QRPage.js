@@ -25,7 +25,7 @@ const QRDisplay = () => {
         {links.map((link, index) => (
           <div key={index}>
             <QRCodeCanvas value={link.url} size={200} />
-            <p style={{ marginTop: "10px", fontWeight: "bold" }}>{link.label}</p>
+            <p style={{ marginTop: "10px", fontWeight: "bold", color: "white" }}>{link.label}</p>
           </div>
         ))}
       </div>

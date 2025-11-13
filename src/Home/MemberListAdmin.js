@@ -6,6 +6,8 @@ import Header from "../Home/Header";
 import DialogBox from "../Home/DialogBox";
 import { Link, useNavigate } from 'react-router-dom';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
+import { MdClose } from "react-icons/md";
+
 
 function MemberTable() {
   const [members, setMembers] = useState([]);
@@ -289,6 +291,7 @@ const filteredMembers = members.filter((m) => {
         {editingId && (
           <div className="modal1">
             <div className="modal1-content">
+
               {modalMessage.text && <div className={`modal-message ${modalMessage.type}`}>{modalMessage.text}</div>}
               <h4>Edit Member Details</h4>
               <div className="modal1-grid">
@@ -338,9 +341,9 @@ const filteredMembers = members.filter((m) => {
                   </select>
                 </div>
               </div>
-              <div className="form-actions">
-                <button onClick={handleUpdate}>Save</button>
-                <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}>Cancel</button>
+              <div className="filter-buttons">
+                <button onClick={handleUpdate}  className="btn btn-primary" >Save</button>
+                <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}  className="btn btn-primary" >Cancel</button>
               </div>
             </div>
           </div>
@@ -350,6 +353,7 @@ const filteredMembers = members.filter((m) => {
         {viewForm && (
           <div className="modal1">
             <div className="modal1-content">
+
               <h4>View Member Details</h4>
               <div className="modal1-grid">
                 <div className="form-row"><label>Member ID</label><input value={viewForm.memberId} disabled /></div>
@@ -360,7 +364,7 @@ const filteredMembers = members.filter((m) => {
                 <div className="form-row"><label>Special Description</label><input value={viewForm.specialDescription} disabled /></div>
                 <div className="form-row"><label>Registration Status</label><input value={viewForm.regStatus || "-"} disabled /></div>
               </div>
-              <div className="form-actions"><button onClick={() => setViewForm(null)}>Close</button></div>
+              <div className="filter-buttons"><button onClick={() => setViewForm(null)}  className="btn btn-primary">Close</button></div>
             </div>
           </div>
         )}
