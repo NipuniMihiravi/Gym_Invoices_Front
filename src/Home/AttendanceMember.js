@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AppHome.css";
 import '../Admin/Admin.css';
-import Header from "../Home/Header";
+import HeaderMember from "../Home/HeaderMember";
 import { useNavigate } from 'react-router-dom';
 import DialogBox from "../Home/DialogBox";
 
