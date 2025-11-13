@@ -7,11 +7,11 @@ const QRDisplay = () => {
   const links = [
     {
       label: "Register Member",
-      url: "https://gym-invoice-front.onrender.com/#/registration-member",
+      url: "https://gym-invoices-front.onrender.com/#/registration-member",
     },
     {
       label: "Mark Attendance",
-      url: "https://gym-invoice-front.onrender.com/#/mark-attendance",
+      url: "https://gym-invoices-front.onrender.com/#/mark-attendance",
     },
   ];
 
