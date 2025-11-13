@@ -1,36 +1,37 @@
-import { Link, useNavigate } from 'react-router-dom';
+
+import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import React, { useEffect } from "react";
-import '../Admin/Admin.css';
 import Header from "../Home/Header";
 
-function QRPage() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const role = sessionStorage.getItem("userRole");
-    if (!role) {
-      navigate("/"); // redirect to login if no session
-    }
-  }, [navigate]);
+const QRDisplay = () => {
+  const links = [
+    {
+      label: "Register Member",
+      url: "https://gym-invoice-front.onrender.com/#/registration-member",
+    },
+    {
+      label: "Mark Attendance",
+      url: "https://gym-invoice-front.onrender.com/#/mark-attendance",
+    },
+  ];
 
   return (
-    <div className="dashboard">
-      <Header />
 
-      <h2>Scan to Register</h2>
-      <QRCodeCanvas
-        value="https://gym-invoice-front.onrender.com/#/registration-member"
-        size={256}
-      />
-
-       <h2>Scan to Mark Attendance</h2>
-      <QRCodeCanvas
-        value="https://gym-invoice-front.onrender.com/#/mark-attendance"
-        size={256}
-      />
+  <div className="dashboard">
+        <Header/>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h2>Scan QR Code</h2>
+      <div style={{ display: "flex", justifyContent: "center", gap: "50px", marginTop: "30px" }}>
+        {links.map((link, index) => (
+          <div key={index}>
+            <QRCodeCanvas value={link.url} size={200} />
+            <p style={{ marginTop: "10px", fontWeight: "bold" }}>{link.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
     </div>
   );
-}
+};
 
-export default QRPage;
+export default QRDisplay;
