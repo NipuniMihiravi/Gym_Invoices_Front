@@ -26,6 +26,7 @@ import Profile from "./Admin/Profile";
 import MemberPaymentManager from "./Home/MemberPaymentManager";
 import PaymentView from "./Home/PaymentView";
 import Attendance from "./Home/Attendance";
+import AttendanceMember from "./Home/AttendanceMember";
 import Login from "./Home/Login";
 import AttendanceManagement from "./Home/AttendanceManagement";
 import IncomeManagement from "./Home/IncomeManagement";
@@ -63,6 +64,8 @@ function App() {
           <Route path="/service/finance-management" element={<FinanceManagementPage />} />
           <Route path="/payment-management" element={<PaymentListAdmin />} />
           <Route path="/expenditure-analyze" element={<ExpenditureView />} />
+          <Route path="/mark-attendance" element={<AttendanceMember />} />
+
 
           <Route path="/assis/members-list" element={<MemberListAssis />} />
           <Route path="/assis/payment" element={<MemberPaymentManagerAssis />} />

@@ -777,6 +777,25 @@ border:none;
   transform: translateY(-2px);
 }
 
+.filter-row {
+  display: flex;
+  gap: 20px; /* space between the two select fields */
+  flex-wrap: wrap; /* wrap on smaller screens */
+  margin-top: 10px;
+}
+
+.filter-item {
+  flex: 1; /* each takes equal width */
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-item label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+
 /* Responsive */
 @media (max-width: 600px) {
   .payment-card {

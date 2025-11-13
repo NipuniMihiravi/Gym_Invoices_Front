@@ -3,6 +3,7 @@ import axios from "axios";
 import "./AppHome.css";
 import '../Admin/Admin.css';
 import Header from "../Home/Header";
+import DialogBox from "../Home/DialogBox";
 import { Link, useNavigate } from 'react-router-dom';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 
@@ -20,12 +21,21 @@ function MemberTable() {
   const [modalMessage, setModalMessage] = useState({ type: "", text: "" });
   const [membershipTypes, setMembershipTypes] = useState([]);
   const [dialog, setDialog] = useState({
-    show: false,
-    title: "",
-    message: "",
-    type: "", // "success", "error", "warning", "confirm"
-    onConfirm: null,
-  });
+       show: false,
+       title: "",
+       message: "",
+       type: "", // "success", "error", "warning", "confirm"
+       onConfirm: null, // optional callback for confirm dialogs
+     });
+     const showDialog = (type, message, onConfirm = null, title = "") => {
+       setDialog({
+         show: true,
+         type,
+         message,
+         title,
+         onConfirm,
+       });
+     };
 
   const navigate = useNavigate();
 
@@ -69,13 +79,12 @@ const filteredMembers = members.filter((m) => {
   const phoneMatch = (m.mobile || "").toLowerCase().includes(searchPhone.toLowerCase());
   const typeMatch = (m.membershipType || "").toLowerCase().includes(searchMembershipType.toLowerCase());
 
-  // Normalize both backend data and user input to lowercase
-  const statusMatch = (m.membershipStatus || "")
-    .toLowerCase()
-    .includes(searchStatus.toLowerCase());
+  // ✅ Exact match for status or allow "All" (empty)
+  const statusMatch = !searchStatus || (m.membershipStatus === searchStatus);
 
   return idMatch && nameMatch && phoneMatch && typeMatch && statusMatch;
 });
+
 
 
   // ✅ Handle edit form changes
@@ -157,54 +166,80 @@ const filteredMembers = members.filter((m) => {
     <div className="dashboard">
       <Header />
 
-
-  {/* ✅ Dialog box placed here, top-level */}
-  {dialog.show && (
-    <div className="dialog-overlay">
-      <div className={`dialog-box ${dialog.type}`}>
-        {dialog.title && <h4>{dialog.title}</h4>}
-        <p>{dialog.message}</p>
-        <div className="dialog-buttons">
-          {dialog.type === "confirm" ? (
-            <>
-              <button
-                onClick={() => {
-                  dialog.onConfirm && dialog.onConfirm();
-                  setDialog({ ...dialog, show: false });
-                }}
-              >
-                Yes
-              </button>
-              <button onClick={() => setDialog({ ...dialog, show: false })}>No</button>
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                dialog.onConfirm ? dialog.onConfirm() : setDialog({ ...dialog, show: false });
-              }}
-            >
-              OK
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  )}
-
-
       <div className="payment-container">
         <h2>SYSTEM MANAGEMENT ➤ MEMBER DETAILS</h2>
 
         {/* 🔍 Search Inputs */}
-        <div className="payment-card">
-        <h2>🔍 Search Details</h2>
+       <div className="payment-card">
+         <h2>🔍 Search Details</h2>
 
-          <input placeholder="Search by Member ID" value={searchId} onChange={(e) => setSearchId(e.target.value)} />
-          <input placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
-          <input placeholder="Search by Phone" value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />
-          <input placeholder="Search by Status" value={searchStatus} onChange={(e) => setSearchStatus(e.target.value)} />
-          <input placeholder="Search by Membership Type" value={searchMembershipType} onChange={(e) => setSearchMembershipType(e.target.value)} />
-        </div>
+           <div className="filter-row">
+             <div className="filter-item">
+
+               <input
+                 placeholder="Search by Member ID"
+                 value={searchId}
+                 onChange={(e) => setSearchId(e.target.value)}
+               />
+             </div>
+
+             <div className="filter-item">
+
+               <input
+                 placeholder="Search by Name"
+                 value={searchName}
+                 onChange={(e) => setSearchName(e.target.value)}
+               />
+             </div>
+           </div>
+
+           {/* Row 2: Phone + Status + Membership Type */}
+           <div className="filter-row">
+             <div className="filter-item">
+
+               <input
+                 placeholder="Search by Phone"
+                 value={searchPhone}
+                 onChange={(e) => setSearchPhone(e.target.value)}
+               />
+             </div>
+             </div>
+
+         <div className="filter-row">
+           <div className="filter-item">
+             <label>Status</label>
+             <select
+               className="duration-select"
+               value={searchStatus}
+               onChange={(e) => setSearchStatus(e.target.value)}
+             >
+               <option value="">ALL STATUS</option>
+               <option value="ACTIVE">ACTIVE</option>
+               <option value="INACTIVE">INACTIVE</option>
+             </select>
+           </div>
+
+           <div className="filter-item">
+             <label>Membership Type</label>
+             <select
+               className="duration-select"
+               value={searchMembershipType}
+               onChange={(e) => setSearchMembershipType(e.target.value)}
+             >
+               <option value="">ALL TYPES</option>
+               <option value="one-one">ONE-ONE</option>
+               <option value="one-two">ONE-TWO</option>
+               <option value="three-one">THREE-ONE</option>
+               <option value="three-two">THREE-TWO</option>
+               <option value="six-one">SIX-ONE</option>
+               <option value="six-two">SIX-TWO</option>
+               <option value="twelve-one">TWELVE-ONE</option>
+               <option value="twelve-two">TWELVE-TWO</option>
+             </select>
+           </div>
+         </div>
+       </div>
+
 
         {/* ✅ Member Table */}
         <table className="payment-table">
@@ -332,6 +367,7 @@ const filteredMembers = members.filter((m) => {
 
 
       </div>
+       <DialogBox dialog={dialog} setDialog={setDialog} />
     </div>
   );
 }

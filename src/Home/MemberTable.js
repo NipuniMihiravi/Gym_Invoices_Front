@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 import '../Admin/Admin.css';
 import Header from "../Home/Header";
+import DialogBox from "../Home/DialogBox";
 import { MdClose } from "react-icons/md";
 
 
@@ -20,6 +21,22 @@ export default function Member() {
   const [selectedMember, setSelectedMember] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // ✅ new search state
   const [isEdit, setIsEdit] = useState(false);
+  const [dialog, setDialog] = useState({
+       show: false,
+       title: "",
+       message: "",
+       type: "", // "success", "error", "warning", "confirm"
+       onConfirm: null, // optional callback for confirm dialogs
+     });
+     const showDialog = (type, message, onConfirm = null, title = "") => {
+       setDialog({
+         show: true,
+         type,
+         message,
+         title,
+         onConfirm,
+       });
+     };
 
   const navigate = useNavigate();
 
@@ -293,13 +310,17 @@ y += 10; // move y down for next table
 
 
    // ✅ Filter members
-   const filteredMembers = members.filter((m) =>
-     m.memberId?.toLowerCase().includes(searchId.toLowerCase()) &&
-     m.name?.toLowerCase().includes(searchName.toLowerCase()) &&
-     m.mobile?.toLowerCase().includes(searchPhone.toLowerCase()) &&
-     m.membershipStatus?.toLowerCase().includes(searchStatus.toLowerCase()) &&
-     m.membershipType?.toLowerCase().includes(searchMembershipType.toLowerCase())
-   );
+const filteredMembers = members.filter((m) => {
+  const idMatch = (m.memberId || "").toLowerCase().includes(searchId.toLowerCase());
+  const nameMatch = (m.name || "").toLowerCase().includes(searchName.toLowerCase());
+  const phoneMatch = (m.mobile || "").toLowerCase().includes(searchPhone.toLowerCase());
+  const typeMatch = (m.membershipType || "").toLowerCase().includes(searchMembershipType.toLowerCase());
+
+  // ✅ Exact match for status or allow "All" (empty)
+  const statusMatch = !searchStatus || (m.membershipStatus === searchStatus);
+
+  return idMatch && nameMatch && phoneMatch && typeMatch && statusMatch;
+});
 
 
   return (
@@ -313,13 +334,75 @@ y += 10; // move y down for next table
 
         {/* 🔍 Search input */}
          <div className="payment-card">
-                <h2>🔍 Search Details</h2>
-                  <input placeholder="Search by Member ID" value={searchId} onChange={(e) => setSearchId(e.target.value)} />
-                  <input placeholder="Search by Name" value={searchName} onChange={(e) => setSearchName(e.target.value)} />
-                  <input placeholder="Search by Phone" value={searchPhone} onChange={(e) => setSearchPhone(e.target.value)} />
-                  <input placeholder="Search by Status" value={searchStatus} onChange={(e) => setSearchStatus(e.target.value)} />
-                  <input placeholder="Search by Membership Type" value={searchMembershipType} onChange={(e) => setSearchMembershipType(e.target.value)} />
+                  <h2>🔍 Search Details</h2>
+
+                    <div className="filter-row">
+                      <div className="filter-item">
+
+                        <input
+                          placeholder="Search by Member ID"
+                          value={searchId}
+                          onChange={(e) => setSearchId(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="filter-item">
+
+                        <input
+                          placeholder="Search by Name"
+                          value={searchName}
+                          onChange={(e) => setSearchName(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Row 2: Phone + Status + Membership Type */}
+                    <div className="filter-row">
+                      <div className="filter-item">
+
+                        <input
+                          placeholder="Search by Phone"
+                          value={searchPhone}
+                          onChange={(e) => setSearchPhone(e.target.value)}
+                        />
+                      </div>
+                      </div>
+
+                  <div className="filter-row">
+                    <div className="filter-item">
+                      <label>Status</label>
+                      <select
+                        className="duration-select"
+                        value={searchStatus}
+                        onChange={(e) => setSearchStatus(e.target.value)}
+                      >
+                        <option value="">ALL STATUS</option>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                      </select>
+                    </div>
+
+                    <div className="filter-item">
+                      <label>Membership Type</label>
+                      <select
+                        className="duration-select"
+                        value={searchMembershipType}
+                        onChange={(e) => setSearchMembershipType(e.target.value)}
+                      >
+                        <option value="">ALL TYPES</option>
+                        <option value="one-one">ONE-ONE</option>
+                        <option value="one-two">ONE-TWO</option>
+                        <option value="three-one">THREE-ONE</option>
+                        <option value="three-two">THREE-TWO</option>
+                        <option value="six-one">SIX-ONE</option>
+                        <option value="six-two">SIX-TWO</option>
+                        <option value="twelve-one">TWELVE-ONE</option>
+                        <option value="twelve-two">TWELVE-TWO</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
+
 
         <table className="payment-table">
 
@@ -336,7 +419,7 @@ y += 10; // move y down for next table
           </thead>
 
           <tbody>
-            {members.map((m) => (
+            {filteredMembers.map((m) => (
               <tr key={m.id}>
                 <td>{m.memberId}</td>
                 <td>{m.name}</td>
@@ -552,6 +635,7 @@ y += 10; // move y down for next table
         </div>
       )}
     </div>
+     <DialogBox dialog={dialog} setDialog={setDialog} />
     </div>
   );
 }

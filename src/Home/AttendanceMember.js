@@ -76,7 +76,7 @@ function AttendanceScanner() {
 
   return (
     <div className="dashboard">
-      <Header/>
+
 
       <div className="payment-wrapper">
         <div className="payment-container">
