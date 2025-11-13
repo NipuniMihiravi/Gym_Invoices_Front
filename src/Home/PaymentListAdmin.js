@@ -45,7 +45,7 @@ function PaymentTable() {
   const filteredPayments = payments.filter(
     (p) =>
       p.memberId?.toLowerCase().includes(searchId.toLowerCase()) &&
-      p.BillNo?.toLowerCase().includes(searchBillNo.toLowerCase())
+      p.billNo?.toLowerCase().includes(searchBillNo.toLowerCase())
 
   );
 

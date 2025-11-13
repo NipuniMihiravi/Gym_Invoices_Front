@@ -129,6 +129,12 @@ const handleSearch = async () => {
       paymentMethod: "",
     });
 
+    if (membershipTypes.length === 0) {
+      setDialogMessage("⚠️ Please wait, membership data still loading...");
+      setShowDialog(true);
+      return;
+    }
+
   } catch (err) {
     console.error(err);
     setDialogMessage("❌ Error fetching member or payment data.");

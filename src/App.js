@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./Home/AppHome.css";
 import QRPage from "./Home/QRPage";
 import RegistrationForm from "./Home/RegistrationForm";
