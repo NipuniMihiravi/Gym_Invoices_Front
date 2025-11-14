@@ -158,7 +158,7 @@ function PaymentTable() {
               <th>Member Name</th>
               <th>Membership Type</th>
               <th>Amount</th>
-              <th>Paid Month</th>
+              <th>Month</th>
               <th>Payment Status</th>
               <th>Actions</th>
             </tr>

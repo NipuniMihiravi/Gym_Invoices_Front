@@ -2095,6 +2095,15 @@ th {
   transform: scale(1.05);
 }
 
+.print-btn {
+  background-color: #FEBE10;
+}
+
+.print-btn:hover {
+  background-color: #FFC72C;
+  transform: scale(1.05);
+}
+
 .edit-btn {
   background-color: #2196f3; /* blue */
 }

@@ -429,7 +429,7 @@ const filteredMembers = members.filter((m) => {
                 <td>{m.membershipStatus}</td>
                 <td>
                 <div className="table-action-buttons">
-                  <button onClick={() => handleView(m)} className="action-btn view-btn"><MdPrint size={20} /> Print</button>
+                  <button onClick={() => handleView(m)} className="action-btn print-btn"><MdPrint size={20} /> Print</button>
                   <button onClick={() => handleEdit(m)}className="action-btn edit-btn"> <MdEdit size={20} /> Edit</button>
 
                 </div>
@@ -468,7 +468,25 @@ const filteredMembers = members.filter((m) => {
                       <label>City * {input("city")}</label>
                       <label>Land Phone {input("landPhone")}</label>
                       <label>Mobile * {input("mobile")}</label>
-                      <label>Date of Birth * {input("dob")}</label>
+                     <label>
+                       Date of Birth *
+                       {isEdit ? (
+                         <input
+                           type="date"
+                           value={
+                             selectedMember.dob
+                               ? new Date(selectedMember.dob).toISOString().substring(0, 10)
+                               : ""
+                           }
+                           onChange={(e) =>
+                             setSelectedMember({ ...selectedMember, dob: e.target.value })
+                           }
+                         />
+                       ) : (
+                         <span>{selectedMember.dob}</span>
+                       )}
+                     </label>
+
 
                       <label>
                         Gender *
@@ -483,7 +501,24 @@ const filteredMembers = members.filter((m) => {
                         )}
                       </label>
 
-                      <label>Civil Status {input("civilStatus")}</label>
+                      <label>
+                         Civil Status
+                         {isEdit ? (
+                           <select
+                             value={selectedMember.civilStatus || ""}
+                             onChange={(e) =>
+                               setSelectedMember({ ...selectedMember, civilStatus: e.target.value })
+                             }
+                           >
+                             <option value="">Select</option>
+                             <option value="Single">Single</option>
+                             <option value="Married">Married</option>
+
+                           </select>
+                         ) : (
+                           <span>{selectedMember.civilStatus}</span>
+                         )}
+                       </label>
 
                       <label>
                         ID Type *

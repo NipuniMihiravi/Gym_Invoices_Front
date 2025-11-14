@@ -275,24 +275,7 @@ const handlePaymentSubmit = async (e) => {
             <button onClick={handleSearch}>Search</button>
           </div>
 
-          <div className="qr-reader-container">
-            <h4>Scan QR Code to Search</h4>
-            <button className="scan-toggle-button" onClick={() => setCameraActive(!cameraActive)}>
-              {cameraActive ? "Stop Camera" : "Start Camera"}
-            </button>
-            {cameraActive && (
-              <div style={{ width: "300px", marginTop: "10px" }}>
-                <BarcodeScannerComponent
-                  width={300}
-                  height={300}
-                  onUpdate={(err, result) => {
-                    if (result) handleScan(result);
-                    if (err) console.error(err);
-                  }}
-                />
-              </div>
-            )}
-          </div>
+
 
           {memberData && (
             <>
