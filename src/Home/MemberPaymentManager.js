@@ -96,22 +96,28 @@ const handleSearch = async () => {
     };
 
     // Determine next due date
-    let calculatedNextDue;
-    if (paymentHistory.length === 0) {
-      // ✅ No payments: use joined date
-      calculatedNextDue = new Date(member.joinedDate);
-    } else {
-      // ✅ Payments exist: last payment + membership duration
-      const lastPaymentDate = new Date(
-        paymentHistory.sort((a, b) => new Date(b.date) - new Date(a.date))[0].date
-      );
-      calculatedNextDue = new Date(lastPaymentDate);
-      calculatedNextDue.setMonth(
-        calculatedNextDue.getMonth() + (plan[member.membershipType] || 1)
-      );
-    }
+ // Calculate next due date considering both Present and Absent
+ let startDate = new Date(member.joinedDate);
+ let nextDue = new Date(startDate);
 
-    setDueDate(calculatedNextDue);
+ const planMonths = plan[member.membershipType] || 1;
+
+ // Sort payments ascending
+ const sortedPayments = paymentHistory.sort(
+   (a, b) => new Date(a.date) - new Date(b.date)
+ );
+
+ for (let p of sortedPayments) {
+   const paymentDate = new Date(p.date);
+   // Move nextDue to next month after this payment (even if Absent)
+   if (paymentDate.getFullYear() === nextDue.getFullYear() &&
+       paymentDate.getMonth() === nextDue.getMonth()) {
+     nextDue.setMonth(nextDue.getMonth() + planMonths);
+   }
+ }
+
+ setDueDate(nextDue);
+
 
     // Get membership fee
     const selectedType = membershipTypes.find(
@@ -121,13 +127,13 @@ const handleSearch = async () => {
     setFeeAmount(fee);
 
     // Set default form values
-    setForm({
-      amount: fee,
-      date: paymentHistory.length === 0
-        ? new Date().toISOString().substring(0, 10)
-        : calculatedNextDue.toISOString().substring(0, 10),
-      paymentMethod: "",
-    });
+  setForm({
+    amount: fee,
+    date: paymentHistory.length === 0
+      ? new Date().toISOString().substring(0, 10)
+      : nextDue.toISOString().substring(0, 10),
+    paymentMethod: "",
+  });
 
     if (membershipTypes.length === 0) {
       setDialogMessage("⚠️ Please wait, membership data still loading...");
@@ -182,77 +188,70 @@ const fetchAttendance = async (id) => {
 const handlePaymentSubmit = async (e) => {
   e.preventDefault();
 
+  if (!form.participation) {
+    setDialogMessage("⚠️ Please select Participation (Present/Absent).");
+    setShowDialog(true);
+    return;
+  }
+
   try {
-    // 1️⃣ Get last bill number
+    // 1️⃣ Fetch the last payment to get the last bill number
     const lastPaymentRes = await axios.get(
       "https://gym-invoice-back.onrender.com/api/payments/last-bill"
     );
+    let lastBillNo = lastPaymentRes.data?.billNo || "LFP1000";
 
-    let lastBillNo = lastPaymentRes.data?.billNo || "LTF1000";
+    // 2️⃣ Generate next bill number
+    let nextBillNo = lastBillNo.startsWith("LFP")
+      ? "LFP" + (parseInt(lastBillNo.replace("LFP", "")) + 1)
+      : "LFP1000";
 
-    // 2️⃣ Generate next bill
-    let nextBillNo;
-    if (lastBillNo.startsWith("LTF")) {
-      const num = parseInt(lastBillNo.replace("LTF", ""));
-      nextBillNo = "LTF" + (num + 1);
-    } else {
-      nextBillNo = "LTF1000";
+    // 3️⃣ Determine paymentMethod for Absent
+    const paymentMethod = form.participation === "Present"
+      ? form.paymentMethod
+      : "Absent";
+
+    if (form.participation === "Present" && !form.paymentMethod) {
+      setDialogMessage("⚠️ Please select Payment Method for Present participation.");
+      setShowDialog(true);
+      return;
     }
 
-    // 3️⃣ Send normal payment
-await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
-  memberId: memberId,
-  billNo: nextBillNo,
-  memberName: memberData.name,
-  memberEmail: memberData.email,
-  amount: form.amount || feeAmount,
-  date: new Date(dueDate).toISOString().substring(0, 10), // Next due date
-  payDate: form.date, // Actual payment date
-  paymentMethod: form.paymentMethod,
-  absent: false
-});
+    // 4️⃣ Save the record with status always "Done"
+    await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
+      memberId,
+      billNo: nextBillNo,
+      amount: form.amount || feeAmount,
+      date: new Date(dueDate).toISOString().substring(0, 10), // Month being paid/marked
+      payDate: new Date().toISOString().substring(0, 10),      // Today
+      status: "Done",
+      paymentMethod,
+      participation: form.participation
+    });
 
-
-    setDialogMessage(`✅ Payment saved successfully! Bill No: ${nextBillNo}`);
+    setDialogMessage(`✅ Your submission has been successfully completed! `);
     setShowDialog(true);
+
+    // 5️⃣ Refresh member info and payments
     handleSearch();
+
+    // 6️⃣ Reset form
+    setForm({
+      ...form,
+      participation: "",
+      paymentMethod: "",
+    });
 
   } catch (err) {
     console.error(err);
-    setDialogMessage("❌ Payment failed!");
+    setDialogMessage("❌ Failed to save payment!");
     setShowDialog(true);
   }
 };
 
 
 
-const handleMarkAbsent = async () => {
-  if (!memberId) return;
 
-  try {
-await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
-  memberId: memberId,
-  memberName: memberData.name,
-  memberEmail: memberData.email,
-  billNo: null,
-  amount: 0,
-  date: new Date(dueDate).toISOString().substring(0, 10), // For that month
-  payDate: null, // ❌ No pay date for absent
-  paymentMethod: "Absent",
-  absent: true
-});
-;
-
-    setDialogMessage("⚠️ Member marked as Absent for this month!");
-    setShowDialog(true);
-    handleSearch();
-
-  } catch (err) {
-    console.error(err);
-    setDialogMessage("❌ Failed to mark as absent.");
-    setShowDialog(true);
-  }
-};
 
 
 
@@ -371,7 +370,7 @@ await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
                       required
                     />
 
-                    <label>Payment Date</label>
+                    <label>Date</label>
                     <input
                       type="date"
                       value={form.date}
@@ -379,29 +378,39 @@ await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
                       required
                     />
 
-                    <label>Payment Method</label>
-                    <select
-                      value={form.paymentMethod}
-                      onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
-                      required
-                    >
-                      <option value="">Select Method</option>
-                      <option value="Cash">Cash</option>
-                      <option value="Online">Online</option>
-                    </select>
+                     <label>Participation</label>
+                     <select
+                       value={form.participation}
+                       onChange={(e) => setForm({ ...form, participation: e.target.value, paymentMethod: "" })}
+                       required
+                     >
+                       <option value="">Select Participation</option>
+                       <option value="Present">Present</option>
+                       <option value="Absent">Absent</option>
+                     </select>
+
+                     {form.participation === "Present" && (
+                       <>
+                         <label>Payment Method</label>
+                         <select
+                           value={form.paymentMethod}
+                           onChange={(e) => setForm({ ...form, paymentMethod: e.target.value })}
+                           required
+                         >
+                           <option value="">Select Method</option>
+                           <option value="Cash">Cash</option>
+                           <option value="Online">Online</option>
+                         </select>
+                       </>
+                     )}
+
+
 
                     <div className="payment-buttons">
                       <button className="pay-button" type="submit">
-                        ✅ Submit Payment
+                        ✅ Submit
                       </button>
-                      <button
-                        type="button"
-                        className="pay-button"
-                        onClick={handleMarkAbsent}
 
-                      >
-                        🚫 Mark Absent
-                      </button>
                     </div>
                   </form>
                 </div>

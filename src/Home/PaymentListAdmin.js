@@ -159,6 +159,7 @@ function PaymentTable() {
               <th>Membership Type</th>
               <th>Amount</th>
               <th>Paid Month</th>
+              <th>Payment Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -178,6 +179,7 @@ function PaymentTable() {
                   <td>{p.membershipType}</td>
                   <td>{p.amount}</td>
                   <td>{p.date}</td>
+                  <td>{p.status}</td>
                   <td>
                     <div className="table-action-buttons">
                       <button onClick={() => setViewPayment(p)} className="action-btn view-btn">
@@ -241,18 +243,31 @@ function PaymentTable() {
               <div className="modal1-grid">
                 <div className="form-row"><label>Member ID</label><input value={editPayment.memberId} readOnly /></div>
                 <div className="form-row"><label>Member Name</label><input value={editPayment.memberName} readOnly /></div>
-                <div className="form-row"><label>Membership Type</label><input value={editPayment.membershipType} readOnly /></div>
-                <div className="form-row"><label>Paid Month</label><input type="date" name="date" value={editPayment.date || ""} onChange={handleEditChange} /></div>
-                <div className="form-row"><label>Payment Date</label><input type="date" name="payDate" value={editPayment.payDate || ""} onChange={handleEditChange} /></div>
+
+                <div className="form-row"><label>Paid Month</label><input type="date" name="date" value={editPayment.date} readOnly /></div>
+                <div className="form-row"><label>Payment Date</label><input type="date" name="payDate" value={editPayment.payDate} readOnly /></div>
                 <div className="form-row"><label>Amount</label><input type="number" name="amount" value={editPayment.amount || ""} onChange={handleEditChange} /></div>
+
+               <div className="form-row">
+                 <label>Status</label>
+                 <select
+                   name="status"
+                   value={editPayment.status || ""}
+                   onChange={handleEditChange}
+                 >
+                   <option value="">-- Select Status --</option>
+                   <option value="Done">Done</option>
+                   <option value="Absent">Absent</option>
+                 </select>
+               </div>
 
                 <div className="form-row">
                   <label>Payment Method</label>
                   <select name="paymentMethod" value={editPayment.paymentMethod || ""} onChange={handleEditChange}>
                     <option value="">-- Select Method --</option>
                     <option value="Cash">Cash</option>
-                    <option value="Card">Card</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Online">Online</option>
+
                   </select>
                 </div>
               </div>

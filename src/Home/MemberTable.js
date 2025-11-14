@@ -4,7 +4,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import html2canvas from "html2canvas";
 import { useNavigate } from "react-router-dom";
-import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
+import { MdVisibility, MdEdit, MdDelete, MdPrint } from 'react-icons/md';
 import '../Admin/Admin.css';
 import Header from "../Home/Header";
 import DialogBox from "../Home/DialogBox";
@@ -429,7 +429,7 @@ const filteredMembers = members.filter((m) => {
                 <td>{m.membershipStatus}</td>
                 <td>
                 <div className="table-action-buttons">
-                  <button onClick={() => handleView(m)} className="action-btn view-btn"><MdVisibility size={20} /> View</button>
+                  <button onClick={() => handleView(m)} className="action-btn view-btn"><MdPrint size={20} /> Print</button>
                   <button onClick={() => handleEdit(m)}className="action-btn edit-btn"> <MdEdit size={20} /> Edit</button>
 
                 </div>

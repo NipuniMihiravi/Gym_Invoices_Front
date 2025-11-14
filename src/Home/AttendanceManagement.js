@@ -154,8 +154,6 @@ function AttendanceTable() {
               <tr>
                 <th>Member ID</th>
                 <th>Name</th>
-                <th>Email</th>
-                <th>Membership Type</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Action</th>
@@ -167,8 +165,6 @@ function AttendanceTable() {
                  <tr key={record.id}>
                    <td>{record.memberId}</td>
                    <td>{record.memberName}</td>
-                   <td>{record.email}</td>
-                   <td>{record.membershipType || "-"}</td>
                    <td>{record.date}</td>
                    <td>{record.time}</td>
                    <td>
