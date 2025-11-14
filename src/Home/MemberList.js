@@ -123,6 +123,17 @@ function MemberTable() {
       return;
     }
 
+    // ✅ New Validation: regFee and regStatus must be filled
+        if (!editForm.regFee || editForm.regFee === "" || editForm.regFee <= 0) {
+          setModalMessage({ type: "warning", text: "⚠️ Please enter a valid Registration Fee." });
+          return;
+        }
+
+        if (!editForm.regStatus || editForm.regStatus.trim() === "") {
+          setModalMessage({ type: "warning", text: "⚠️ Please select Registration Status." });
+          return;
+        }
+
     try {
       // ✅ Update member
       await axios.put(`https://gym-invoice-back.onrender.com/api/members/${editingId}`, editForm);
@@ -255,10 +266,7 @@ function MemberTable() {
                   <label>Joined Date</label>
                   <input type="date" name="joinedDate" value={editForm.joinedDate || ""} onChange={handleEditChange} />
                 </div>
-                <div className="form-row">
-                  <label>Special Description</label>
-                  <textarea name="specialDescription" value={editForm.specialDescription || ""} onChange={handleEditChange} rows="4" cols="50" />
-                </div>
+
                 <div className="form-row">
                   <label>Registration Fee</label>
                   <input type="number" name="regFee" value={editForm.regFee || ""} onChange={handleEditChange} />

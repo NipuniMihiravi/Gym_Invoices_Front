@@ -328,18 +328,8 @@ const filteredMembers = members.filter((m) => {
                   <label>Special Description</label>
                   <textarea name="specialDescription" value={editForm.specialDescription || ""} onChange={handleEditChange} rows="4" cols="50" />
                 </div>
-                <div className="form-row">
-                  <label>Registration Fee</label>
-                  <input type="number" name="regFee" value={editForm.regFee || ""} onChange={handleEditChange} />
-                </div>
-                <div className="form-row">
-                  <label>Registration Status</label>
-                  <select name="regStatus" value={editForm.regStatus || ""} onChange={handleEditChange}>
-                    <option value="">-- Select Status --</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Paid">Paid</option>
-                  </select>
-                </div>
+
+
               </div>
               <div className="filter-buttons">
                 <button onClick={handleUpdate}  className="btn btn-primary" >Save</button>
@@ -356,14 +346,31 @@ const filteredMembers = members.filter((m) => {
 
               <h4>View Member Details</h4>
               <div className="modal1-grid">
-                <div className="form-row"><label>Member ID</label><input value={viewForm.memberId} disabled /></div>
-                <div className="form-row"><label>Full Name</label><input value={viewForm.name} disabled /></div>
-                <div className="form-row"><label>Membership Type</label><input value={viewForm.membershipType} disabled /></div>
-                <div className="form-row"><label>Membership Status</label><input value={viewForm.membershipStatus} disabled /></div>
-                <div className="form-row"><label>Joined Date</label><input value={viewForm.joinedDate} disabled /></div>
-                <div className="form-row"><label>Special Description</label><input value={viewForm.specialDescription} disabled /></div>
-                <div className="form-row"><label>Registration Status</label><input value={viewForm.regStatus || "-"} disabled /></div>
-              </div>
+
+                      <div className="form-row"><label>Member ID</label><input value={viewForm.memberId} disabled /></div>
+                      <div className="form-row"><label>Full Name</label><input value={viewForm.name} disabled /></div>
+                      <div className="form-row"><label>Phone</label><input value={viewForm.mobile} disabled /></div>
+                      <div className="form-row"><label>Email</label><input value={viewForm.email} disabled /></div>
+
+                      <div className="form-row"><label>City</label><input value={viewForm.city} disabled /></div>
+                      <div className="form-row"><label>Profession</label><input value={viewForm.profession} disabled /></div>
+
+                      <div className="form-row"><label>Membership Type</label><input value={viewForm.membershipType} disabled /></div>
+                      <div className="form-row"><label>Membership Status</label><input value={viewForm.membershipStatus} disabled /></div>
+
+                      <div className="form-row"><label>Joined Date</label><input value={viewForm.joinedDate} disabled /></div>
+                      <div className="form-row"><label>Weight</label><input value={viewForm.weight} disabled /></div>
+
+                      {/* Emergency Information */}
+                      <div className="form-row"><label>Emergency Name</label><input value={viewForm.emergencyName} disabled /></div>
+                      <div className="form-row"><label>Relationship</label><input value={viewForm.emergencyRelationship} disabled /></div>
+                      <div className="form-row"><label>Emergency Mobile</label><input value={viewForm.emergencyMobile} disabled /></div>
+                      <div className="form-row"><label>Emergency Land</label><input value={viewForm.emergencyLand} disabled /></div>
+
+                      <div className="form-row"><label>Special Description</label><input value={viewForm.specialDescription} disabled /></div>
+                      <div className="form-row"><label>Registration Status</label><input value={viewForm.regStatus || "-"} disabled /></div>
+
+                    </div>
               <div className="filter-buttons"><button onClick={() => setViewForm(null)}  className="btn btn-primary">Close</button></div>
             </div>
           </div>

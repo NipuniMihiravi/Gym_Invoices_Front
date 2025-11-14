@@ -55,7 +55,7 @@ function AttendanceScanner() {
     try {
       await axios.post("https://gym-invoice-back.onrender.com/api/attendance/mark", { memberId: scannedId.trim() });
       setStatus("success");
-      setMessage(`Attendance marked successfully for ${memberName}!`);
+      setMessage(`Attendance marked successfully`);
     } catch (error) {
       console.error(error);
       if (error.response && error.response.status === 409) {
