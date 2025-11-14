@@ -3,17 +3,13 @@ import axios from "axios";
 import "./AppHome.css";
 import '../Admin/Admin.css';
 import Header from "../Home/Header";
-import { Link, useNavigate } from 'react-router-dom';
+import DialogBox from "../Home/DialogBox"; // ✅ Import DialogBox
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 import { MdClose } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
 
 function MemberTable() {
   const [members, setMembers] = useState([]);
-  const [searchMembershipType, setSearchMembershipType] = useState("");
-  const [searchId, setSearchId] = useState("");
-  const [searchName, setSearchName] = useState("");
-  const [searchPhone, setSearchPhone] = useState("");
-  const [searchStatus, setSearchStatus] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [viewForm, setViewForm] = useState(null);
@@ -64,15 +60,8 @@ function MemberTable() {
     }
   };
 
-
-
- // ✅ Filter members
- const filteredMembers = members.filter((m) => {
-   // Only include members with empty membershipStatus
-   return !m.membershipStatus || m.membershipStatus.trim() === "";
- });
-
-
+  // ✅ Filter members with empty membershipStatus
+  const filteredMembers = members.filter((m) => !m.membershipStatus || m.membershipStatus.trim() === "");
 
   // ✅ Handle edit form changes
   const handleEditChange = (e) => {
@@ -98,7 +87,7 @@ function MemberTable() {
       onConfirm: async () => {
         try {
           await axios.delete(`https://gym-invoice-back.onrender.com/api/members/${id}`);
-          fetchMembers();
+          fetchMembers(); // Refresh list
           setDialog({ show: true, type: "success", message: "✅ Member deleted successfully!" });
         } catch (error) {
           console.error("Error deleting member:", error);
@@ -117,64 +106,42 @@ function MemberTable() {
 
   // ✅ Save edit form
   const handleUpdate = async () => {
-    // ✅ Validation
     if (!editForm.membershipStatus || !editForm.membershipType || !editForm.joinedDate) {
       setModalMessage({ type: "warning", text: "⚠️ Membership Status, Type, and Joined Date are required." });
       return;
     }
 
-    // ✅ New Validation: regFee and regStatus must be filled
-        if (!editForm.regFee || editForm.regFee === "" || editForm.regFee <= 0) {
-          setModalMessage({ type: "warning", text: "⚠️ Please enter a valid Registration Fee." });
-          return;
-        }
+    if (!editForm.regFee || editForm.regFee <= 0) {
+      setModalMessage({ type: "warning", text: "⚠️ Please enter a valid Registration Fee." });
+      return;
+    }
 
-        if (!editForm.regStatus || editForm.regStatus.trim() === "") {
-          setModalMessage({ type: "warning", text: "⚠️ Please select Registration Status." });
-          return;
-        }
+    if (!editForm.regStatus || editForm.regStatus.trim() === "") {
+      setModalMessage({ type: "warning", text: "⚠️ Please select Registration Status." });
+      return;
+    }
 
     try {
-      // ✅ Update member
       await axios.put(`https://gym-invoice-back.onrender.com/api/members/${editingId}`, editForm);
-
-      // ✅ Close modal immediately
       setEditingId(null);
       setEditForm({});
       setShowModal(false);
-
-      // ✅ Optional: Show success message via dialog
       setDialog({ show: true, type: "success", message: "✅ Member updated successfully!" });
-
-      // ✅ Refresh member list (preferred way, faster than full page reload)
       fetchMembers();
-
-      // OR, if you want a full page reload instead
-      // window.location.reload();
-
     } catch (error) {
       console.error("Update failed:", error);
       setModalMessage({ type: "error", text: "❌ Failed to update member." });
     }
   };
 
-
-  const handleLogout = () => navigate('/');
-
   return (
     <div className="dashboard">
       <Header />
 
-
-
-
       <div className="payment-container">
         <h2>📝 Newly Registered Members</h2>
 
-
-
-
-        {/* ✅ Member Table */}
+        {/* Member Table */}
         <table className="payment-table">
           <thead>
             <tr>
@@ -184,7 +151,6 @@ function MemberTable() {
               <th>Joined Date</th>
               <th>Membership Type</th>
               <th>Membership Status</th>
-
               <th>Actions</th>
             </tr>
           </thead>
@@ -204,10 +170,9 @@ function MemberTable() {
                   <td>{m.joinedDate}</td>
                   <td>{m.membershipType}</td>
                   <td>{m.membershipStatus}</td>
-
                   <td>
                     <div className="table-action-buttons">
-                      <button onClick={() => handleView(m)} className="action-btn view-btn"><MdVisibility size={20} /> View</button>
+
                       <button onClick={() => handleEditClick(m)} className="action-btn edit-btn"><MdEdit size={20} /> Edit</button>
                       <button onClick={() => handleDelete(m.id)} className="action-btn delete-btn"><MdDelete size={20} /> Delete</button>
                     </div>
@@ -218,22 +183,20 @@ function MemberTable() {
           </tbody>
         </table>
 
-        {/* ✅ Edit Modal */}
+        {/* Edit Modal */}
         {editingId && (
           <div className="modal1">
             <div className="modal1-content">
-
-               {/* ✅ Working Close Button */}
-                   <button
-                     className="modal-close-btn"
-                     onClick={() => {
-                       setEditingId(null);
-                       setShowModal(false);
-                       setModalMessage({ type: "", text: "" });
-                     }}
-                   >
-                     <MdClose />
-                   </button>
+              <button
+                className="modal-close-btn"
+                onClick={() => {
+                  setEditingId(null);
+                  setShowModal(false);
+                  setModalMessage({ type: "", text: "" });
+                }}
+              >
+                <MdClose />
+              </button>
               {modalMessage.text && <div className={`modal-message ${modalMessage.type}`}>{modalMessage.text}</div>}
               <h4>Edit Member Details</h4>
               <div className="modal1-grid">
@@ -266,7 +229,6 @@ function MemberTable() {
                   <label>Joined Date</label>
                   <input type="date" name="joinedDate" value={editForm.joinedDate || ""} onChange={handleEditChange} />
                 </div>
-
                 <div className="form-row">
                   <label>Registration Fee</label>
                   <input type="number" name="regFee" value={editForm.regFee || ""} onChange={handleEditChange} />
@@ -282,13 +244,13 @@ function MemberTable() {
               </div>
               <div className="filter-buttons">
                 <button onClick={handleUpdate} className="btn btn-primary">Save</button>
-                <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }}className="btn btn-primary">Cancel</button>
+                <button onClick={() => { setEditingId(null); setModalMessage({ type: "", text: "" }); }} className="btn btn-primary">Cancel</button>
               </div>
             </div>
           </div>
         )}
 
-        {/* ✅ View Modal */}
+        {/* View Modal */}
         {viewForm && (
           <div className="modal1">
             <div className="modal1-content">
@@ -307,7 +269,8 @@ function MemberTable() {
           </div>
         )}
 
-
+        {/* ✅ Dialog Box */}
+        <DialogBox dialog={dialog} setDialog={setDialog} />
       </div>
     </div>
   );
