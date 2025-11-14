@@ -22,7 +22,7 @@ export default function NewMemberHome() {
           </button>
 
           <button className="big-btn blue" onClick={() => navigate("/expenditure-management")}>
-            📝 Expense
+            📝 Expenses
           </button>
 
 

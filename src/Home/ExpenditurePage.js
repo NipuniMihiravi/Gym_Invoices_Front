@@ -158,7 +158,7 @@ function ExpenditurePage() {
     <div className="dashboard">
       <Header />
       <div className="payment-container">
-        <h2>💰 Expenditure Management</h2>
+        <h2>💰 Expenses Management</h2>
 
         {/* ---------- Form ---------- */}
         <div className="main-card-payment">

@@ -2589,6 +2589,54 @@ input:focus:invalid, select:focus:invalid {
   margin-top: 15px;
 }
 
+/* QR section wrapper */
+.qr-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* QR items layout (desktop) */
+.qr-list {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 30px;
+}
+
+/* Each QR item */
+.qr-item p {
+  margin-top: 10px;
+  font-weight: bold;
+  color: white;
+}
+
+/* ------------ MOBILE RESPONSIVE ------------- */
+@media (max-width: 600px) {
+
+  /* Stack items vertically */
+  .qr-list {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  /* Center each QR code */
+  .qr-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Smaller QR code */
+  .qr-item canvas {
+    width: 150px !important;
+    height: 150px !important;
+  }
+
+  /* Heading size adjust */
+  .qr-container h2 {
+    font-size: 20px;
+  }
+}
 
 
 

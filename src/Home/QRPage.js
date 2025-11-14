@@ -18,19 +18,23 @@ const QRDisplay = () => {
   return (
 
   <div className="dashboard">
-        <Header/>
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <Header/>
+
+    <div className="qr-container">
       <h2>Scan QR Code</h2>
-      <div style={{ display: "flex", justifyContent: "center", gap: "50px", marginTop: "30px" }}>
+
+      <div className="qr-list">
         {links.map((link, index) => (
-          <div key={index}>
+          <div key={index} className="qr-item">
             <QRCodeCanvas value={link.url} size={200} />
-            <p style={{ marginTop: "10px", fontWeight: "bold", color: "white" }}>{link.label}</p>
+            <p>{link.label}</p>
           </div>
         ))}
       </div>
+
     </div>
-    </div>
+  </div>
+
   );
 };
 

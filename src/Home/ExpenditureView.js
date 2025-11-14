@@ -111,7 +111,7 @@ function ExpenditureAnalytics() {
       <Header />
 
       <div className="payment-container">
-        <h2>📊 Expenditure Analytics Dashboard</h2>
+        <h2>📊 Expenses Analytics Dashboard</h2>
 
         {/* ---------- Filters ---------- */}
         <div className="payment-card">
@@ -143,7 +143,7 @@ function ExpenditureAnalytics() {
         {/* ---------- Summary Cards ---------- */}
         <div className="analytics-cards">
           <div className="card">
-            <h4>Total Expenditure</h4>
+            <h4>Total Expenses</h4>
             <p>Rs {totalExpenditure.toLocaleString()}</p>
           </div>
           <div className="card">
