@@ -12,21 +12,18 @@ function AttendanceScanner() {
   const [message, setMessage] = useState("");
   const [dialog, setDialog] = useState({
     show: false,
-    title: "",
-    message: "",
     type: "confirm",
+    message: "",
     onConfirm: null,
   });
-
   const [memberName, setMemberName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const role = sessionStorage.getItem("userRole");
-    if (!role) navigate("/"); // redirect to login if no session
+    if (!role) navigate("/");
   }, [navigate]);
 
-  // Step 1: Fetch member and show confirm dialog
   const handleAddClick = async () => {
     const memberId = scannedId.trim();
     if (!memberId) return;
@@ -36,7 +33,6 @@ function AttendanceScanner() {
       if (res.data && res.data.name) {
         setMemberName(res.data.name);
 
-        // Show dialog
         setDialog({
           show: true,
           type: "confirm",
@@ -54,7 +50,6 @@ function AttendanceScanner() {
     }
   };
 
-  // Step 2: Confirm attendance
   const confirmAttendance = async () => {
     try {
       await axios.post("https://gym-invoice-back.onrender.com/api/attendance/mark", { memberId: scannedId.trim() });
@@ -77,11 +72,9 @@ function AttendanceScanner() {
   return (
     <div className="dashboard">
       <Header/>
-
       <div className="payment-wrapper">
         <div className="payment-container">
           <h2>⏰ Mark Member Attendance</h2>
-
           <div className="search-box">
             <input
               type="text"
@@ -92,8 +85,6 @@ function AttendanceScanner() {
             />
             <button onClick={handleAddClick}>ADD</button>
           </div>
-
-          {/* Status Messages */}
           <div style={{ marginTop: "20px" }}>
             {status === "success" && <div style={{ color: "green" }}>{message}</div>}
             {status === "already" && <div style={{ color: "orange" }}>{message}</div>}
@@ -101,8 +92,6 @@ function AttendanceScanner() {
           </div>
         </div>
       </div>
-
-      {/* Reusable Dialog */}
       <DialogBox dialog={dialog} setDialog={setDialog} />
     </div>
   );

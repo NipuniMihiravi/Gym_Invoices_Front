@@ -181,14 +181,16 @@ const fetchAttendance = async (id) => {
 
 const handlePaymentSubmit = async (e) => {
   e.preventDefault();
+
   try {
-    // 1️⃣ Fetch the last payment to get the last bill number
+    // 1️⃣ Get last bill number
     const lastPaymentRes = await axios.get(
       "https://gym-invoice-back.onrender.com/api/payments/last-bill"
     );
+
     let lastBillNo = lastPaymentRes.data?.billNo || "LTF1000";
 
-    // 2️⃣ Generate next bill number
+    // 2️⃣ Generate next bill
     let nextBillNo;
     if (lastBillNo.startsWith("LTF")) {
       const num = parseInt(lastBillNo.replace("LTF", ""));
@@ -197,20 +199,24 @@ const handlePaymentSubmit = async (e) => {
       nextBillNo = "LTF1000";
     }
 
-    // 3️⃣ Save payment with bill number
-    await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
-      memberId,
-      billNo: nextBillNo,
-      amount: form.amount || feeAmount,
-      date: new Date(dueDate).toISOString().substring(0, 10), // Next due date
-      payDate: form.date, // Actual payment date (YYYY-MM-DD)
-      status: "Done",
-      paymentMethod: form.paymentMethod,
-    });
+    // 3️⃣ Send normal payment
+await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
+  memberId: memberId,
+  billNo: nextBillNo,
+  memberName: memberData.name,
+  memberEmail: memberData.email,
+  amount: form.amount || feeAmount,
+  date: new Date(dueDate).toISOString().substring(0, 10), // Next due date
+  payDate: form.date, // Actual payment date
+  paymentMethod: form.paymentMethod,
+  absent: false
+});
+
 
     setDialogMessage(`✅ Payment saved successfully! Bill No: ${nextBillNo}`);
     setShowDialog(true);
-    handleSearch(); // refresh member info
+    handleSearch();
+
   } catch (err) {
     console.error(err);
     setDialogMessage("❌ Payment failed!");
@@ -219,28 +225,35 @@ const handlePaymentSubmit = async (e) => {
 };
 
 
-  const handleMarkAbsent = async () => {
-    if (!memberId) return;
 
-    try {
-      await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
-        memberId,
-        amount: 0,
-        date: new Date(dueDate).toISOString().substring(0, 10), // For that month
-        payDate: new Date().toISOString().substring(0, 10), // today
-        status: "Absent",
-        paymentMethod: "Absent",
-      });
+const handleMarkAbsent = async () => {
+  if (!memberId) return;
 
-      setDialogMessage("⚠️ Member marked as Absent for this month!");
-      setShowDialog(true);
-      handleSearch(); // refresh payment table
-    } catch (err) {
-      console.error(err);
-      setDialogMessage("❌ Failed to mark as absent.");
-      setShowDialog(true);
-    }
-  };
+  try {
+await axios.post("https://gym-invoice-back.onrender.com/api/payments", {
+  memberId: memberId,
+  memberName: memberData.name,
+  memberEmail: memberData.email,
+  billNo: null,
+  amount: 0,
+  date: new Date(dueDate).toISOString().substring(0, 10), // For that month
+  payDate: null, // ❌ No pay date for absent
+  paymentMethod: "Absent",
+  absent: true
+});
+;
+
+    setDialogMessage("⚠️ Member marked as Absent for this month!");
+    setShowDialog(true);
+    handleSearch();
+
+  } catch (err) {
+    console.error(err);
+    setDialogMessage("❌ Failed to mark as absent.");
+    setShowDialog(true);
+  }
+};
+
 
 
   return (

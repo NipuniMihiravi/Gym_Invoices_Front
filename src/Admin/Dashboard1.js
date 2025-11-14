@@ -12,10 +12,11 @@ const Dashboard = () => {
 
   const services = [
     { title: "New Admission", icon: "📝" },
+    { title: "Registered Members", icon: "👥" },
     { title: "Payment", icon: "💳"},
-    { title: "Registered Member", icon: "👥" },
-    { title: "Attendance", icon: "⚙️" },
-    { title: "System", icon: "⚙️"},
+    { title: "Attendance", icon: "⏰" },
+    { title: "Reports", icon: "📋"},
+    { title: "Settings", icon: "⚙️"},
   ];
 
   // Fetch from backend

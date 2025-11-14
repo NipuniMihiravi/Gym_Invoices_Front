@@ -19,7 +19,7 @@ const SystemManagement = () => {
 
   const services = [
 
-    { title: "Finance Report", icon: "📈"},
+
     { title: "Member Management", icon: "📈"},
     { title: "Finance Management", icon: "📋"},
     { title: "QR-Code", icon: "🔳" },

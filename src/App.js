@@ -45,12 +45,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/service/new-admission" element={<NewMemberHome />} />
-          <Route path="/service/registered-member" element={<MemberTable />} />
+          <Route path="/service/registered-members" element={<MemberTable />} />
           <Route path="/registration" element={<RegistrationForm />} />
 
           <Route path="/registration-member" element={<RegistrationForm2 />} />
           <Route path="/service/attendance" element={<Attendance />} />
-            <Route path="/service/system" element={<SystemManagement/>} />
+            <Route path="/service/settings" element={<SystemManagement/>} />
           <Route path="/service/payment" element={<MemberPaymentManager />} />
           <Route path="/membership-management" element={<MemberShipType />} />
           <Route path="/income-management" element={<PaymentView />} />
@@ -58,7 +58,7 @@ function App() {
           <Route path="/members-list" element={<MemberList />} />
           <Route path="/attendance-management" element={<AttendanceManagement />} />
           <Route path="/member-management" element={<MemberListAdmin />} />
-          <Route path="/service/finance-report" element={<IncomeManagement />} />
+          <Route path="/service/reports" element={<IncomeManagement />} />
           <Route path="/pending-payment" element={<PendingPayment />} />
           <Route path="/expenditure-management" element={<ExpenditurePage />} />
           <Route path="/service/member-management" element={<MemberManagementPage />} />
